@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Rick Saunders is riding the Western Wildlands Route from Canada to Mexico, Sept 6 to Nov 7, 2026. Daily progress, plan vs. actual, projected finish.">
+<meta property="og:title" content="Rick's WWR Tracker">
+<meta property="og:description" content="Canada to Mexico by bike. Daily progress on the Western Wildlands Route.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚵</text></svg>">
+<title>Rick's WWR Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light dark;
+  --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
+  --line:#CBD3CB; --contour:#DDE3DB;
+  --red:#B4232C; --red-soft:#F3DCDD;
+  --plan:#6F8A72; --plan-soft:#DCE6DD;
+  --good:#2E7D4F; --good-soft:#D9EEDF; --warn:#A6681B; --warn-soft:#F6E7CF; --bad:#9B2A2A; --bad-soft:#F2DADA;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
+    --line:#33403A; --contour:#26312C;
+    --red:#E1555E; --red-soft:#3C1F22;
+    --plan:#8FAA92; --plan-soft:#25332A;
+    --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
+  --line:#33403A; --contour:#26312C;
+  --red:#E1555E; --red-soft:#3C1F22;
+  --plan:#8FAA92; --plan-soft:#25332A;
+  --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 64px}
+h1,h2,.disp{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:44px;line-height:1;text-transform:uppercase}
+h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:12px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:600}
+.sub{color:var(--ink-2);margin-top:6px}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.updated{font-size:13px;color:var(--ink-3);text-align:right}
+section{margin-top:34px}
+
+.status{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
+.tile{background:var(--paper);padding:14px 16px 12px}
+.tile .lab{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.tile .val{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:40px;line-height:1.05;margin-top:4px}
+.tile .val small{font-size:18px;font-weight:600;color:var(--ink-2);margin-left:4px}
+.tile .note{font-size:13px;color:var(--ink-2);margin-top:4px}
+.tile.hero{background:var(--ink);color:var(--bg)}
+.tile.hero .lab,.tile.hero .note{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.tile.hero .val small{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+.delta-good{color:var(--good)} .delta-bad{color:var(--bad)}
+.tile.hero .delta-good{color:#8FE0AC}.tile.hero .delta-bad{color:#F0A0A0}
+
+.route{margin-top:26px;background:var(--paper);border:1px solid var(--line);padding:18px 16px 12px}
+.bar{position:relative;height:14px;background:var(--plan-soft);border-radius:2px;overflow:visible;margin-top:26px}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--red);border-radius:2px 0 0 2px}
+.bar .planmark{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--plan)}
+.bar .tick{position:absolute;top:14px;width:1px;height:8px;background:var(--ink-3)}
+.bar .tlab{position:absolute;top:24px;transform:translateX(-50%);font-size:11px;color:var(--ink-3);white-space:nowrap;letter-spacing:.02em}
+.bar .tlab.first{transform:none}.bar .tlab.last{transform:translateX(-100%)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--ink-2);margin-top:44px}
+.legend span::before{content:"";display:inline-block;width:14px;height:10px;margin-right:6px;vertical-align:-1px;border-radius:1px}
+.legend .a::before{background:var(--red)} .legend .p::before{background:var(--plan);width:3px;height:12px}
+
+.where{display:grid;grid-template-columns:1.2fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.where>div{background:var(--paper);padding:16px}
+.where .big{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:28px;line-height:1.1;margin-top:2px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:15px;margin-top:8px}
+.kv dt{color:var(--ink-3);margin:0}.kv dd{margin:0}
+a{color:var(--red)}
+
+.chart{background:var(--paper);border:1px solid var(--line);padding:12px 8px 6px;overflow-x:auto}
+svg{display:block;width:100%;height:auto}
+.chart text{font-family:"Source Sans 3",sans-serif;font-size:11px;fill:var(--ink-3)}
+
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);font-size:15px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right;white-space:nowrap}
+.tblwrap{overflow-x:auto}
+tr.cur td{background:color-mix(in srgb,var(--red-soft) 55%,var(--paper))}
+tr.done td{color:var(--ink-2)}
+tr.future td{color:var(--ink-3)}
+.chip{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.03em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.c-good{background:var(--good-soft);color:var(--good)}.c-warn{background:var(--warn-soft);color:var(--warn)}.c-bad{background:var(--bad-soft);color:var(--bad)}.c-muted{background:var(--contour);color:var(--ink-2)}
+.c-cur{background:var(--red);color:#fff}
+.seg-name{font-weight:600}
+.seg-sub{font-size:13px;color:var(--ink-3)}
+.foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:720px){
+  h1{font-size:36px}
+  .status{grid-template-columns:repeat(2,1fr)}
+  .where{grid-template-columns:1fr}
+  .tile .val{font-size:34px}
+}
+@media (prefers-reduced-motion:no-preference){ .bar .fill{transition:width .6s ease} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Western Wildlands Route · Roosville, MT to Sierra Vista, AZ</div>
+    <h1>Rick Saunders, Canada to Mexico</h1>
+    <div class="sub">2,693 miles of dirt in 63 days. Rolled out Sept 6, 2026, aiming for Nov 7.</div>
+  </div>
+  <div class="updated" id="updated"></div>
+</header>
+
+<div class="status" id="status"></div>
+
+<div class="route">
+  <div class="eyebrow" style="color:var(--ink-3)">Route progress</div>
+  <div class="bar" id="bar"></div>
+  <div class="legend"><span class="a">Rick's actual miles</span><span class="p">Where the plan says he should be today</span></div>
+</div>
+
+<section>
+  <h2>Where he is</h2>
+  <div class="where" id="where"></div>
+</section>
+
+<section>
+  <h2>Plan vs. actual, cumulative miles</h2>
+  <div class="chart" id="chart"></div>
+</section>
+
+<section>
+  <h2>Segments</h2>
+  <div class="tblwrap"><table id="segs">
+    <thead><tr><th>#</th><th>Segment</th><th class="r">Miles</th><th class="r">Climb</th><th class="r">Mi/day</th><th>Planned dates</th><th>Typical riding season</th><th>Status</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>Daily log</h2>
+  <div class="tblwrap"><table id="log">
+    <thead><tr><th>Day</th><th>Date</th><th>Ended at</th><th class="r">Miles</th><th class="r">Plan</th><th class="r">Climb</th><th class="r">Total</th><th class="r">vs. plan</th><th>Notes</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+
+<div class="foot"><a href="/">shawnandersonapps.com</a> · Route: 2,693 mi, about 120,000 ft of climbing, more than 80% unpaved, per <a href="https://bikepackingroots.org/project/western-wildlands-route/" target="_blank" rel="noopener">Bikepacking Roots</a>. Segment miles and climbing are theirs; days and dates are Rick's plan. Season windows from the Western Wildlands Route guide's "recommended riding season during typical years" map. Daily stats from Rick's tracking app. Maintained by Shawn.</div>
+</div>
+
+<script>
+// ===== DATA: edit here each day =====
+const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
+const TOTAL_PLAN = 2693;
+
+// miles + gain are the official Bikepacking Roots segment figures (they sum to 2,693). days/dates are Rick's plan.
+const SEGMENTS = [
+  {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:304, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass"},
+  {n:2, from:"Superior",           to:"Darby, MT",      miles:326, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Moon Pass"},
+  {n:3, from:"Darby",              to:"Hailey, ID",     miles:289, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:"Magruder Corridor, 125 mi / 14,000 ft"},
+  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:342, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
+  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
+  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:337, gain:24000, days:8, start:"2026-10-11", end:"2026-10-18", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
+  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:209, gain:10000, days:5, start:"2026-10-19", end:"2026-10-23", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
+  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344, gain:22000, days:8, start:"2026-10-24", end:"2026-10-31", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
+  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:292, gain:21000, days:7, start:"2026-11-01", end:"2026-11-07", season:"Mid Sep to early May", seasonState:"ok", note:""},
+];
+
+// One entry per riding day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
+const LOG = [
+  {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
+];
+const LAST_UPDATED = "Sept 7, 2026";
+// ===== END DATA =====
+
+const fmt = n => n.toLocaleString("en-US");
+const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const mdy = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+
+// Build 63-day plan: each segment's official miles spread evenly over Rick's planned days.
+const planDaily = []; SEGMENTS.forEach(s => { s.mpd = s.miles/s.days; for(let i=0;i<s.days;i++) planDaily.push(s.mpd); });
+const planCum = []; planDaily.reduce((a,b,i)=>(planCum[i]=a+b),0);
+const segCum = []; SEGMENTS.reduce((a,s,i)=>(segCum[i]=a+s.miles),0);
+
+// Actuals
+let cum = 0; LOG.forEach(e => { cum += e.miles; e.cum = cum; e.planCum = planCum[e.day-1]; e.delta = e.cum - e.planCum; });
+const last = LOG[LOG.length-1];
+const daysRidden = LOG.length;
+const actualCum = last ? last.cum : 0;
+const avg = daysRidden ? actualCum/daysRidden : 0;
+const remaining = TOTAL_PLAN - actualCum;
+const daysToGo = avg>0 ? Math.ceil(remaining/avg) : null;
+const projFinish = daysToGo!=null ? addDays(d2(last.date), daysToGo) : null;
+const planFinish = addDays(START, 62);
+const delta = last ? last.delta : 0;
+const curSeg = SEGMENTS.find(s => actualCum < segCum[s.n-1]) || SEGMENTS[SEGMENTS.length-1];
+const milesIntoSeg = actualCum - (segCum[curSeg.n-2]||0);
+
+// Status tiles
+document.getElementById("updated").innerHTML = `Updated ${LAST_UPDATED}<br>after day ${daysRidden} of 63`;
+const dcls = delta>=0 ? "delta-good" : "delta-bad";
+const dtxt = (delta>=0?"+":"") + fmt(Math.round(delta));
+document.getElementById("status").innerHTML = `
+  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(actualCum)}<small>of ${fmt(TOTAL_PLAN)}</small></div><div class="note">${(100*actualCum/TOTAL_PLAN).toFixed(1)}% of the route</div></div>
+  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${dtxt}<small>mi</small></div><div class="note">Plan had him at ${fmt(Math.round(last?last.planCum:0))} mi after day ${daysRidden}</div></div>
+  <div class="tile"><div class="lab">Average per day</div><div class="val num">${avg.toFixed(1)}<small>mi</small></div><div class="note">Plan pace is ${(TOTAL_PLAN/63).toFixed(1)} mi/day</div></div>
+  <div class="tile"><div class="lab">Projected finish</div><div class="val num">${projFinish?mdy(projFinish):"TBD"}</div><div class="note">At current pace. Plan says ${mdy(planFinish)}.</div></div>`;
+
+// Route bar
+const bar = document.getElementById("bar");
+let html = `<div class="fill" style="width:${(100*actualCum/TOTAL_PLAN).toFixed(2)}%"></div>`;
+html += `<div class="planmark" style="left:${(100*(last?last.planCum:0)/TOTAL_PLAN).toFixed(2)}%"></div>`;
+const labels = ["Roosville", ...SEGMENTS.map(s=>s.to.split(/[,(]/)[0].trim())];
+const pts = [0, ...segCum];
+pts.forEach((m,i)=>{ const pct=(100*m/TOTAL_PLAN).toFixed(2); const cls = i===0?"first":(i===pts.length-1?"last":""); html += `<div class="tick" style="left:${pct}%"></div><div class="tlab ${cls}" style="left:${pct}%">${labels[i]}</div>`; });
+bar.innerHTML = html;
+
+// Where
+const w = document.getElementById("where");
+w.innerHTML = last ? `
+  <div><div class="eyebrow" style="color:var(--ink-3)">Last camp · ${mdy(d2(last.date))}</div><div class="big">${last.end}</div>
+    <dl class="kv">
+      <dt>Segment</dt><dd>${curSeg.n} of 9, ${curSeg.from} to ${curSeg.to} (${fmt(Math.round(milesIntoSeg))} of ${fmt(curSeg.miles)} mi in)</dd>
+      <dt>Next town</dt><dd>${curSeg.to}, planned arrival ${mdy(d2(curSeg.end))}</dd>
+      ${last.lat?`<dt>Coords</dt><dd><a href="https://www.google.com/maps?q=${last.lat},${last.lng}" target="_blank" rel="noopener">${last.lat}, ${last.lng}</a></dd>`:""}
+    </dl></div>
+  <div><div class="eyebrow" style="color:var(--ink-3)">Last day ridden</div><div class="big num">${fmt(last.miles)} mi</div>
+    <dl class="kv"><dt>Climbing</dt><dd class="num">+${fmt(last.gain)} ft / −${fmt(last.loss)} ft</dd><dt>Plan for the day</dt><dd class="num">${Math.round(planDaily[last.day-1])} mi</dd><dt>Notes</dt><dd>${last.notes||""}</dd></dl></div>`
+  : `<div>No days logged yet.</div>`;
+
+// Chart
+(function(){
+  const W=1000,H=360,L=56,R=16,T=18,B=44;
+  const x = d => L + (d/63)*(W-L-R);
+  const y = m => T + (1 - m/2800)*(H-T-B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative miles, plan versus actual">`;
+  for(let m=0;m<=2800;m+=400){ s += `<line x1="${L}" x2="${W-R}" y1="${y(m)}" y2="${y(m)}" stroke="var(--contour)" stroke-width="1"/><text x="${L-8}" y="${y(m)+4}" text-anchor="end">${fmt(m)}</text>`; }
+  // segment boundaries
+  let dayAcc=0; SEGMENTS.forEach((sg,i)=>{ dayAcc+=sg.days; if(i<SEGMENTS.length-1) s+=`<line x1="${x(dayAcc)}" x2="${x(dayAcc)}" y1="${T}" y2="${H-B}" stroke="var(--line)" stroke-dasharray="2 4"/>`; });
+  // x labels every 7 days
+  for(let d=0; d<=63; d+=7){ s += `<text x="${x(d)}" y="${H-B+16}" text-anchor="middle">${d===0?"Start":mdy(addDays(START,d-1))}</text>`; }
+  s += `<text x="${x(31)}" y="${H-6}" text-anchor="middle">Day ${daysRidden} of 63 logged</text>`;
+  // plan line
+  let p = `M${x(0)},${y(0)}`; planCum.forEach((m,i)=>{ p+=` L${x(i+1)},${y(m)}`; });
+  s += `<path d="${p}" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="6 4"/>`;
+  // actual
+  if(LOG.length){
+    let a = `M${x(0)},${y(0)}`; LOG.forEach(e=>{ a+=` L${x(e.day)},${y(e.cum)}`; });
+    s += `<path d="${a}" fill="none" stroke="var(--red)" stroke-width="3" stroke-linejoin="round"/>`;
+    s += `<circle cx="${x(last.day)}" cy="${y(last.cum)}" r="5" fill="var(--red)" stroke="var(--paper)" stroke-width="2"/>`;
+    s += `<text x="${x(last.day)+10}" y="${y(last.cum)-8}" style="fill:var(--red);font-weight:600">${fmt(last.cum)} mi</text>`;
+  }
+  s += `<text x="${x(63)-4}" y="${y(TOTAL_PLAN)-8}" text-anchor="end" style="fill:var(--plan)">Plan, 2,693 mi by Nov 7</text>`;
+  s += `</svg>`;
+  document.getElementById("chart").innerHTML = s;
+})();
+
+// Segments table
+const seasonChip = st => st==="ok"?`<span class="chip c-good">In season</span>`: st==="tight"?`<span class="chip c-warn">Edge of season</span>`:`<span class="chip c-bad">Past typical season</span>`;
+document.querySelector("#segs tbody").innerHTML = SEGMENTS.map((s,i)=>{
+  const done = actualCum >= segCum[i]; const cur = s===curSeg && !done;
+  const status = done?`<span class="chip c-muted">Done</span>`: cur?`<span class="chip c-cur">Riding · ${fmt(Math.round(milesIntoSeg))}/${fmt(s.miles)} mi</span>`:`<span class="chip c-muted">Upcoming</span>`;
+  return `<tr class="${done?"done":cur?"cur":"future"}"><td class="num">${s.n}</td><td><span class="seg-name">${s.from} to ${s.to}</span><div class="seg-sub">${s.days} days${s.note?" · "+s.note:""}</div></td><td class="r num">${fmt(s.miles)}</td><td class="r num">${fmt(s.gain)} ft</td><td class="r num">${Math.round(s.mpd)}</td><td class="num">${mdy(d2(s.start))} to ${mdy(d2(s.end))}</td><td><div class="seg-sub" style="margin-bottom:3px">${s.season}</div>${seasonChip(s.seasonState)}</td><td>${status}</td></tr>`;
+}).join("");
+
+// Daily log (most recent first)
+document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
+  const dc = e.delta>=0?"delta-good":"delta-bad";
+  return `<tr><td class="num">${e.day}</td><td class="num">${mdy(d2(e.date))}</td><td>${e.end}</td><td class="r num">${fmt(e.miles)}</td><td class="r num">${Math.round(planDaily[e.day-1])}</td><td class="r num">+${fmt(e.gain)}</td><td class="r num">${fmt(e.cum)}</td><td class="r num ${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</td><td>${e.notes||""}</td></tr>`;
+}).join("");
+</script>
+
+</body>
+</html>
