@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Photos from Rick Saunders' Western Wildlands Route ride, Canada to Mexico, organized by segment.">
+<title>Rick's WWR Photos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚵</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light dark;
+  --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
+  --line:#CBD3CB; --contour:#DDE3DB; --red:#B4232C;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84; --line:#33403A; --contour:#26312C; --red:#E1555E; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+a{color:var(--red)}
+.crumbs{font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:22px}
+.crumbs a{text-decoration:none}
+.crumbs a:hover,.crumbs a:focus{text-decoration:underline}
+.crumbs span{color:var(--ink-3);margin:0 8px}
+h1,h2{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:44px;line-height:1;text-transform:uppercase}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:600}
+.sub{color:var(--ink-2);margin-top:6px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+section{margin-top:34px}
+h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:4px}
+.segsub{font-size:13px;color:var(--ink-3);margin-bottom:12px}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.photos figure{margin:0;background:var(--paper);border:1px solid var(--line)}
+.photos a{display:block;line-height:0}
+.photos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.photos figcaption{padding:8px 10px 10px;font-size:14px;color:var(--ink-2);line-height:1.35}
+.photos figcaption .d{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:2px}
+.empty{font-size:14px;color:var(--ink-3);padding:14px 16px;background:var(--paper);border:1px dashed var(--line)}
+.foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:720px){ h1{font-size:34px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="/">shawnandersonapps.com</a><span>/</span><a href="../">Rick's WWR Tracker</a><span>/</span>Photos</div>
+  <div class="eyebrow">Western Wildlands Route · Canada to Mexico</div>
+  <h1>Photos from the trail</h1>
+  <div class="sub" id="sub">Organized by segment. Tap a photo for full size.</div>
+  <div id="gallery"></div>
+  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a></div>
+</div>
+<script src="../data.js"></script>
+<script>
+const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const mdy = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const esc = s => s.replace(/"/g,'&quot;');
+const segFor = p => p.seg || (SEGMENTS.find(s => d2(p.date) <= d2(s.end)) || SEGMENTS[SEGMENTS.length-1]).n;
+const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || []).push(p); });
+const total = PHOTOS.length;
+document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, organized by segment. Tap a photo for full size.`;
+document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
+  const ps = (bySeg[s.n]||[]).slice().sort((a,b)=>a.date<b.date?1:-1);
+  const body = ps.length
+    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}</span>${p.caption}</figcaption></figure>`).join("")}</div>`
+    : `<div class="empty">Nothing from this stretch yet.</div>`;
+  return `<section><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div>${body}</section>`;
+}).join("");
+</script>
+</body>
+</html>

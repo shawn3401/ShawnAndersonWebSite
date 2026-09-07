@@ -6,7 +6,7 @@
 <meta name="description" content="Rick Saunders is riding the Western Wildlands Route from Canada to Mexico, Sept 6 to Nov 7, 2026. Daily progress, plan vs. actual, projected finish.">
 <meta property="og:title" content="Rick's WWR Tracker">
 <meta property="og:description" content="Canada to Mexico by bike. Daily progress on the Western Wildlands Route.">
-<meta property="og:image" content="https://shawnandersonapps.com/rick/photos/2026-09-06-roosville-start.jpg">
+<meta property="og:image" content="https://shawnandersonapps.com/rick/photos/2026-09-06-roosville-start-cover.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚵</text></svg>">
 <title>Rick's WWR Tracker</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
@@ -37,7 +37,17 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
   background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
-.wrap{max-width:1040px;margin:0 auto;padding:28px 20px 64px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px 64px}
+.cover{position:relative;min-height:640px;background:var(--ink);overflow:hidden}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0%;display:block}
+.cover .fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.22) 0%,transparent 18%,transparent 52%,var(--bg) 80%,var(--bg) 100%)}
+.cover .inner{position:relative;max-width:1040px;margin:0 auto;padding:420px 20px 0;min-height:640px;display:flex;flex-direction:column;justify-content:flex-end}
+.topnav{position:absolute;top:0;left:0;right:0;z-index:2}
+.cover .topnav .inner{max-width:1040px;margin:0 auto;padding:14px 20px;min-height:0;display:flex;flex-direction:row;justify-content:space-between;align-items:center}
+.topnav a{color:#fff;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.topnav a:hover,.topnav a:focus{text-decoration:underline}
+.topnav .gal{background:rgba(0,0,0,.45);padding:6px 12px;border-radius:3px;text-shadow:none;backdrop-filter:blur(3px)}
+
 h1,h2,.disp{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
 h1{font-size:44px;line-height:1;text-transform:uppercase}
 h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:12px}
@@ -45,7 +55,8 @@ h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-
 .sub{color:var(--ink-2);margin-top:6px}
 .num{font-variant-numeric:tabular-nums}
 header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
-.updated{font-size:13px;color:var(--ink-3);text-align:right}
+.cover header{width:100%}
+.updated{font-size:13px;color:var(--ink-3);text-align:right;margin-left:auto}
 section{margin-top:34px}
 
 .status{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
@@ -96,15 +107,12 @@ tr.future td{color:var(--ink-3)}
 .c-cur{background:var(--red);color:#fff}
 .seg-name{font-weight:600}
 .seg-sub{font-size:13px;color:var(--ink-3)}
-.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.photos figure{margin:0;background:var(--paper);border:1px solid var(--line)}
-.photos a{display:block;line-height:0}
-.photos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
-.photos figcaption{padding:8px 10px 10px;font-size:14px;color:var(--ink-2);line-height:1.35}
-.photos figcaption .d{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:2px}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){
-  h1{font-size:36px}
+  h1{font-size:34px}
+  .cover{min-height:480px}
+  .cover .inner{min-height:480px;padding-top:260px}
+  .cover .fade{background:linear-gradient(to bottom,rgba(0,0,0,.22) 0%,transparent 16%,transparent 42%,var(--bg) 72%,var(--bg) 100%)}
   .status{grid-template-columns:repeat(2,1fr)}
   .where{grid-template-columns:1fr}
   .tile .val{font-size:34px}
@@ -114,7 +122,11 @@ tr.future td{color:var(--ink-3)}
 </head>
 <body>
 
-<div class="wrap">
+<div class="cover">
+  <img src="photos/2026-09-06-roosville-start-cover.jpg" alt="Rick Saunders with his loaded bike at the Roosville border crossing" id="coverimg">
+  <div class="fade"></div>
+  <div class="topnav"><div class="inner"><a href="/">shawnandersonapps.com</a><a class="gal" href="photos/">Photo gallery</a></div></div>
+  <div class="inner">
 <header>
   <div>
     <div class="eyebrow">Western Wildlands Route · Roosville, MT to Sierra Vista, AZ</div>
@@ -123,6 +135,10 @@ tr.future td{color:var(--ink-3)}
   </div>
   <div class="updated" id="updated"></div>
 </header>
+  </div>
+</div>
+
+<div class="wrap">
 
 <div class="status" id="status"></div>
 
@@ -131,11 +147,6 @@ tr.future td{color:var(--ink-3)}
   <div class="bar" id="bar"></div>
   <div class="legend"><span class="a">Rick's actual miles</span><span class="p">Where the plan says he should be today</span></div>
 </div>
-
-<section>
-  <h2>Photos</h2>
-  <div class="photos" id="photos"></div>
-</section>
 
 <section>
   <h2>Where he is</h2>
@@ -166,34 +177,9 @@ tr.future td{color:var(--ink-3)}
 <div class="foot"><a href="/">shawnandersonapps.com</a> · Route: 2,693 mi, about 120,000 ft of climbing, more than 80% unpaved, per <a href="https://bikepackingroots.org/project/western-wildlands-route/" target="_blank" rel="noopener">Bikepacking Roots</a>. Segment miles and climbing are theirs; days and dates are Rick's plan. Season windows from the Western Wildlands Route guide's "recommended riding season during typical years" map. Daily stats from Rick's tracking app. Maintained by Shawn.</div>
 </div>
 
+<script src="data.js"></script>
 <script>
-// ===== DATA: edit here each day =====
-const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
-const TOTAL_PLAN = 2693;
 
-// miles + gain are the official Bikepacking Roots segment figures (they sum to 2,693). days/dates are Rick's plan.
-const SEGMENTS = [
-  {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:304, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass"},
-  {n:2, from:"Superior",           to:"Darby, MT",      miles:326, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Moon Pass"},
-  {n:3, from:"Darby",              to:"Hailey, ID",     miles:289, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:"Magruder Corridor, 125 mi / 14,000 ft"},
-  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:342, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
-  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
-  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:337, gain:24000, days:8, start:"2026-10-11", end:"2026-10-18", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
-  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:209, gain:10000, days:5, start:"2026-10-19", end:"2026-10-23", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
-  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344, gain:22000, days:8, start:"2026-10-24", end:"2026-10-31", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
-  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:292, gain:21000, days:7, start:"2026-11-01", end:"2026-11-07", season:"Mid Sep to early May", seasonState:"ok", note:""},
-];
-
-// One entry per riding day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
-const LOG = [
-  {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
-];
-// Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
-const PHOTOS = [
-  {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
-];
-const LAST_UPDATED = "Sept 6, 2026, 10:28 pm MT";
-// ===== END DATA =====
 
 const fmt = n => n.toLocaleString("en-US");
 const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
@@ -219,6 +205,9 @@ const delta = last ? last.delta : 0;
 const curSeg = SEGMENTS.find(s => actualCum < segCum[s.n-1]) || SEGMENTS[SEGMENTS.length-1];
 const milesIntoSeg = actualCum - (segCum[curSeg.n-2]||0);
 
+// Cover photo
+if (typeof COVER === "string" && COVER) { const ci = document.getElementById("coverimg"); if (ci && !ci.src.startsWith("data:")) ci.src = "photos/" + COVER + ".jpg"; }
+
 // Status tiles
 document.getElementById("updated").innerHTML = `Updated ${LAST_UPDATED}<br>after day ${daysRidden} of 63`;
 const dcls = delta>=0 ? "delta-good" : "delta-bad";
@@ -237,10 +226,6 @@ const labels = ["Roosville", ...SEGMENTS.map(s=>s.to.split(/[,(]/)[0].trim())];
 const pts = [0, ...segCum];
 pts.forEach((m,i)=>{ const pct=(100*m/TOTAL_PLAN).toFixed(2); const cls = i===0?"first":(i===pts.length-1?"last":""); html += `<div class="tick" style="left:${pct}%"></div><div class="tlab ${cls}" style="left:${pct}%">${labels[i]}</div>`; });
 bar.innerHTML = html;
-
-// Photos
-document.getElementById("photos").innerHTML = PHOTOS.length ? PHOTOS.map(p=>`<figure><a href="photos/${p.file}.jpg" target="_blank" rel="noopener"><img src="photos/${p.file}-thumb.jpg" alt="${p.caption.replace(/"/g,'&quot;')}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}</span>${p.caption}</figcaption></figure>`).join("")
-  : `<p style="color:var(--ink-3)">No photos yet.</p>`;
 
 // Where
 const w = document.getElementById("where");
