@@ -6,6 +6,7 @@
 <meta name="description" content="Rick Saunders is riding the Western Wildlands Route from Canada to Mexico, Sept 6 to Nov 7, 2026. Daily progress, plan vs. actual, projected finish.">
 <meta property="og:title" content="Rick's WWR Tracker">
 <meta property="og:description" content="Canada to Mexico by bike. Daily progress on the Western Wildlands Route.">
+<meta property="og:image" content="https://shawnandersonapps.com/rick/photos/2026-09-06-roosville-start.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚵</text></svg>">
 <title>Rick's WWR Tracker</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
@@ -95,6 +96,12 @@ tr.future td{color:var(--ink-3)}
 .c-cur{background:var(--red);color:#fff}
 .seg-name{font-weight:600}
 .seg-sub{font-size:13px;color:var(--ink-3)}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.photos figure{margin:0;background:var(--paper);border:1px solid var(--line)}
+.photos a{display:block;line-height:0}
+.photos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.photos figcaption{padding:8px 10px 10px;font-size:14px;color:var(--ink-2);line-height:1.35}
+.photos figcaption .d{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:2px}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){
   h1{font-size:36px}
@@ -124,6 +131,11 @@ tr.future td{color:var(--ink-3)}
   <div class="bar" id="bar"></div>
   <div class="legend"><span class="a">Rick's actual miles</span><span class="p">Where the plan says he should be today</span></div>
 </div>
+
+<section>
+  <h2>Photos</h2>
+  <div class="photos" id="photos"></div>
+</section>
 
 <section>
   <h2>Where he is</h2>
@@ -176,6 +188,10 @@ const SEGMENTS = [
 const LOG = [
   {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
 ];
+// Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
+const PHOTOS = [
+  {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
+];
 const LAST_UPDATED = "Sept 7, 2026";
 // ===== END DATA =====
 
@@ -221,6 +237,10 @@ const labels = ["Roosville", ...SEGMENTS.map(s=>s.to.split(/[,(]/)[0].trim())];
 const pts = [0, ...segCum];
 pts.forEach((m,i)=>{ const pct=(100*m/TOTAL_PLAN).toFixed(2); const cls = i===0?"first":(i===pts.length-1?"last":""); html += `<div class="tick" style="left:${pct}%"></div><div class="tlab ${cls}" style="left:${pct}%">${labels[i]}</div>`; });
 bar.innerHTML = html;
+
+// Photos
+document.getElementById("photos").innerHTML = PHOTOS.length ? PHOTOS.map(p=>`<figure><a href="photos/${p.file}.jpg" target="_blank" rel="noopener"><img src="photos/${p.file}-thumb.jpg" alt="${p.caption.replace(/"/g,'&quot;')}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}</span>${p.caption}</figcaption></figure>`).join("")
+  : `<p style="color:var(--ink-3)">No photos yet.</p>`;
 
 // Where
 const w = document.getElementById("where");
