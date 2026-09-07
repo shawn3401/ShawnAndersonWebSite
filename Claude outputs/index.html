@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Weather at Rick Saunders' current position on the Western Wildlands Route: radar, hour-by-hour temperature, rain, and wind.">
+<title>Rick's Weather</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚵</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light dark;
+  --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
+  --line:#CBD3CB; --contour:#DDE3DB; --red:#B4232C; --red-soft:#F3DCDD;
+  --rain:#2F6F9F; --rain-soft:#D6E6F2; --warn:#A6681B; --warn-soft:#F6E7CF;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84; --line:#33403A; --contour:#26312C; --red:#E1555E; --red-soft:#3C1F22; --rain:#7FB3DA; --rain-soft:#1E3140; --warn:#E0A552; --warn-soft:#3A2C16; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+a{color:var(--red)}
+.crumbs{font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:22px}
+.crumbs a{text-decoration:none}
+.crumbs a:hover,.crumbs a:focus{text-decoration:underline}
+.crumbs span{color:var(--ink-3);margin:0 8px}
+h1,h2{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:44px;line-height:1;text-transform:uppercase}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:600}
+.sub{color:var(--ink-2);margin-top:6px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.num{font-variant-numeric:tabular-nums}
+section{margin-top:34px}
+h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:12px}
+.chip{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.03em;padding:2px 8px;border-radius:3px;white-space:nowrap;background:var(--warn-soft);color:var(--warn);vertical-align:2px;margin-left:6px}
+
+.now{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
+.now>div{background:var(--paper);padding:14px 16px 12px}
+.now .lab{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.now .val{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:40px;line-height:1.05;margin-top:4px}
+.now .val small{font-size:18px;font-weight:600;color:var(--ink-2);margin-left:4px}
+.now .note{font-size:13px;color:var(--ink-2);margin-top:4px}
+.now .lead{background:var(--ink);color:var(--bg)}
+.now .lead .lab,.now .lead .note{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.loc{font-size:14px;color:var(--ink-2);margin-top:10px}
+.loc a{font-weight:600}
+
+.mapbox{background:var(--paper);border:1px solid var(--line)}
+.toggles{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.toggles button{font:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:3px;cursor:pointer}
+.toggles button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.toggles button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.mapbox iframe{display:block;width:100%;height:520px;border:0}
+.maphint{font-size:13px;color:var(--ink-3);padding:8px 12px}
+
+.daytabs{display:flex;gap:6px;margin-bottom:10px}
+.daytabs button{font:inherit;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:3px;cursor:pointer}
+.daytabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tblwrap{overflow-x:auto;background:var(--paper);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:7px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+tr.past td{color:var(--ink-3)}
+tr.now-row td{background:color-mix(in srgb,var(--red-soft) 55%,var(--paper));font-weight:600}
+td.rain{color:var(--rain)}
+.bar{display:inline-block;height:10px;background:var(--rain);vertical-align:middle;margin-right:6px;border-radius:1px;min-width:0}
+.cond{display:inline-flex;align-items:center;gap:6px}
+.msg{font-size:14px;color:var(--ink-3);padding:14px 16px;background:var(--paper);border:1px dashed var(--line)}
+.foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:720px){
+  h1{font-size:34px}
+  .now{grid-template-columns:1fr 1fr}
+  .now .val{font-size:34px}
+  .mapbox iframe{height:400px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="/">shawnandersonapps.com</a><span>/</span><a href="../">Rick's WWR Tracker</a><span>/</span>Weather</div>
+  <div class="eyebrow">Western Wildlands Route · Canada to Mexico</div>
+  <h1>Weather where Rick is</h1>
+  <div class="sub">Forecast for his last reported position. Times are Mountain.</div>
+
+  <div class="now" id="now"><div class="lead"><div class="lab">Right now</div><div class="val">…</div><div class="note">Loading forecast</div></div><div></div><div></div><div></div></div>
+  <div class="loc" id="loc"></div>
+
+  <section>
+    <h2>Map</h2>
+    <div class="mapbox">
+      <div class="toggles" id="toggles" role="group" aria-label="Map layer">
+        <button data-layer="radar" aria-pressed="true">Radar</button>
+        <button data-layer="rain" aria-pressed="false">Rain</button>
+        <button data-layer="wind" aria-pressed="false">Wind</button>
+        <button data-layer="temp" aria-pressed="false">Temp</button>
+        <button data-layer="clouds" aria-pressed="false">Clouds</button>
+      </div>
+      <iframe id="windy" title="Windy weather map at Rick's position" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="maphint">Map by Windy. The pin is Rick's last reported position. Use the timeline at the bottom of the map to scrub forward.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hour by hour</h2>
+    <div class="daytabs" id="daytabs"><button data-day="0" aria-pressed="true">Today</button><button data-day="1" aria-pressed="false">Tomorrow</button></div>
+    <div class="tblwrap"><table id="hourly"><thead><tr><th>Time</th><th>Conditions</th><th class="r">Temp</th><th class="r">Rain chance</th><th class="r">Rain</th><th class="r">Wind</th><th class="r">Gusts</th></tr></thead><tbody><tr><td colspan="7" class="msg">Loading forecast…</td></tr></tbody></table></div>
+  </section>
+
+  <div class="foot">Forecast data from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> for the pinned coordinates; mountain weather can differ a lot within a few miles. Map by <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy</a>. <a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a></div>
+</div>
+<script src="../data.js"></script>
+<script>
+const L = (typeof LOCATION !== "undefined" && LOCATION) ? LOCATION : null;
+const WMO = {0:["Clear","☀️"],1:["Mostly clear","🌤️"],2:["Partly cloudy","⛅"],3:["Overcast","☁️"],45:["Fog","🌫️"],48:["Freezing fog","🌫️"],51:["Light drizzle","🌦️"],53:["Drizzle","🌦️"],55:["Heavy drizzle","🌧️"],56:["Freezing drizzle","🌧️"],57:["Freezing drizzle","🌧️"],61:["Light rain","🌧️"],63:["Rain","🌧️"],65:["Heavy rain","🌧️"],66:["Freezing rain","🌧️"],67:["Freezing rain","🌧️"],71:["Light snow","🌨️"],73:["Snow","🌨️"],75:["Heavy snow","❄️"],77:["Snow grains","🌨️"],80:["Rain showers","🌦️"],81:["Showers","🌧️"],82:["Heavy showers","⛈️"],85:["Snow showers","🌨️"],86:["Heavy snow showers","❄️"],95:["Thunderstorm","⛈️"],96:["Thunderstorm, hail","⛈️"],99:["Thunderstorm, hail","⛈️"]};
+const cond = c => WMO[c] || ["Unknown","•"];
+const dirs = ["N","NE","E","SE","S","SW","W","NW"];
+const dir = d => dirs[Math.round(((d%360)+360)%360/45)%8];
+const hr = iso => { const h = +iso.slice(11,13); return (h%12||12) + (h<12?" am":" pm"); };
+const fmt1 = n => Math.round(n*100)/100;
+
+if (!L) {
+  document.getElementById("now").innerHTML = `<div class="lead" style="grid-column:1/-1"><div class="lab">Position</div><div class="val" style="font-size:24px">No coordinates yet</div><div class="note">Weather appears once Rick's first position comes in.</div></div>`;
+  document.getElementById("windy").remove();
+} else {
+  document.getElementById("loc").innerHTML = `Pinned at <a href="https://www.google.com/maps?q=${L.lat},${L.lng}" target="_blank" rel="noopener">${L.lat.toFixed(4)}, ${L.lng.toFixed(4)}</a>${L.label?", "+L.label:""}${L.asOf?", reported "+L.asOf:""}${L.approx?'<span class="chip">Approximate</span>':""}`;
+
+  // Windy embed
+  const frame = document.getElementById("windy");
+  const setLayer = layer => {
+    const product = layer === "radar" ? "radar" : "ecmwf";
+    frame.src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=8&overlay=${layer}&product=${product}&level=surface&lat=${L.lat}&lon=${L.lng}&detailLat=${L.lat}&detailLon=${L.lng}&marker=true&message=true&calendar=now&pressure=false&detail=false`;
+  };
+  document.querySelectorAll("#toggles button").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("#toggles button").forEach(x => x.setAttribute("aria-pressed", x===b ? "true" : "false"));
+    setLayer(b.dataset.layer);
+  }));
+  setLayer("radar");
+
+  // Open-Meteo
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lng}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=2`;
+  let data = null;
+  fetch(url).then(r => r.json()).then(j => { data = j; renderNow(j); renderDay(0); }).catch(() => {
+    document.getElementById("now").innerHTML = `<div class="lead" style="grid-column:1/-1"><div class="lab">Right now</div><div class="val" style="font-size:24px">Forecast unavailable</div><div class="note">Couldn't reach the weather service. Try again in a minute.</div></div>`;
+    document.querySelector("#hourly tbody").innerHTML = `<tr><td colspan="7" class="msg">Forecast unavailable right now.</td></tr>`;
+  });
+
+  function renderNow(j){
+    const c = j.current, [name, icon] = cond(c.weather_code);
+    const d = j.daily;
+    document.getElementById("now").innerHTML = `
+      <div class="lead"><div class="lab">Right now · ${hr(c.time)}</div><div class="val num">${Math.round(c.temperature_2m)}°<small>${icon} ${name}</small></div><div class="note">Feels like ${Math.round(c.apparent_temperature)}°. Today ${Math.round(d.temperature_2m_min[0])}° to ${Math.round(d.temperature_2m_max[0])}°.</div></div>
+      <div><div class="lab">Wind</div><div class="val num">${Math.round(c.wind_speed_10m)}<small>mph ${dir(c.wind_direction_10m)}</small></div><div class="note">Gusts to ${Math.round(c.wind_gusts_10m)} mph</div></div>
+      <div><div class="lab">Rain this hour</div><div class="val num">${fmt1(c.precipitation)}<small>in</small></div><div class="note">${fmt1(d.precipitation_sum[0])} in expected today</div></div>
+      <div><div class="lab">Tomorrow</div><div class="val num">${Math.round(d.temperature_2m_min[1])}°<small>to ${Math.round(d.temperature_2m_max[1])}°</small></div><div class="note">${fmt1(d.precipitation_sum[1])} in of rain expected</div></div>`;
+  }
+  function renderDay(day){
+    const h = data.hourly, nowIso = data.current.time.slice(0,13);
+    const rows = [];
+    for (let i = day*24; i < day*24+24 && i < h.time.length; i++){
+      const t = h.time[i], [name, icon] = cond(h.weather_code[i]);
+      const isNow = t.slice(0,13) === nowIso, past = day===0 && t < data.current.time && !isNow;
+      const p = h.precipitation[i], pp = h.precipitation_probability[i];
+      rows.push(`<tr class="${isNow?"now-row":past?"past":""}"><td class="num">${hr(t)}</td><td><span class="cond">${icon} ${name}</span></td><td class="r num">${Math.round(h.temperature_2m[i])}°</td><td class="r num ${pp>=50?"rain":""}">${pp}%</td><td class="r num ${p>0?"rain":""}"><span class="bar" style="width:${Math.min(40, p*80)}px"></span>${p>0?fmt1(p)+" in":"0"}</td><td class="r num">${Math.round(h.wind_speed_10m[i])} ${dir(h.wind_direction_10m[i])}</td><td class="r num">${Math.round(h.wind_gusts_10m[i])}</td></tr>`);
+    }
+    document.querySelector("#hourly tbody").innerHTML = rows.join("");
+    const nr = document.querySelector("tr.now-row"); if (nr && day===0) nr.scrollIntoView({block:"nearest"});
+  }
+  document.querySelectorAll("#daytabs button").forEach(b => b.addEventListener("click", () => {
+    if (!data) return;
+    document.querySelectorAll("#daytabs button").forEach(x => x.setAttribute("aria-pressed", x===b ? "true" : "false"));
+    renderDay(+b.dataset.day);
+  }));
+}
+</script>
+</body>
+</html>
