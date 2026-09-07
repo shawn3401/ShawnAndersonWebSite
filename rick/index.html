@@ -15,7 +15,7 @@
   --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
   --line:#CBD3CB; --contour:#DDE3DB;
   --red:#B4232C; --red-soft:#F3DCDD;
-  --plan:#6F8A72; --plan-soft:#DCE6DD;
+  --plan:#6F8A72; --plan-soft:#DCE6DD; --rain:#2F6F9F;
   --good:#2E7D4F; --good-soft:#D9EEDF; --warn:#A6681B; --warn-soft:#F6E7CF; --bad:#9B2A2A; --bad-soft:#F2DADA;
 }
 @media (prefers-color-scheme: dark){
@@ -23,7 +23,7 @@
     --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
     --line:#33403A; --contour:#26312C;
     --red:#E1555E; --red-soft:#3C1F22;
-    --plan:#8FAA92; --plan-soft:#25332A;
+    --plan:#8FAA92; --plan-soft:#25332A; --rain:#7FB3DA;
     --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
   }
 }
@@ -31,7 +31,7 @@
   --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
   --line:#33403A; --contour:#26312C;
   --red:#E1555E; --red-soft:#3C1F22;
-  --plan:#8FAA92; --plan-soft:#25332A;
+  --plan:#8FAA92; --plan-soft:#25332A; --rain:#7FB3DA;
   --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
 }
 *{box-sizing:border-box}
@@ -43,7 +43,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",
 .cover .fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.22) 0%,transparent 18%,transparent 52%,var(--bg) 80%,var(--bg) 100%)}
 .cover .inner{position:relative;max-width:1040px;margin:0 auto;padding:420px 20px 0;min-height:640px;display:flex;flex-direction:column;justify-content:flex-end}
 .topnav{position:absolute;top:0;left:0;right:0;z-index:2}
-.cover .topnav .inner{max-width:1040px;margin:0 auto;padding:14px 20px;min-height:0;display:flex;flex-direction:row;justify-content:space-between;align-items:center}
+.cover .topnav .inner{max-width:1040px;margin:0 auto;padding:14px 20px;min-height:0;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;gap:8px}
 .topnav a{color:#fff;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .topnav a:hover,.topnav a:focus{text-decoration:underline}
 .topnav .gal{background:rgba(0,0,0,.45);padding:6px 12px;border-radius:3px;text-shadow:none;backdrop-filter:blur(3px)}
@@ -71,6 +71,13 @@ section{margin-top:34px}
 .delta-good{color:var(--good)} .delta-bad{color:var(--bad)}
 .tile.hero .delta-good{color:#8FE0AC}.tile.hero .delta-bad{color:#F0A0A0}
 
+.wx{display:flex;align-items:center;gap:12px;margin-top:10px;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--rain);color:var(--ink);text-decoration:none;font-size:15px}
+.wx:hover .wx-more,.wx:focus .wx-more{text-decoration:underline}
+.wx-ic{font-size:22px;line-height:1}
+.wx-txt{flex:1}
+.wx-txt b{font-weight:600}
+.wx-more{color:var(--red);font-weight:600;white-space:nowrap;font-size:14px}
+@media (max-width:720px){.wx{flex-wrap:wrap}.wx-more{width:100%;padding-left:34px}}
 .route{margin-top:26px;background:var(--paper);border:1px solid var(--line);padding:18px 16px 12px}
 .bar{position:relative;height:14px;background:var(--plan-soft);border-radius:2px;overflow:visible;margin-top:26px}
 .bar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--red);border-radius:2px 0 0 2px}
@@ -125,7 +132,7 @@ tr.future td{color:var(--ink-3)}
 <div class="cover">
   <img src="photos/2026-09-06-roosville-start-cover.jpg" alt="Rick Saunders with his loaded bike at the Roosville border crossing" id="coverimg">
   <div class="fade"></div>
-  <div class="topnav"><div class="inner"><a href="/">shawnandersonapps.com</a><a class="gal" href="photos/">Photo gallery</a></div></div>
+  <div class="topnav"><div class="inner"><a class="gal" href="weather/">Weather</a><a class="gal" href="photos/">Photo gallery</a></div></div>
   <div class="inner">
 <header>
   <div>
@@ -141,6 +148,8 @@ tr.future td{color:var(--ink-3)}
 <div class="wrap">
 
 <div class="status" id="status"></div>
+
+<a class="wx" id="wx" href="weather/"><span class="wx-ic" id="wx-ic">🌦️</span><span class="wx-txt" id="wx-txt">Checking the weather at Rick's position…</span><span class="wx-more">Radar and hourly forecast →</span></a>
 
 <div class="route">
   <div class="eyebrow" style="color:var(--ink-3)">Route progress</div>
@@ -234,7 +243,7 @@ w.innerHTML = last ? `
     <dl class="kv">
       <dt>Segment</dt><dd>${curSeg.n} of 9, ${curSeg.from} to ${curSeg.to} (${fmt(Math.round(milesIntoSeg))} of ${fmt(curSeg.miles)} mi in)</dd>
       <dt>Next town</dt><dd>${curSeg.to}, planned arrival ${mdy(d2(curSeg.end))}</dd>
-      ${last.lat?`<dt>Coords</dt><dd><a href="https://www.google.com/maps?q=${last.lat},${last.lng}" target="_blank" rel="noopener">${last.lat}, ${last.lng}</a></dd>`:""}
+      ${(typeof LOCATION!=="undefined"&&LOCATION)?`<dt>Position</dt><dd><a href="https://www.google.com/maps?q=${LOCATION.lat},${LOCATION.lng}" target="_blank" rel="noopener">${LOCATION.lat.toFixed(4)}, ${LOCATION.lng.toFixed(4)}</a>${LOCATION.label?", "+LOCATION.label:""}${LOCATION.asOf?" (reported "+LOCATION.asOf+")":""}${LOCATION.approx?" · approximate":""} · <a href="weather/">Weather</a></dd>`:""}
     </dl></div>
   <div><div class="eyebrow" style="color:var(--ink-3)">Last day ridden</div><div class="big num">${fmt(last.miles)} mi</div>
     <dl class="kv"><dt>Climbing</dt><dd class="num">+${fmt(last.gain)} ft / −${fmt(last.loss)} ft</dd><dt>Plan for the day</dt><dd class="num">${Math.round(planDaily[last.day-1])} mi</dd><dt>Notes</dt><dd>${last.notes||""}</dd></dl></div>`
@@ -280,6 +289,20 @@ document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
   const dc = e.delta>=0?"delta-good":"delta-bad";
   return `<tr><td class="num">${e.day}</td><td class="num">${mdy(d2(e.date))}</td><td>${e.end}</td><td class="r num">${fmt(e.miles)}</td><td class="r num">${Math.round(planDaily[e.day-1])}</td><td class="r num">+${fmt(e.gain)}</td><td class="r num">${fmt(e.cum)}</td><td class="r num ${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</td><td>${e.notes||""}</td></tr>`;
 }).join("");
+
+// Weather strip (Open-Meteo, current conditions at LOCATION)
+(function(){
+  const el = document.getElementById("wx"); if (!el) return;
+  const L = (typeof LOCATION !== "undefined" && LOCATION) ? LOCATION : null;
+  if (!L) { el.remove(); return; }
+  const WMO = {0:["clear","☀️"],1:["mostly clear","🌤️"],2:["partly cloudy","⛅"],3:["overcast","☁️"],45:["fog","🌫️"],48:["fog","🌫️"],51:["light drizzle","🌦️"],53:["drizzle","🌦️"],55:["drizzle","🌧️"],56:["freezing drizzle","🌧️"],57:["freezing drizzle","🌧️"],61:["light rain","🌧️"],63:["rain","🌧️"],65:["heavy rain","🌧️"],66:["freezing rain","🌧️"],67:["freezing rain","🌧️"],71:["light snow","🌨️"],73:["snow","🌨️"],75:["heavy snow","❄️"],77:["snow","🌨️"],80:["rain showers","🌦️"],81:["showers","🌧️"],82:["heavy showers","⛈️"],85:["snow showers","🌨️"],86:["snow showers","❄️"],95:["thunderstorms","⛈️"],96:["thunderstorms","⛈️"],99:["thunderstorms","⛈️"]};
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lng}&current=temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`;
+  fetch(url).then(r=>r.json()).then(j=>{
+    const c=j.current, d=j.daily, w=WMO[c.weather_code]||["",""];
+    document.getElementById("wx-ic").textContent = w[1] || "🌦️";
+    document.getElementById("wx-txt").innerHTML = `<b>${Math.round(c.temperature_2m)}°F and ${w[0]}</b> at Rick's position${L.approx?" (approx.)":""}. Wind ${Math.round(c.wind_speed_10m)} mph, gusts ${Math.round(c.wind_gusts_10m)}. Today ${Math.round(d.temperature_2m_min[0])}° to ${Math.round(d.temperature_2m_max[0])}°, ${Math.round(d.precipitation_sum[0]*100)/100} in of rain expected.`;
+  }).catch(()=>{ document.getElementById("wx-txt").textContent = `Weather at Rick's position${L.label?" ("+L.label+")":""}`; });
+})();
 </script>
 
 </body>

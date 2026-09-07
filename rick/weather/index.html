@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Live radar, hourly forecast, and 7-day outlook at Rick Saunders' last known position on the Western Wildlands Route.">
+<title>Rick's WWR Weather</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌦️</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light dark;
+  --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
+  --line:#CBD3CB; --contour:#DDE3DB; --red:#B4232C; --rain:#2F6F9F; --rain-soft:#DCE8F1;
+  --good:#2E7D4F; --good-soft:#D9EEDF; --warn:#A6681B; --warn-soft:#F6E7CF; --bad:#9B2A2A; --bad-soft:#F2DADA;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84; --line:#33403A; --contour:#26312C; --red:#E1555E; --rain:#7FB3DA; --rain-soft:#1E2E3A;
+    --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+a{color:var(--red)}
+.crumbs{font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:22px}
+.crumbs a{text-decoration:none}
+.crumbs a:hover,.crumbs a:focus{text-decoration:underline}
+.crumbs span{color:var(--ink-3);margin:0 8px}
+h1,h2{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:44px;line-height:1;text-transform:uppercase}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:600}
+.sub{color:var(--ink-2);margin-top:6px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+section{margin-top:34px}
+h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:4px}
+.segsub{font-size:13px;color:var(--ink-3);margin-bottom:12px}
+.num{font-variant-numeric:tabular-nums}
+
+.now{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
+.tile{background:var(--paper);padding:14px 16px 12px}
+.tile .lab{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.tile .val{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:40px;line-height:1.05;margin-top:4px}
+.tile .val small{font-size:18px;font-weight:600;color:var(--ink-2);margin-left:4px}
+.tile .note{font-size:13px;color:var(--ink-2);margin-top:4px}
+.tile.hero{background:var(--ink);color:var(--bg)}
+.tile.hero .lab,.tile.hero .note{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.tile.hero .val small{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+
+.radar{background:var(--paper);border:1px solid var(--line);padding:6px}
+.radar iframe{display:block;width:100%;height:460px;border:0}
+.radar .cap{font-size:13px;color:var(--ink-3);padding:8px 8px 4px}
+
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);font-size:15px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;padding:10px 12px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+.tblwrap{overflow-x:auto}
+tr.day td{background:color-mix(in srgb,var(--rain-soft) 60%,var(--paper));font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+tr.night td{color:var(--ink-3)}
+.chip{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.03em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.c-good{background:var(--good-soft);color:var(--good)}.c-warn{background:var(--warn-soft);color:var(--warn)}.c-bad{background:var(--bad-soft);color:var(--bad)}.c-muted{background:var(--contour);color:var(--ink-2)}
+.pbar{display:inline-block;height:8px;background:var(--rain);vertical-align:middle;border-radius:1px;margin-right:6px}
+.empty{font-size:14px;color:var(--ink-3);padding:14px 16px;background:var(--paper);border:1px dashed var(--line)}
+.foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:720px){ h1{font-size:34px} .now{grid-template-columns:repeat(2,1fr)} .tile .val{font-size:34px} .radar iframe{height:360px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="/">shawnandersonapps.com</a><span>/</span><a href="../">Rick's WWR Tracker</a><span>/</span>Weather</div>
+  <div class="eyebrow">Western Wildlands Route · Canada to Mexico</div>
+  <h1>Weather at Rick's position</h1>
+  <div class="sub" id="sub">Loading…</div>
+
+  <div class="now" id="now"></div>
+
+  <section>
+    <h2>Radar</h2>
+    <div class="segsub" id="radarsub">Live precipitation radar centered on Rick's last reported position. Drag to pan, scroll to zoom.</div>
+    <div class="radar" id="radar"></div>
+  </section>
+
+  <section>
+    <h2>Next 48 hours</h2>
+    <div class="segsub">Hourly, Mountain time. Precip chance bar fills at 100%.</div>
+    <div class="tblwrap"><table id="hourly"><thead><tr><th>Hour</th><th>Sky</th><th class="r">Temp</th><th class="r">Feels</th><th class="r">Precip %</th><th class="r">Rain</th><th class="r">Wind</th><th class="r">Gusts</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section>
+    <h2>Seven-day outlook</h2>
+    <div class="segsub">Daily highs and lows, total precipitation, and how wet the day looks.</div>
+    <div class="tblwrap"><table id="daily"><thead><tr><th>Day</th><th>Sky</th><th class="r">High</th><th class="r">Low</th><th class="r">Precip %</th><th class="r">Rain</th><th class="r">Max gusts</th><th class="r">Daylight</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a> · Forecast from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, radar from <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy</a>. Position is Rick's last report, so conditions on the trail ahead of him can differ.</div>
+</div>
+<script src="../data.js"></script>
+<script>
+const L = (typeof LOCATION !== "undefined" && LOCATION) ? LOCATION : null;
+const WMO = {0:["clear","☀️"],1:["mostly clear","🌤️"],2:["partly cloudy","⛅"],3:["overcast","☁️"],45:["fog","🌫️"],48:["fog","🌫️"],51:["light drizzle","🌦️"],53:["drizzle","🌦️"],55:["drizzle","🌧️"],56:["freezing drizzle","🌧️"],57:["freezing drizzle","🌧️"],61:["light rain","🌧️"],63:["rain","🌧️"],65:["heavy rain","🌧️"],66:["freezing rain","🌧️"],67:["freezing rain","🌧️"],71:["light snow","🌨️"],73:["snow","🌨️"],75:["heavy snow","❄️"],77:["snow","🌨️"],80:["rain showers","🌦️"],81:["showers","🌧️"],82:["heavy showers","⛈️"],85:["snow showers","🌨️"],86:["snow showers","❄️"],95:["thunderstorms","⛈️"],96:["thunderstorms","⛈️"],99:["thunderstorms","⛈️"]};
+const sky = c => WMO[c] || ["", "🌦️"];
+const r = n => Math.round(n);
+const inch = n => (Math.round(n*100)/100).toFixed(2);
+
+if (!L) {
+  document.getElementById("sub").textContent = "No position on file yet.";
+} else {
+  document.getElementById("sub").innerHTML = `${L.label ? L.label + ". " : ""}Position <a href="https://www.google.com/maps?q=${L.lat},${L.lng}" target="_blank" rel="noopener">${L.lat.toFixed(4)}, ${L.lng.toFixed(4)}</a>${L.approx ? ", approximate" : ""}${L.asOf ? ", reported " + L.asOf : ""}.`;
+
+  // Radar: Windy embed centered on the position
+  document.getElementById("radar").innerHTML = `<iframe title="Weather radar" src="https://embed.windy.com/embed2.html?lat=${L.lat}&lon=${L.lng}&detailLat=${L.lat}&detailLon=${L.lng}&width=1000&height=460&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" loading="lazy"></iframe><div class="cap">Radar loop: Windy. Marker is Rick's last reported position.</div>`;
+
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lng}`
+    + `&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m`
+    + `&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,is_day`
+    + `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_gusts_10m_max,sunrise,sunset`
+    + `&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=7`;
+
+  fetch(url).then(x => x.json()).then(j => {
+    const c = j.current, w = sky(c.weather_code);
+    const dir = d => ["N","NE","E","SE","S","SW","W","NW"][Math.round(d/45) % 8];
+    document.getElementById("now").innerHTML = `
+      <div class="tile hero"><div class="lab">Right now</div><div class="val">${w[1]} ${r(c.temperature_2m)}°<small>F</small></div><div class="note">${w[0]}, feels like ${r(c.apparent_temperature)}°</div></div>
+      <div class="tile"><div class="lab">Wind</div><div class="val num">${r(c.wind_speed_10m)}<small>mph ${dir(c.wind_direction_10m)}</small></div><div class="note">Gusts to ${r(c.wind_gusts_10m)} mph</div></div>
+      <div class="tile"><div class="lab">Rain today</div><div class="val num">${inch(j.daily.precipitation_sum[0])}<small>in</small></div><div class="note">${j.daily.precipitation_probability_max[0]}% chance, ${r(j.daily.temperature_2m_min[0])}° to ${r(j.daily.temperature_2m_max[0])}°</div></div>
+      <div class="tile"><div class="lab">Sun</div><div class="val num" style="font-size:24px;margin-top:10px;white-space:nowrap">${hm(j.daily.sunrise[0])} <small>to</small> ${hm(j.daily.sunset[0])}</div><div class="note">Humidity ${c.relative_humidity_2m}%</div></div>`;
+
+    // Hourly: from the current hour, 48 rows, with a day divider at midnight
+    const h = j.hourly, nowIdx = Math.max(0, h.time.findIndex(t => t >= c.time.slice(0,13)));
+    let rows = "", lastDay = "";
+    for (let i = nowIdx; i < Math.min(nowIdx + 48, h.time.length); i++) {
+      const t = h.time[i], day = t.slice(0,10);
+      if (day !== lastDay) { rows += `<tr class="day"><td colspan="8">${dayName(day)}</td></tr>`; lastDay = day; }
+      const s = sky(h.weather_code[i]), p = h.precipitation_probability[i] ?? 0;
+      rows += `<tr class="${h.is_day[i] ? "" : "night"}"><td class="num">${hm(t)}</td><td>${s[1]} ${s[0]}</td><td class="r num">${r(h.temperature_2m[i])}°</td><td class="r num">${r(h.apparent_temperature[i])}°</td><td class="r num"><span class="pbar" style="width:${p*0.4}px"></span>${p}%</td><td class="r num">${h.precipitation[i] > 0 ? inch(h.precipitation[i]) : "·"}</td><td class="r num">${r(h.wind_speed_10m[i])}</td><td class="r num">${r(h.wind_gusts_10m[i])}</td></tr>`;
+    }
+    document.querySelector("#hourly tbody").innerHTML = rows;
+
+    // Daily
+    const d = j.daily;
+    document.querySelector("#daily tbody").innerHTML = d.time.map((t, i) => {
+      const s = sky(d.weather_code[i]), p = d.precipitation_probability_max[i] ?? 0, rain = d.precipitation_sum[i];
+      const chip = rain >= 0.5 ? `<span class="chip c-bad">wet</span>` : rain >= 0.1 ? `<span class="chip c-warn">showers</span>` : `<span class="chip c-good">dry</span>`;
+      return `<tr><td>${dayName(t)}</td><td>${s[1]} ${s[0]} ${chip}</td><td class="r num">${r(d.temperature_2m_max[i])}°</td><td class="r num">${r(d.temperature_2m_min[i])}°</td><td class="r num">${p}%</td><td class="r num">${inch(rain)} in</td><td class="r num">${r(d.wind_gusts_10m_max[i])} mph</td><td class="r num">${hm(d.sunrise[i])} to ${hm(d.sunset[i])}</td></tr>`;
+    }).join("");
+  }).catch(() => {
+    document.getElementById("now").innerHTML = `<div class="tile" style="grid-column:1/-1">Could not load the forecast right now. The radar below still works.</div>`;
+  });
+}
+
+function hm(t){ const [H, M] = t.slice(11,16).split(":").map(Number); const ap = H >= 12 ? "pm" : "am"; return `${H % 12 || 12}:${String(M).padStart(2,"0")} ${ap}`; }
+function dayName(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"}); }
+</script>
+</body>
+</html>

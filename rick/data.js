@@ -18,7 +18,11 @@ const SEGMENTS = [
 // One entry per riding day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
 const LOG = [
   {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
+  {day:2, date:"2026-09-07", end:"Holding for rain", miles:0, gain:0, loss:0, notes:"Rain day. Waiting it out."},
 ];
+
+// Rick's last known position. Update lat/lng/asOf whenever new coordinates come in. approx:true shows an "approximate" tag.
+const LOCATION = {lat:48.79, lng:-115.62, label:"Near Loon Lake, Kootenai National Forest, MT", asOf:"Sept 7, 10:30 am MT", approx:true};
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 const COVER = "2026-09-06-roosville-start-cover";
 
@@ -26,5 +30,5 @@ const COVER = "2026-09-06-roosville-start-cover";
 const PHOTOS = [
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 6, 2026, 10:28 pm MT";
+const LAST_UPDATED = "Sept 7, 2026, 10:35 am MT";
 // ===== END DATA =====
