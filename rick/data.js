@@ -18,14 +18,15 @@ const SEGMENTS = [
 // One entry per riding day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
 const LOG = [
   {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
+  {day:2, date:"2026-09-07", end:"Loon Lake Campground, MT", miles:0, gain:0, loss:0, notes:"Rain day. Sat tight at camp all day and waited it out."},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:48.79, lng:-115.62, town:"Near Loon Lake", state:"MT", label:"Kootenai National Forest, north of Eureka", asOf:"Sept 7, 10:30 am MT", approx:true};
+const LOCATION = {lat:48.79, lng:-115.62, town:"Near Loon Lake", state:"MT", label:"Kootenai National Forest, north of Eureka", asOf:"Sept 7, 6:45 pm MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Holding for rain today. Waiting it out before pushing south.";
+const STATUS = "Camped at Loon Lake for a second night after a full rain day. Back on the bike tomorrow.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 const COVER = "2026-09-06-roosville-start-cover";
 
@@ -33,5 +34,5 @@ const COVER = "2026-09-06-roosville-start-cover";
 const PHOTOS = [
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 7, 2026, 11:05 am MT";
+const LAST_UPDATED = "Sept 7, 2026, 6:45 pm MT";
 // ===== END DATA =====
