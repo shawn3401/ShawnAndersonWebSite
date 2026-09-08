@@ -140,6 +140,7 @@ tr.future td{color:var(--ink-3)}
 }
 @media (prefers-reduced-motion:no-preference){ .bar .fill{transition:width .6s ease} }
 </style>
+<script data-goatcounter="https://shawnandersonapps.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 
@@ -200,7 +201,7 @@ tr.future td{color:var(--ink-3)}
   </table></div>
 </section>
 
-<div class="foot"><a href="/">shawnandersonapps.com</a> · Route: 2,693 mi, about 120,000 ft of climbing, more than 80% unpaved, per <a href="https://bikepackingroots.org/project/western-wildlands-route/" target="_blank" rel="noopener">Bikepacking Roots</a>. Segment miles and climbing are theirs; days and dates are Rick's plan. Season windows from the Western Wildlands Route guide's "recommended riding season during typical years" map. Daily stats from Rick's tracking app. Maintained by Shawn.</div>
+<div class="foot"><a href="/">shawnandersonapps.com</a> · Route: 2,693 mi, about 120,000 ft of climbing, more than 80% unpaved, per <a href="https://bikepackingroots.org/project/western-wildlands-route/" target="_blank" rel="noopener">Bikepacking Roots</a>. Segment miles and climbing are theirs; days and dates are Rick's plan. Season windows from the Western Wildlands Route guide's "recommended riding season during typical years" map. Daily stats from Rick's tracking app. Maintained by Shawn. · <span id="visits"></span></div>
 </div>
 
 <script src="data.js"></script>
@@ -339,5 +340,10 @@ document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
 })();
 </script>
 
+<script>
+(function(){ var el=document.getElementById("visits"); if(!el) return;
+  fetch("https://shawnandersonapps.goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{ el.textContent = String(j.count).replace(/\s/g,",") + " visits since Sept 6"; }).catch(()=>{ el.remove(); });
+})();
+</script>
 </body>
 </html>

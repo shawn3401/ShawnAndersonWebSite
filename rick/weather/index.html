@@ -64,6 +64,7 @@ tr.night td{color:var(--ink-3)}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){ h1{font-size:34px} .now{grid-template-columns:repeat(2,1fr)} .tile .val{font-size:34px} .radar iframe{height:360px} }
 </style>
+<script data-goatcounter="https://shawnandersonapps.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -75,8 +76,8 @@ tr.night td{color:var(--ink-3)}
   <div class="now" id="now"></div>
 
   <section>
-    <h2>Radar</h2>
-    <div class="segsub" id="radarsub">Live precipitation radar centered on Rick's last reported position. Drag to pan, scroll to zoom.</div>
+    <h2>Rain map</h2>
+    <div class="segsub" id="radarsub">Rain and thunder forecast centered on Rick's last reported position, with a timeline to scrub ahead. Drag to pan, scroll to zoom. The layers button (top right) switches to live radar, wind, or clouds.</div>
     <div class="radar" id="radar"></div>
   </section>
 
@@ -92,7 +93,7 @@ tr.night td{color:var(--ink-3)}
     <div class="tblwrap"><table id="daily"><thead><tr><th>Day</th><th>Sky</th><th class="r">High</th><th class="r">Low</th><th class="r">Precip %</th><th class="r">Rain</th><th class="r">Max gusts</th><th class="r">Daylight</th></tr></thead><tbody></tbody></table></div>
   </section>
 
-  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a> · Forecast from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, radar from <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy</a>. Position is Rick's last report, so conditions on the trail ahead of him can differ.</div>
+  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a> · Forecast from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>, radar from <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy</a>. Position is Rick's last report, so conditions on the trail ahead of him can differ. · <span id="visits"></span></div>
 </div>
 <script src="../data.js"></script>
 <script>
@@ -108,7 +109,7 @@ if (!L) {
   document.getElementById("sub").innerHTML = `${L.label ? L.label + ". " : ""}Position <a href="https://www.google.com/maps?q=${L.lat},${L.lng}" target="_blank" rel="noopener">${L.lat.toFixed(4)}, ${L.lng.toFixed(4)}</a>${L.approx ? ", approximate" : ""}${L.asOf ? ", reported " + L.asOf : ""}.`;
 
   // Radar: Windy embed centered on the position
-  document.getElementById("radar").innerHTML = `<iframe title="Weather radar" src="https://embed.windy.com/embed2.html?lat=${L.lat}&lon=${L.lng}&detailLat=${L.lat}&detailLon=${L.lng}&width=1000&height=460&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1" loading="lazy"></iframe><div class="cap">Radar loop: Windy. Marker is Rick's last reported position.</div>`;
+  document.getElementById("radar").innerHTML = `<iframe title="Rain map" src="https://embed.windy.com/embed2.html?lat=${L.lat}&lon=${L.lng}&detailLat=${L.lat}&detailLon=${L.lng}&width=1000&height=460&zoom=8&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&metricRain=in" loading="lazy"></iframe><div class="cap">Rain map: Windy, ECMWF model. Marker is Rick's last reported position.</div>`;
 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${L.lat}&longitude=${L.lng}`
     + `&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,relative_humidity_2m`
@@ -150,6 +151,11 @@ if (!L) {
 
 function hm(t){ const [H, M] = t.slice(11,16).split(":").map(Number); const ap = H >= 12 ? "pm" : "am"; return `${H % 12 || 12}:${String(M).padStart(2,"0")} ${ap}`; }
 function dayName(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"}); }
+</script>
+<script>
+(function(){ var el=document.getElementById("visits"); if(!el) return;
+  fetch("https://shawnandersonapps.goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{ el.textContent = String(j.count).replace(/\s/g,",") + " visits since Sept 6"; }).catch(()=>{ el.remove(); });
+})();
 </script>
 </body>
 </html>

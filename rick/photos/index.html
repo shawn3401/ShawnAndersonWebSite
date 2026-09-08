@@ -41,6 +41,7 @@ h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){ h1{font-size:34px} }
 </style>
+<script data-goatcounter="https://shawnandersonapps.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -49,7 +50,7 @@ h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-
   <h1>Photos from the trail</h1>
   <div class="sub" id="sub">Organized by segment. Tap a photo for full size.</div>
   <div id="gallery"></div>
-  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a></div>
+  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a> · <span id="visits"></span></div>
 </div>
 <script src="../data.js"></script>
 <script>
@@ -67,6 +68,11 @@ document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
     : `<div class="empty">Nothing from this stretch yet.</div>`;
   return `<section><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div>${body}</section>`;
 }).join("");
+</script>
+<script>
+(function(){ var el=document.getElementById("visits"); if(!el) return;
+  fetch("https://shawnandersonapps.goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{ el.textContent = String(j.count).replace(/\s/g,",") + " visits since Sept 6"; }).catch(()=>{ el.remove(); });
+})();
 </script>
 </body>
 </html>
