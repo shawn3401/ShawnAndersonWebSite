@@ -23,10 +23,10 @@ const LOG = [
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:48.79, lng:-115.62, town:"Near Loon Lake", state:"MT", label:"Kootenai National Forest, north of Eureka", asOf:"Sept 8, 10:00 am MT", approx:true};
+const LOCATION = {lat:48.46217, lng:-115.89517, town:"Troy", state:"MT", label:"In town restocking on food, Kootenai River valley", asOf:"Sept 8, 3:15 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 3. Rolled out of Loon Lake at 10 am after 24 hours of rain and a full day in 35 square feet of tent. On the move and heading south.";
+const STATUS = "Day 3, midday. 31.6 miles in so far (+1,006 / -2,765 ft), mostly downhill from a 3,699 ft start to 1,881 ft on the Kootenai River. Just pulled into Troy to restock on food. Not done for the day yet.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 const COVER = "2026-09-06-roosville-start-cover";
 
@@ -34,5 +34,5 @@ const COVER = "2026-09-06-roosville-start-cover";
 const PHOTOS = [
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 8, 2026, 10:15 am MT";
+const LAST_UPDATED = "Sept 8, 2026, 3:20 pm MT";
 // ===== END DATA =====
