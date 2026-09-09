@@ -62,6 +62,11 @@ section{margin-top:34px}
 .nav{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:14px}
 .nav a{display:inline-block;background:var(--ink);color:var(--bg);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:3px}
 .nav a:hover,.nav a:focus{background:var(--red);color:#fff}
+.upbar{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-top:14px;background:#1E4A73;color:#fff;padding:12px 18px;border-left:5px solid #7FB3DA}
+.upbar .lab{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:600;color:#BFD8EE}
+.upbar .when{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:26px;line-height:1;letter-spacing:.01em}
+.upbar .day{font-size:15px;color:#DCE9F5;margin-left:auto}
+@media (max-width:720px){.upbar .when{font-size:22px}.upbar .day{margin-left:0;width:100%}}
 .wir{display:grid;grid-template-columns:1.25fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:14px}
 .wir>div{background:var(--paper);padding:18px 18px 16px;min-width:0}
 .wir .big{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:40px;line-height:1;margin-top:6px}
@@ -133,7 +138,7 @@ tr.future td{color:var(--ink-3)}
 .upd li+li{margin-top:2px}
 .upd .t{display:inline-block;min-width:72px;font-weight:600;color:var(--ink-3);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
 .upd .m{color:var(--ink-2);font-size:13px}
-tr.open td{background:color-mix(in srgb,var(--red-soft) 40%,var(--paper))}
+tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
 .sofar{font-size:12px;color:var(--ink-3);font-weight:400}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){
@@ -161,7 +166,6 @@ tr.open td{background:color-mix(in srgb,var(--red-soft) 40%,var(--paper))}
     <h1>Rick Saunders, Canada to Mexico</h1>
     <div class="sub">2,693 miles of dirt in 63 days. Rolled out Sept 6, 2026, aiming for Nov 7.</div>
   </div>
-  <div class="updated" id="updated"></div>
 </header>
   </div>
 </div>
@@ -169,6 +173,7 @@ tr.open td{background:color-mix(in srgb,var(--red-soft) 40%,var(--paper))}
 <div class="wrap">
 
 <div class="nav"><a href="weather/">Weather</a><a href="photos/">Photo gallery</a></div>
+<div class="upbar"><span class="lab">Last updated</span><span class="when" id="up-when"></span><span class="day" id="up-day"></span></div>
 
 <div class="wir" id="hero"></div>
 
@@ -247,7 +252,8 @@ const milesIntoSeg = actualCum - (segCum[curSeg.n-2]||0);
 if (typeof COVER === "string" && COVER) { const ci = document.getElementById("coverimg"); if (ci && !ci.src.startsWith("data:")) ci.src = "photos/" + COVER + ".jpg"; }
 
 // Status tiles
-document.getElementById("updated").innerHTML = `Updated ${LAST_UPDATED}<br>${OPEN?`day ${OPEN.day} of 63 in progress`:`after day ${daysRidden} of 63`}`;
+document.getElementById("up-when").textContent = LAST_UPDATED;
+document.getElementById("up-day").textContent = OPEN ? `Day ${OPEN.day} of 63 in progress` : `After day ${daysRidden} of 63`;
 const dcls = delta>=0 ? "delta-good" : "delta-bad";
 const dtxt = (delta>=0?"+":"") + fmt(Math.round(delta));
 document.getElementById("status").innerHTML = `
@@ -324,7 +330,7 @@ const updList = e => (e.updates&&e.updates.length) ? `<ul class="upd">${e.update
 document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
   const open = e.done===false;
   const dc = e.delta>=0?"delta-good":"delta-bad";
-  const ended = open ? `<span class="chip c-cur">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : e.end;
+  const ended = open ? `<span class="chip c-good">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : e.end;
   const miles = open ? `${fmt(e.miles||0)} <span class="sofar">so far</span>` : fmt(e.miles);
   const vs = open ? `<span class="sofar">pending</span>` : `<span class="${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</span>`;
   return `<tr class="${open?"open":""}"><td class="num">${e.day}</td><td class="num">${mdy(d2(e.date))}</td><td>${ended}</td><td class="r num">${miles}</td><td class="r num">${Math.round(planDaily[e.day-1])}</td><td class="r num">+${fmt(e.gain||0)}</td><td class="r num">${fmt(e.cum)}</td><td class="r num">${vs}</td><td>${e.notes||""}${updList(e)}</td></tr>`;
