@@ -15,19 +15,25 @@ const SEGMENTS = [
   {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:292, gain:21000, days:7, start:"2026-11-01", end:"2026-11-07", season:"Mid Sep to early May", seasonState:"ok", note:""},
 ];
 
-// One entry per riding day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
+// One entry per calendar day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
+// Multiple updates in one day: add updates:[{time:"10:30 am", miles:17, gain:370, text:"..."}] (oldest first) and they show grouped under the day's notes.
+// While he is still riding, set done:false and keep miles/gain at the latest check-in; the row shows "Riding now" and stays out of the completed-day math. When the day ends, remove done:false and fill in end, miles, gain, loss, notes.
 const LOG = [
   {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
   {day:2, date:"2026-09-07", end:"Loon Lake Campground, MT", miles:0, gain:0, loss:0, notes:"Rain day. Sat tight at camp all day and waited it out."},
   {day:3, date:"2026-09-08", end:"Troy Mine, near Bull Lake, MT", miles:45.6, gain:1749, loss:2895, lat:48.30558, lng:-115.84547, notes:"Loon Lake to Troy Mine. Mostly downhill to the Kootenai River at 1,884 ft, restocked food in Troy, then south along Hwy 56 to camp near Bull Lake."},
+  {day:4, date:"2026-09-09", end:"", miles:17, gain:370, loss:0, done:false, notes:"", updates:[
+    {time:"8:30 am", text:"Rolled out after a great night's sleep at the Troy Mine camp."},
+    {time:"10:30 am", miles:17, gain:370, text:"Heading south on Hwy 56 toward Cabinet Gorge Reservoir, then he picks up Hwy 200 and keeps going south."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:48.30558, lng:-115.84547, town:"Bull Lake", state:"MT", label:"Camped for the night near Troy Mine, north end of Bull Lake, Hwy 56 corridor", asOf:"Sept 8, 8:30 pm MT", approx:false};
+const LOCATION = {lat:48.07, lng:-115.85, town:"Bull River", state:"MT", label:"Riding south on Hwy 56 toward the Hwy 200 junction and Cabinet Gorge Reservoir, about 17 miles south of last night's camp", asOf:"Sept 9, 10:30 am MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 3 done: 45.6 miles, Loon Lake to Troy Mine. Restocked in Troy midday and pushed another 14 miles south to camp near Bull Lake. Three days in, 105.6 miles.";
+const STATUS = "Day 4 under way. Slept great, rolled out at 8:30 am, and by 10:30 was 17 miles in with 370 ft of climbing, southbound on Hwy 56 toward Cabinet Gorge Reservoir. From there he turns south on Hwy 200.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 const COVER = "2026-09-06-roosville-start-cover";
 
@@ -45,5 +51,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 8, 2026, 8:50 pm MT";
+const LAST_UPDATED = "Sept 9, 2026, 10:45 am MT";
 // ===== END DATA =====

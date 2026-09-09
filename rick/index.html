@@ -128,6 +128,13 @@ tr.future td{color:var(--ink-3)}
 .c-cur{background:var(--red);color:#fff}
 .seg-name{font-weight:600}
 .seg-sub{font-size:13px;color:var(--ink-3)}
+.upd{list-style:none;margin:6px 0 0;padding:0;font-size:14px}
+.upd li{padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+.upd li+li{margin-top:2px}
+.upd .t{display:inline-block;min-width:72px;font-weight:600;color:var(--ink-3);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.upd .m{color:var(--ink-2);font-size:13px}
+tr.open td{background:color-mix(in srgb,var(--red-soft) 40%,var(--paper))}
+.sofar{font-size:12px;color:var(--ink-3);font-weight:400}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){
   h1{font-size:34px}
@@ -219,9 +226,13 @@ const planCum = []; planDaily.reduce((a,b,i)=>(planCum[i]=a+b),0);
 const segCum = []; SEGMENTS.reduce((a,s,i)=>(segCum[i]=a+s.miles),0);
 
 // Actuals
-let cum = 0; LOG.forEach(e => { cum += e.miles; e.cum = cum; e.planCum = planCum[e.day-1]; e.delta = e.cum - e.planCum; });
-const last = LOG[LOG.length-1];
-const daysRidden = LOG.length;
+// A LOG row with done:false is today, still in progress: shown in the table with its updates, excluded from completed-day math.
+const DONE = LOG.filter(e => e.done !== false);
+const OPEN = LOG.find(e => e.done === false) || null;
+let cum = 0; DONE.forEach(e => { cum += e.miles; e.cum = cum; e.planCum = planCum[e.day-1]; e.delta = e.cum - e.planCum; });
+if (OPEN) { OPEN.cum = cum + (OPEN.miles||0); OPEN.planCum = planCum[OPEN.day-1]; OPEN.delta = OPEN.cum - OPEN.planCum; }
+const last = DONE[DONE.length-1];
+const daysRidden = DONE.length;
 const actualCum = last ? last.cum : 0;
 const avg = daysRidden ? actualCum/daysRidden : 0;
 const remaining = TOTAL_PLAN - actualCum;
@@ -236,11 +247,11 @@ const milesIntoSeg = actualCum - (segCum[curSeg.n-2]||0);
 if (typeof COVER === "string" && COVER) { const ci = document.getElementById("coverimg"); if (ci && !ci.src.startsWith("data:")) ci.src = "photos/" + COVER + ".jpg"; }
 
 // Status tiles
-document.getElementById("updated").innerHTML = `Updated ${LAST_UPDATED}<br>after day ${daysRidden} of 63`;
+document.getElementById("updated").innerHTML = `Updated ${LAST_UPDATED}<br>${OPEN?`day ${OPEN.day} of 63 in progress`:`after day ${daysRidden} of 63`}`;
 const dcls = delta>=0 ? "delta-good" : "delta-bad";
 const dtxt = (delta>=0?"+":"") + fmt(Math.round(delta));
 document.getElementById("status").innerHTML = `
-  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(actualCum)}<small>of ${fmt(TOTAL_PLAN)}</small></div><div class="note">${(100*actualCum/TOTAL_PLAN).toFixed(1)}% of the route</div></div>
+  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(actualCum)}<small>of ${fmt(TOTAL_PLAN)}</small></div><div class="note">${(100*actualCum/TOTAL_PLAN).toFixed(1)}% of the route${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
   <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${dtxt}<small>mi</small></div><div class="note">Plan had him at ${fmt(Math.round(last?last.planCum:0))} mi after day ${daysRidden}</div></div>
   <div class="tile"><div class="lab">Average per day</div><div class="val num">${avg.toFixed(1)}<small>mi</small></div><div class="note">Plan pace is ${(TOTAL_PLAN/63).toFixed(1)} mi/day</div></div>
   <div class="tile"><div class="lab">Projected finish</div><div class="val num">${projFinish?mdy(projFinish):"TBD"}</div><div class="note">At current pace. Plan says ${mdy(planFinish)}.</div></div>`;
@@ -282,11 +293,15 @@ w.innerHTML = last ? `
   let p = `M${x(0)},${y(0)}`; planCum.forEach((m,i)=>{ p+=` L${x(i+1)},${y(m)}`; });
   s += `<path d="${p}" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="6 4"/>`;
   // actual
-  if(LOG.length){
-    let a = `M${x(0)},${y(0)}`; LOG.forEach(e=>{ a+=` L${x(e.day)},${y(e.cum)}`; });
+  if(DONE.length){
+    let a = `M${x(0)},${y(0)}`; DONE.forEach(e=>{ a+=` L${x(e.day)},${y(e.cum)}`; });
     s += `<path d="${a}" fill="none" stroke="var(--red)" stroke-width="3" stroke-linejoin="round"/>`;
     s += `<circle cx="${x(last.day)}" cy="${y(last.cum)}" r="5" fill="var(--red)" stroke="var(--paper)" stroke-width="2"/>`;
     s += `<text x="${x(last.day)+10}" y="${y(last.cum)-8}" style="fill:var(--red);font-weight:600">${fmt(last.cum)} mi</text>`;
+  }
+  if(OPEN && OPEN.miles){ const px = last?x(last.day):x(0), py = last?y(last.cum):y(0);
+    s += `<line x1="${px}" y1="${py}" x2="${x(OPEN.day)}" y2="${y(OPEN.cum)}" stroke="var(--red)" stroke-width="2" stroke-dasharray="3 4"/>`;
+    s += `<circle cx="${x(OPEN.day)}" cy="${y(OPEN.cum)}" r="5" fill="var(--paper)" stroke="var(--red)" stroke-width="2.5"/>`;
   }
   s += `<text x="${x(63)-4}" y="${y(TOTAL_PLAN)-8}" text-anchor="end" style="fill:var(--plan)">Plan, 2,693 mi by Nov 7</text>`;
   s += `</svg>`;
@@ -302,9 +317,17 @@ document.querySelector("#segs tbody").innerHTML = SEGMENTS.map((s,i)=>{
 }).join("");
 
 // Daily log (most recent first)
+// Each row is one calendar day. e.updates = timestamped check-ins from that day, grouped under the day's notes. done:false marks today while he is still riding.
+const updList = e => (e.updates&&e.updates.length) ? `<ul class="upd">${e.updates.map(u=>{
+  const m = [u.miles!=null?`${fmt(u.miles)} mi`:"", u.gain!=null?`+${fmt(u.gain)} ft`:""].filter(Boolean).join(", ");
+  return `<li><span class="t">${u.time||""}</span>${m?`<span class="m">${m}. </span>`:""}${u.text||""}</li>`;}).join("")}</ul>` : "";
 document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
+  const open = e.done===false;
   const dc = e.delta>=0?"delta-good":"delta-bad";
-  return `<tr><td class="num">${e.day}</td><td class="num">${mdy(d2(e.date))}</td><td>${e.end}</td><td class="r num">${fmt(e.miles)}</td><td class="r num">${Math.round(planDaily[e.day-1])}</td><td class="r num">+${fmt(e.gain)}</td><td class="r num">${fmt(e.cum)}</td><td class="r num ${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</td><td>${e.notes||""}</td></tr>`;
+  const ended = open ? `<span class="chip c-cur">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : e.end;
+  const miles = open ? `${fmt(e.miles||0)} <span class="sofar">so far</span>` : fmt(e.miles);
+  const vs = open ? `<span class="sofar">pending</span>` : `<span class="${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</span>`;
+  return `<tr class="${open?"open":""}"><td class="num">${e.day}</td><td class="num">${mdy(d2(e.date))}</td><td>${ended}</td><td class="r num">${miles}</td><td class="r num">${Math.round(planDaily[e.day-1])}</td><td class="r num">+${fmt(e.gain||0)}</td><td class="r num">${fmt(e.cum)}</td><td class="r num">${vs}</td><td>${e.notes||""}${updList(e)}</td></tr>`;
 }).join("");
 
 // Where is Rick (hero)
