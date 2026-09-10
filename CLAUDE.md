@@ -64,7 +64,8 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers. Handmade corsages ($25), boutonnières ($15), and bouquets ($35) for homecoming, prom, winter formal, and weddings. Pickup in Idaho Falls, pay at pickup with cash or Venmo, no payment taken on the site. The page collects an order and Leah confirms by text or email within a day.
 
 ### Files
-- `danceflowers/index.html` the whole thing. CSS and JS inline, no `data.js`, no other files. Not linked from the root landing page yet (`index.html` at the root does not mention it).
+- `danceflowers/index.html` the whole thing. CSS and JS inline, no `data.js`. Loads qrcodejs from cdnjs for the confirmation QR. Not linked from the root landing page yet (`index.html` at the root does not mention it).
+- `supabase/danceflowers/*.sql` database setup scripts, numbered. GitHub Pages publishes this folder too, which is fine, there is nothing secret in it.
 - No GoatCounter script on this page. Add the same `<script data-goatcounter=...>` tag the rick/ pages use if Shawn wants visit counts.
 
 ### Page sections (top to bottom, nav anchors in parentheses)
@@ -88,13 +89,21 @@ Same structure as the tracker (color tokens on `:root`, dark palette under `pref
 ### Photos
 Every photo on the page is a stock placeholder hotlinked from Pexels or Unsplash, tagged "Placeholder photo" on the cards, with a matching note in the footer. When Leah sends real photos: put them in `danceflowers/photos/` (create it), resize to max 1600px wide with PIL and `exif_transpose` like the rick/ photos, point the hero `<img>`, the three card `<img>` tags, and the `og:image` meta at the local files, then delete the "Placeholder photo" tags and the footer note.
 
-### Order form and where orders go
-- Quantities are 0 to 50 per item, changed by the + and − buttons or typed. The summary and total re-render on every change.
-- Required: at least one item, event type, event date (date picker min is today), name, phone. Email and notes optional. Email is format-checked if given. A hidden honeypot field named `website` silently drops bot submissions.
-- Submission is decided by two constants at the top of the script, `SUPABASE_URL` and `SUPABASE_KEY`. Both are empty today, so the form uses the fallback: it opens the visitor's mail app with a prefilled order addressed to `FALLBACK_EMAIL` (currently shawn3401@gmail.com). The visitor still has to hit send. Change `FALLBACK_EMAIL` to Leah's address when she wants orders directly.
-- To switch to Supabase: create a project, make a table `orders` with columns matching the payload built by `collect()` (`items` jsonb, `total` numeric, `event_type`, `event_date` date, `colors`, `name`, `phone`, `email` nullable, `notes`, `page`, `ua` as text, plus a default `created_at`), enable RLS with an insert-only policy for the anon role and no select, then paste the project URL and the anon (publishable) key into the two constants. The page POSTs to `/rest/v1/orders` with `Prefer: return=minimal`. Confirm the success message reads right, since it promises a text to the phone number given.
-- The error message on a failed send says "text me directly" but the page shows no phone number anywhere. Ask Shawn or Leah for a number before adding one; do not invent it.
+### Order form and where orders go (Supabase, live since Sept 10, 2026)
+- Supabase project `DanceFlowers` in the "Shawn Anderson Apps" org, US East, free plan. URL and publishable key are the two constants at the top of the page script. Never put the secret/service_role key in the page.
+- Schema is in `supabase/danceflowers/001_orders.sql` (paste into the SQL editor; safe to re-run). Tables: `products` (key, label, price; the server-side price list) and `orders`. The page never reads or writes the tables directly; it calls two RPC functions:
+  - `place_order(payload)` validates, prices the items from `products`, inserts, and returns `{order_number, token, total, name}`. Order numbers start at 1001. `token` is a per-order secret the confirmation panel keeps in sessionStorage.
+  - `mark_payment_sent(order_number, token)` flips status to `payment_sent`. Only works with the matching token and only from `new` or `confirmed`.
+- Order statuses: new, confirmed, payment_sent, paid, ready, picked_up, cancelled. `internal_notes` is Leah's private column.
+- Prices now live in SIX places: the five on the page plus the `products` table. The table is the one that decides the charged total; the page copies are display only.
+- RLS: anon has no table access (functions run as security definer). `authenticated` can select and update orders. Signups are disabled in Auth, so only accounts created in the dashboard (Leah, Shawn) can log in. The admin page is not built yet.
+- Quantities are 0 to 50 per item. Required: at least one item, event type, event date (min today), name, phone. Email optional and format-checked. Honeypot field `website` drops bots.
+- After a successful submit the form and summary hide and the confirmation panel (`#confirm`) shows: order number, recap, and a "Next step" block with a "Pay on Venmo" button and a QR code of the same link (QR hidden under 720px). `VENMO_USER` at the top of the script is Leah's handle; while it is empty the whole payment block is hidden. The Venmo link prefills the amount and the note "Dance Flowers order #NNNN". "I sent my payment" calls `mark_payment_sent`. The panel survives a refresh via sessionStorage; "Place another order" clears it.
+- The site cannot see Venmo. "Payment sent" is the customer's word; Leah confirms it as `paid` in the admin once it shows in Venmo.
+- `CONTACT_PHONE` at the top of the script goes into the failure message if set. Ask Shawn or Leah for a number; do not invent it.
+- Emails to Leah on new order and payment sent are NOT built yet. Plan: Supabase edge function plus Resend, which needs shawnandersonapps.com verified as a sending domain.
+- Test order #1001 (name "Test Order", 208-555-0100) was placed by Claude on Sept 10, 2026 while wiring this up. Cancel it from the admin once that exists.
 
 ### Copy rules specific to this page
 - The voice is Leah's, first person ("I confirm", "What I make"). Keep it that way.
-- Stated promises on the page: confirmation within a day, pickup in Idaho Falls the day of or the day before, cash or Venmo, no deposit, a week's notice is ideal. If Leah changes any of these, update the hero lead, the How it works steps, the Order intro, the summary note, and the FAQ, since several repeat the same promise.
+- Stated promises on the page: confirmation within a day, pickup in Idaho Falls the day of or the day before, cash or Venmo, no deposit, a week's notice is ideal. The confirmation panel now asks for Venmo payment as the next step, which sits awkwardly next to "pay at pickup" in the hero, step 3, the order intro, the summary note, and the FAQ. Shawn has not decided yet whether cash at pickup stays; do not rewrite those until he does. If Leah changes any of these, update the hero lead, the How it works steps, the Order intro, the summary note, and the FAQ, since several repeat the same promise.

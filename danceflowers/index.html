@@ -9,6 +9,7 @@
 <meta property="og:image" content="https://images.pexels.com/photos/9787655/pexels-photo-9787655.jpeg?auto=compress&cs=tinysrgb&w=1200">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💐</text></svg>">
 <title>Dance Flowers</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
 :root{color-scheme:light dark;
@@ -29,6 +30,7 @@
   --good:#6FCB8F; --good-soft:#1C3527; --bad:#E27373; --bad-soft:#3B1E1E;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.5}
 img{max-width:100%;display:block}
@@ -137,6 +139,28 @@ textarea{min-height:96px;resize:vertical}
 .submit-row .fine{font-size:13px;color:var(--ink-3)}
 .hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
 
+/* confirmation */
+.confirm{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--rose);padding:26px 24px 28px;margin-top:26px}
+.confirm h3{font-size:34px}
+.confirm .sub{margin:6px 0 0;color:var(--ink-2);font-size:17px}
+.confirm .recap{margin:18px 0 0;padding:14px 16px;background:var(--bg);border:1px solid var(--line);border-radius:4px;font-size:16px}
+.confirm .recap .ln{display:flex;justify-content:space-between;gap:12px;padding:4px 0}
+.confirm .recap .ln.t{border-top:1px dashed var(--line);margin-top:6px;padding-top:10px;font-weight:600}
+.confirm .recap .ln.t .v{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:28px;color:var(--rose);line-height:1}
+.confirm .pay{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:22px;padding-top:22px;border-top:1px solid var(--line)}
+.confirm .pay>*{min-width:0}
+.confirm .pay .nxt{font-size:12px;text-transform:uppercase;letter-spacing:.18em;color:var(--rose);font-weight:600}
+.confirm .pay h4{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:28px;margin:4px 0 8px;line-height:1.1}
+.confirm .pay p{margin:0 0 14px;color:var(--ink-2);font-size:16px}
+.confirm .pay .acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.confirm .qr{text-align:center;font-size:13px;color:var(--ink-3)}
+.confirm .qr .box{background:#fff;padding:10px;border:1px solid var(--line);border-radius:4px;display:inline-block}
+.confirm .qr .box canvas,.confirm .qr .box img{display:block}
+.confirm .qr div.cap{margin-top:6px;max-width:170px}
+.confirm .msg{margin-top:16px}
+.confirm .again{margin-top:18px;font-size:15px}
+@media (max-width:720px){.confirm .pay{grid-template-columns:1fr}.confirm .qr{display:none}.confirm h3{font-size:30px}}
+
 /* faq */
 .faq{display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;margin-top:22px}
 .faq div h3{font-size:22px}
@@ -219,8 +243,8 @@ textarea{min-height:96px;resize:vertical}
 <section id="order">
   <div class="eyebrow">Order</div>
   <h2>Tell me about your event.</h2>
-  <p class="lead">No payment now. I'll confirm your order and you pay at pickup.</p>
-  <div class="order">
+  <p class="lead" id="orderLead">No payment now. I'll confirm your order and you pay at pickup.</p>
+  <div class="order" id="orderGrid">
     <form id="orderForm" novalidate>
       <fieldset>
         <legend>What do you need?</legend>
@@ -272,6 +296,27 @@ textarea{min-height:96px;resize:vertical}
       <p class="note"><b>No payment now.</b> The total is confirmed when I confirm your order. Pay at pickup with cash or Venmo.</p>
     </aside>
   </div>
+
+  <div class="confirm" id="confirm" hidden aria-live="polite">
+    <div class="eyebrow">Order received</div>
+    <h3 id="cTitle">Got it.</h3>
+    <p class="sub" id="cSub"></p>
+    <div class="recap" id="cRecap"></div>
+    <div class="pay" id="cPay">
+      <div>
+        <div class="nxt">Next step</div>
+        <h4 id="cPayTitle">Send your payment on Venmo</h4>
+        <p id="cPayText"></p>
+        <div class="acts">
+          <a class="cta" id="cVenmo" href="#" target="_blank" rel="noopener">Pay on Venmo</a>
+          <button class="cta ghost" type="button" id="cSent">I sent my payment</button>
+        </div>
+        <div class="msg" id="cMsg" role="status"></div>
+      </div>
+      <div class="qr" id="cQr"><div class="box" id="cQrBox"></div><div class="cap">On a computer? Scan this with your phone's camera to open Venmo.</div></div>
+    </div>
+    <p class="again"><a href="#" id="cAgain">Place another order</a></p>
+  </div>
 </section>
 
 <section id="faq">
@@ -295,17 +340,16 @@ textarea{min-height:96px;resize:vertical}
 </div>
 
 <script>
-// ---- Order submission target -------------------------------------------
-// Fill these in once the Supabase project exists (Project Settings > API).
-// Leave SUPABASE_URL empty and the form falls back to a prefilled email.
-const SUPABASE_URL = "";
-const SUPABASE_KEY = "";
-const FALLBACK_EMAIL = "shawn3401@gmail.com";   // where orders go if Supabase isn't configured yet
+// ---- Settings ----------------------------------------------------------
+const SUPABASE_URL = "https://mmxgxnrovxfpcsfzdzfn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_F1b9LiMBe2RqsyJqEOCBjQ_UjejEnS7";   // publishable key, safe in the page
+const VENMO_USER   = "";        // Leah's Venmo username without the @. Empty = hide the Venmo button and QR.
+const CONTACT_PHONE = "";       // shown in the error message if set
 
-const PRICES = { corsage: 25, boutonniere: 15, bouquet: 35 };
+const PRICES = { corsage: 25, boutonniere: 15, bouquet: 35 };   // display copy; the server prices the order itself
 const LABELS = { corsage: "Corsage", boutonniere: "Boutonnière", bouquet: "Bouquet" };
 const $ = (s) => document.querySelector(s);
-const money = (n) => "$" + n.toLocaleString("en-US");
+const money = (n) => "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
 function qty(k){ return Math.max(0, Math.min(50, parseInt($("#q-"+k).value, 10) || 0)); }
 function setQty(k, n){ $("#q-"+k).value = Math.max(0, Math.min(50, n)); render(); }
@@ -326,19 +370,18 @@ function render(){
 document.querySelectorAll("[data-inc]").forEach(b => b.addEventListener("click", () => setQty(b.dataset.inc, qty(b.dataset.inc) + 1)));
 document.querySelectorAll("[data-dec]").forEach(b => b.addEventListener("click", () => setQty(b.dataset.dec, qty(b.dataset.dec) - 1)));
 document.querySelectorAll(".qty input").forEach(i => i.addEventListener("input", render));
-document.querySelectorAll("[data-add]").forEach(a => a.addEventListener("click", () => { setQty(a.dataset.add, qty(a.dataset.add) + 1); }));
+document.querySelectorAll("[data-add]").forEach(a => a.addEventListener("click", () => { showForm(); setQty(a.dataset.add, qty(a.dataset.add) + 1); }));
 
 // Default the date picker to today or later
 (function(){ const d = new Date(); const iso = d.toISOString().slice(0,10); $("#eventDate").min = iso; })();
 
-function showMsg(kind, html){ const m = $("#msg"); m.className = "msg " + kind; m.innerHTML = html; m.scrollIntoView({block:"nearest", behavior:"smooth"}); }
+function showMsg(el, kind, html){ const m = $(el); m.className = "msg " + kind; m.innerHTML = html; m.scrollIntoView({block:"nearest", behavior:"smooth"}); }
 
 function collect(){
   const f = $("#orderForm");
   const items = {}; for (const k of Object.keys(PRICES)) if (qty(k)) items[k] = qty(k);
   return {
     items,
-    total: render(),
     event_type: f.event_type.value.trim(),
     event_date: f.event_date.value,
     colors: f.colors.value.trim(),
@@ -361,43 +404,120 @@ function validate(o){
   return null;
 }
 
-async function submitToSupabase(o){
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
+// ---- Supabase ------------------------------------------------------------
+async function rpc(fn, args){
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Prefer": "return=minimal" },
-    body: JSON.stringify(o)
+    headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY },
+    body: JSON.stringify(args)
   });
-  if (!r.ok) throw new Error("HTTP " + r.status);
+  let data = null; try { data = await r.json(); } catch (_) {}
+  if (!r.ok) { const e = new Error((data && data.message) || ("HTTP " + r.status)); e.code = data && data.code; throw e; }
+  return data;
 }
 
-function mailtoFallback(o){
-  const lines = Object.entries(o.items).map(([k,q]) => `${q} x ${LABELS[k]} @ ${money(PRICES[k])}`).join("\n");
-  const body = `ORDER\n${lines}\nEstimated total: ${money(o.total)}\n\nEVENT\n${o.event_type} on ${o.event_date}\nColors: ${o.colors || "(none given)"}\n\nCONTACT\n${o.name}\n${o.phone}\n${o.email || ""}\n\nNOTES\n${o.notes || "(none)"}\n`;
-  location.href = `mailto:${FALLBACK_EMAIL}?subject=${encodeURIComponent("Dance Flowers order from " + o.name)}&body=${encodeURIComponent(body)}`;
+// ---- Confirmation panel -------------------------------------------------
+const ORDER_KEY = "danceflowers.order";
+let current = null;   // {order_number, token, total, name, items, status}
+
+function venmoLink(o){
+  const note = `Dance Flowers order #${o.order_number}`;
+  return `https://venmo.com/${encodeURIComponent(VENMO_USER)}?txn=pay&amount=${Number(o.total).toFixed(2)}&note=${encodeURIComponent(note)}`;
 }
 
+function showForm(){
+  $("#confirm").hidden = true;
+  $("#orderGrid").hidden = false;
+  $("#orderLead").hidden = false;
+}
+
+function showConfirm(o){
+  current = o;
+  const first = (o.name || "").split(" ")[0] || "there";
+  $("#cTitle").textContent = `Got it, ${first}. You're order #${o.order_number}.`;
+  $("#cSub").textContent = `I'll text you at ${o.phone} within a day to confirm the details and set a pickup time.`;
+  const lines = Object.entries(o.items).map(([k,q]) => `<div class="ln"><span>${q} × ${LABELS[k] || k}${q > 1 ? "s" : ""}</span><span class="num">${money(q * (PRICES[k] || 0))}</span></div>`).join("");
+  $("#cRecap").innerHTML = lines + `<div class="ln t"><span>Total</span><span class="v num">${money(o.total)}</span></div>`;
+
+  const pay = $("#cPay");
+  if (VENMO_USER) {
+    pay.hidden = false;
+    const link = venmoLink(o);
+    $("#cVenmo").href = link;
+    $("#cPayText").textContent = `Send ${money(o.total)} to @${VENMO_USER}. The button fills in the amount and your order number. Then tap "I sent my payment" so I know to look for it.`;
+    const box = $("#cQrBox"); box.innerHTML = "";
+    if (window.QRCode) new QRCode(box, { text: link, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.M });
+    else $("#cQr").hidden = true;
+    const done = o.status === "payment_sent";
+    $("#cSent").hidden = done; $("#cVenmo").hidden = done;
+    if (done) showMsg("#cMsg", "ok", `<b>Thanks.</b> I'll confirm once it shows up in Venmo, then get started on your flowers.`);
+    else { const m = $("#cMsg"); m.className = "msg"; m.innerHTML = ""; }
+  } else {
+    pay.hidden = true;
+  }
+
+  $("#orderGrid").hidden = true;
+  $("#orderLead").hidden = true;
+  $("#confirm").hidden = false;
+  $("#confirm").scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
+$("#cSent").addEventListener("click", async () => {
+  if (!current) return;
+  const b = $("#cSent"); b.disabled = true; b.textContent = "One sec…";
+  try {
+    const ok = await rpc("mark_payment_sent", { p_order_number: current.order_number, p_token: current.token });
+    if (!ok) throw new Error("not updated");
+    current.status = "payment_sent";
+    try { sessionStorage.setItem(ORDER_KEY, JSON.stringify(current)); } catch (_) {}
+    showConfirm(current);
+  } catch (ex) {
+    showMsg("#cMsg", "err", "Couldn't save that. No problem, I'll see the payment in Venmo either way.");
+  } finally { b.disabled = false; b.textContent = "I sent my payment"; }
+});
+
+$("#cAgain").addEventListener("click", (e) => {
+  e.preventDefault();
+  try { sessionStorage.removeItem(ORDER_KEY); } catch (_) {}
+  current = null;
+  showForm();
+  $("#order").scrollIntoView({ block: "start", behavior: "smooth" });
+});
+
+// ---- Submit ----------------------------------------------------------------
 $("#orderForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (e.target.website.value) return;   // honeypot
   const o = collect();
   const err = validate(o);
-  if (err) { showMsg("err", err); return; }
+  if (err) { showMsg("#msg", "err", err); return; }
   const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = "Sending…";
   try {
-    if (SUPABASE_URL && SUPABASE_KEY) {
-      await submitToSupabase(o);
-      showMsg("ok", `<b>Got it, ${o.name.split(" ")[0]}.</b> Your order is in. I'll text you at ${o.phone} within a day to confirm the details and pickup.`);
-      e.target.reset(); render();
-    } else {
-      mailtoFallback(o);
-      showMsg("ok", `Your email app should open with the order filled in. Hit send and I'll get back to you within a day.`);
-    }
+    const res = await rpc("place_order", { payload: o });
+    const rec = { order_number: res.order_number, token: res.token, total: res.total, name: res.name, phone: o.phone, items: o.items, status: "new" };
+    try { sessionStorage.setItem(ORDER_KEY, JSON.stringify(rec)); } catch (_) {}
+    e.target.reset(); render();
+    $("#msg").className = "msg"; $("#msg").innerHTML = "";
+    showConfirm(rec);
   } catch (ex) {
-    showMsg("err", `Something went wrong sending that. Try again in a minute, or text me directly.`);
+    const ours = ex.code === "P0001" && ex.message;   // a validation message raised by place_order
+    const help = CONTACT_PHONE ? ` or text me at ${CONTACT_PHONE}` : "";
+    showMsg("#msg", "err", ours ? ex.message : `Something went wrong sending that. Try again in a minute${help}.`);
   } finally { btn.disabled = false; btn.textContent = "Send my order"; }
 });
 
 render();
+
+// If they refresh after ordering, keep showing their confirmation.
+(function(){
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(ORDER_KEY) || "null");
+    if (saved && saved.order_number) {
+      const go = () => showConfirm(saved);
+      if (window.QRCode || !VENMO_USER) go(); else window.addEventListener("load", go, { once: true });
+    }
+  } catch (_) {}
+})();
 </script>
 </body>
 </html>
