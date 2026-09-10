@@ -22,23 +22,27 @@ const LOG = [
   {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
   {day:2, date:"2026-09-07", end:"Loon Lake Campground, MT", miles:0, gain:0, loss:0, notes:"Rain day. Sat tight at camp all day and waited it out."},
   {day:3, date:"2026-09-08", end:"Troy Mine, near Bull Lake, MT", miles:45.6, gain:1749, loss:2895, lat:48.30558, lng:-115.84547, notes:"Loon Lake to Troy Mine. Mostly downhill to the Kootenai River at 1,884 ft, restocked food in Troy, then south along Hwy 56 to camp near Bull Lake."},
-  {day:4, date:"2026-09-09", end:"", miles:17, gain:370, loss:0, done:false, notes:"", updates:[
+  {day:4, date:"2026-09-09", end:"Porcupine Pass, ID (Montana/Idaho line)", miles:56.5, gain:4431, loss:1876, lat:47.84681, lng:-115.88983, notes:"Troy Mine to Porcupine Pass. Down Hwy 56 past Bull Lake to the Hwy 200 junction near Noxon, then a 3,000 ft climb from the low point at 2,189 ft to the 5,205 ft pass. Camped ten feet into Idaho. First state down.", updates:[
     {time:"8:30 am", text:"Rolled out after a great night's sleep at the Troy Mine camp."},
     {time:"10:30 am", miles:17, gain:370, text:"Heading south on Hwy 56 toward Cabinet Gorge Reservoir, then he picks up Hwy 200 and keeps going south."},
+    {time:"7:20 pm", miles:56.5, gain:4431, text:"Made the Idaho state line at Porcupine Pass and set up camp ten feet into Idaho. Big afternoon climb to the 5,205 ft pass."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:48.07, lng:-115.85, town:"Bull River", state:"MT", label:"Riding south on Hwy 56 toward the Hwy 200 junction and Cabinet Gorge Reservoir, about 17 miles south of last night's camp", asOf:"Sept 9, 10:30 am MT", approx:true};
+const LOCATION = {lat:47.84681, lng:-115.88983, town:"Porcupine Pass", state:"ID", label:"Camped at the pass, ten feet into Idaho on the Montana/Idaho line, 5,205 ft", asOf:"Sept 9, 7:20 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 4 under way. Slept great, rolled out at 8:30 am, and by 10:30 was 17 miles in with 370 ft of climbing, southbound on Hwy 56 toward Cabinet Gorge Reservoir. From there he turns south on Hwy 200.";
+const STATUS = "Day 4 done: 56.5 miles and 4,431 ft of climbing, Troy Mine to Porcupine Pass. Montana is behind him. Camped ten feet into Idaho at 5,205 ft. Four days in, 162.1 miles.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-09-kootenai-sign-selfie", date:"2026-09-09", caption:"Day 4 morning. Rick at the Kootenai National Forest sign, fresh off a good night's sleep and about to head south for the Idaho line."},
+  {file:"2026-09-09-day4-ride-map", date:"2026-09-09", caption:"Day 4 route on onX Offroad: Troy Mine to Porcupine Pass on the Idaho border, 56.5 mi, +4,431 / -1,876 ft. Green is the day, purple is the plan."},
+  {file:"2026-09-08-troy-mine-camp", date:"2026-09-08", caption:"Day 3 camp near Troy Mine: tent under the firs, bike leaned up, gear spread out on the tarp to dry, and food bags hung in the trees."},
   {file:"2026-09-08-day3-ride-map", date:"2026-09-08", caption:"Day 3 route on onX Offroad: Loon Lake Campground to Troy Mine, 45.6 mi, +1,749 / -2,895 ft. Green is the day, purple is the plan."},
   {file:"2026-09-06-loon-lake-camp", date:"2026-09-06", caption:"Day 1. Camp at Loon Lake Campground after 60 miles: tent up, helmet on the table, rain moving in."},
   {file:"2026-09-06-tent-interior", date:"2026-09-06", caption:"Day 1. Inside the tent at Loon Lake: camp chair, dry bags, and gear drying out. This became home for the next 24 hours of rain."},
@@ -51,5 +55,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 9, 2026, 11:10 am MT";
+const LAST_UPDATED = "Sept 9, 2026, 7:45 pm MT";
 // ===== END DATA =====
