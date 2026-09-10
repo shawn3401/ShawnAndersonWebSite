@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💐</text></svg>">
+<title>Dance Flowers · Orders</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{color-scheme:light dark;
+  --bg:#FAF6F1; --paper:#FFFFFF; --ink:#2B2320; --ink-2:#5C514C; --ink-3:#8C817B;
+  --line:#E6DCD3; --blush:#F3E3E1; --rose:#B2495C; --rose-deep:#8E3446; --sage:#6F8A72; --sage-soft:#E4ECE4;
+  --good:#2E7D4F; --good-soft:#DDF0E3; --bad:#9B2A2A; --bad-soft:#F5DEDE; --warn:#9A6B12; --warn-soft:#F7ECD2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1715; --paper:#241F1C; --ink:#F0EAE4; --ink-2:#C4B9B1; --ink-3:#8C817B;
+    --line:#3A322D; --blush:#3A2A2C; --rose:#E07A8B; --rose-deep:#F09AA8; --sage:#93AE96; --sage-soft:#26332A;
+    --good:#6FCB8F; --good-soft:#1C3527; --bad:#E27373; --bad-soft:#3B1E1E; --warn:#E0B45C; --warn-soft:#3A2E14;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1715; --paper:#241F1C; --ink:#F0EAE4; --ink-2:#C4B9B1; --ink-3:#8C817B;
+  --line:#3A322D; --blush:#3A2A2C; --rose:#E07A8B; --rose-deep:#F09AA8; --sage:#93AE96; --sage-soft:#26332A;
+  --good:#6FCB8F; --good-soft:#1C3527; --bad:#E27373; --bad-soft:#3B1E1E; --warn:#E0B45C; --warn-soft:#3A2E14;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45}
+a{color:var(--rose)}
+h1,h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;margin:0;line-height:1.1}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 60px}
+
+/* top bar */
+.bar{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.bar .in{max-width:920px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar h1{font-size:26px}
+.bar h1 small{font-family:"Source Sans 3",sans-serif;font-weight:400;font-size:13px;color:var(--ink-3);margin-left:8px;letter-spacing:.08em;text-transform:uppercase}
+.bar .who{font-size:13px;color:var(--ink-3);display:flex;gap:10px;align-items:center}
+.btn{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:4px;padding:7px 12px;cursor:pointer}
+.btn:hover{background:var(--blush)}
+.btn.primary{background:var(--rose);border-color:var(--rose);color:#fff}
+.btn.primary:hover{background:var(--rose-deep)}
+.btn[disabled]{opacity:.6;cursor:default}
+
+/* login */
+.login{max-width:380px;margin:60px auto 0;background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--rose);padding:26px 24px 28px}
+.login h2{font-size:30px;margin-bottom:4px}
+.login p{margin:0 0 18px;color:var(--ink-2);font-size:15px}
+label{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin:12px 0 4px}
+input[type=email],input[type=password],input[type=text],select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:9px 11px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--rose);outline-offset:1px;border-color:var(--rose)}
+.login .btn{width:100%;margin-top:18px;padding:11px}
+.err{margin-top:12px;padding:10px 12px;border-radius:4px;background:var(--bad-soft);color:var(--bad);border-left:4px solid var(--bad);font-size:14px}
+
+/* filters */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 14px}
+.tab{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:20px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.tab .c{background:var(--bg);border-radius:10px;padding:0 7px;font-size:12px;color:var(--ink-3)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.tab.on .c{background:rgba(255,255,255,.18);color:inherit}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--ink-3)}
+.toolbar .r{display:flex;gap:8px;align-items:center}
+.toolbar input[type=text]{width:auto;min-width:200px;font-size:14px;padding:7px 10px}
+
+/* order cards */
+.list{display:grid;gap:12px;margin-top:14px}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-3);border:1px dashed var(--line);border-radius:4px}
+.o{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:4px;padding:14px 16px 16px;display:grid;grid-template-columns:1fr auto;gap:8px 16px}
+.o.s-new{border-left-color:var(--rose)}
+.o.s-payment_sent{border-left-color:var(--warn)}
+.o.s-confirmed{border-left-color:var(--sage)}
+.o.s-paid,.o.s-ready{border-left-color:var(--good)}
+.o.s-picked_up,.o.s-cancelled{opacity:.72}
+.o .hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.o .n{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:24px}
+.o .nm{font-weight:600;font-size:18px}
+.o .pill{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:var(--bg);color:var(--ink-2);border:1px solid var(--line)}
+.o .pill.new{background:var(--blush);color:var(--rose);border-color:transparent}
+.o .pill.payment_sent{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.o .pill.paid,.o .pill.ready{background:var(--good-soft);color:var(--good);border-color:transparent}
+.o .pill.cancelled{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.o .ev{color:var(--ink-2);font-size:15px}
+.o .ev b{color:var(--ink);font-weight:600}
+.o .items{margin:4px 0 0;font-size:15px}
+.o .items .t{font-weight:600;color:var(--rose);margin-left:6px}
+.o .meta{font-size:14px;color:var(--ink-2);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.o .meta a{color:var(--ink);text-decoration:none;font-weight:600}
+.o .meta a:hover{text-decoration:underline}
+.o .txt{margin-top:8px;font-size:14px;color:var(--ink-2);white-space:pre-wrap}
+.o .txt b{color:var(--ink-3);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em;display:block}
+.o .side{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-width:170px}
+.o .side select{font-size:15px;font-weight:600;padding:8px 10px}
+.o .side .when{font-size:12px;color:var(--ink-3);text-align:right}
+.o .notes{grid-column:1/-1;margin-top:6px}
+.o .notes textarea{min-height:44px;font-size:14px;resize:vertical}
+.o .notes .st{font-size:12px;color:var(--ink-3);margin-top:3px;height:14px}
+@media (max-width:600px){.o{grid-template-columns:1fr}.o .side{min-width:0}.o .side .when{text-align:left}}
+.foot{margin-top:30px;font-size:13px;color:var(--ink-3);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="in">
+  <h1>Dance Flowers <small>Orders</small></h1>
+  <div class="who" id="who" hidden><span id="whoEmail"></span><button class="btn" id="signOut" type="button">Sign out</button></div>
+</div></div>
+
+<div class="wrap">
+
+  <div class="login" id="login" hidden>
+    <h2>Sign in</h2>
+    <p>This page is for Leah. Orders live here.</p>
+    <form id="loginForm">
+      <label for="email">Email</label><input type="email" id="email" autocomplete="username" required>
+      <label for="password">Password</label><input type="password" id="password" autocomplete="current-password" required>
+      <button class="btn primary" type="submit" id="loginBtn">Sign in</button>
+      <div class="err" id="loginErr" hidden></div>
+    </form>
+  </div>
+
+  <div id="app" hidden>
+    <div class="tabs" id="tabs"></div>
+    <div class="toolbar">
+      <span id="count"></span>
+      <div class="r"><input type="text" id="q" placeholder="Search name, phone, order #"><button class="btn" id="refresh" type="button">Refresh</button></div>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="foot"><span>Statuses: New → Confirmed → Payment sent → Paid → Ready → Picked up. Cancelled at any point.</span><a href="/danceflowers/">View the public page</a></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = "https://mmxgxnrovxfpcsfzdzfn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_F1b9LiMBe2RqsyJqEOCBjQ_UjejEnS7";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const STATUS = [
+  ["new",          "New"],
+  ["confirmed",    "Confirmed"],
+  ["payment_sent", "Payment sent"],
+  ["paid",         "Paid"],
+  ["ready",        "Ready"],
+  ["picked_up",    "Picked up"],
+  ["cancelled",    "Cancelled"],
+];
+const SLABEL = Object.fromEntries(STATUS);
+const LABELS = { corsage: "Corsage", boutonniere: "Boutonnière", bouquet: "Bouquet" };
+const TABS = [
+  ["todo",   "Needs attention", o => o.status === "new" || o.status === "payment_sent"],
+  ["open",   "In progress",     o => ["confirmed","paid","ready"].includes(o.status)],
+  ["done",   "Done",            o => ["picked_up","cancelled"].includes(o.status)],
+  ["all",    "All",             () => true],
+];
+
+const $ = (s) => document.querySelector(s);
+const money = (n) => "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function fmtDate(iso){ if (!iso) return ""; const [y,m,d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" }); }
+function fmtWhen(ts){ if (!ts) return ""; return new Date(ts).toLocaleString("en-US", { month:"short", day:"numeric", hour:"numeric", minute:"2-digit" }); }
+function daysUntil(iso){ const [y,m,d] = iso.split("-").map(Number); const ev = new Date(y, m-1, d); const now = new Date(); now.setHours(0,0,0,0); return Math.round((ev - now) / 86400000); }
+
+let orders = [];
+let tab = "todo";
+try { tab = localStorage.getItem("df.admin.tab") || "todo"; } catch (_) {}
+
+// ---- auth ---------------------------------------------------------------
+async function boot(){
+  const { data: { session } } = await sb.auth.getSession();
+  setSession(session);
+  sb.auth.onAuthStateChange((_e, s) => setSession(s));
+}
+function setSession(session){
+  const on = !!session;
+  $("#login").hidden = on; $("#app").hidden = !on; $("#who").hidden = !on;
+  if (on) { $("#whoEmail").textContent = session.user.email; load(); }
+}
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const b = $("#loginBtn"); b.disabled = true; $("#loginErr").hidden = true;
+  const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#password").value });
+  b.disabled = false;
+  if (error) { $("#loginErr").textContent = "That didn't work. Check the email and password."; $("#loginErr").hidden = false; }
+});
+$("#signOut").addEventListener("click", () => sb.auth.signOut());
+
+// ---- data ---------------------------------------------------------------
+async function load(){
+  $("#count").textContent = "Loading…";
+  const { data, error } = await sb.from("orders").select("*").order("event_date", { ascending: true }).order("created_at", { ascending: false });
+  if (error) { $("#count").textContent = "Couldn't load orders: " + error.message; return; }
+  orders = data;
+  render();
+}
+$("#refresh").addEventListener("click", load);
+$("#q").addEventListener("input", render);
+setInterval(() => { if (!$("#app").hidden && document.visibilityState === "visible") load(); }, 90000);
+
+async function setStatus(o, status){
+  const patch = { status };
+  if (status === "paid" && !o.paid_at) patch.paid_at = new Date().toISOString();
+  if (status === "payment_sent" && !o.payment_sent_at) patch.payment_sent_at = new Date().toISOString();
+  const { error } = await sb.from("orders").update(patch).eq("id", o.id);
+  if (error) { alert("Couldn't save that: " + error.message); return; }
+  Object.assign(o, patch);
+  render();
+}
+async function saveNotes(o, text, statusEl){
+  statusEl.textContent = "Saving…";
+  const { error } = await sb.from("orders").update({ internal_notes: text }).eq("id", o.id);
+  statusEl.textContent = error ? "Not saved: " + error.message : "Saved";
+  if (!error) { o.internal_notes = text; setTimeout(() => { if (statusEl.textContent === "Saved") statusEl.textContent = ""; }, 1500); }
+}
+
+// ---- render -------------------------------------------------------------
+function render(){
+  const q = $("#q").value.trim().toLowerCase();
+  $("#tabs").innerHTML = TABS.map(([k, lab, fn]) => `<button class="tab${k === tab ? " on" : ""}" data-tab="${k}">${lab}<span class="c num">${orders.filter(fn).length}</span></button>`).join("");
+  document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => { tab = b.dataset.tab; try { localStorage.setItem("df.admin.tab", tab); } catch (_) {} render(); }));
+
+  const fn = TABS.find(t => t[0] === tab)[2];
+  let rows = orders.filter(fn);
+  if (q) rows = rows.filter(o => [o.name, o.phone, o.email, String(o.order_number), o.event_type].some(v => (v || "").toLowerCase().includes(q)));
+  if (tab === "done") rows = rows.slice().sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+
+  $("#count").textContent = `${rows.length} order${rows.length === 1 ? "" : "s"}`;
+  if (!rows.length) { $("#list").innerHTML = `<div class="empty">Nothing here right now.</div>`; return; }
+
+  $("#list").innerHTML = rows.map(card).join("");
+  rows.forEach(o => {
+    const el = document.getElementById("o-" + o.id);
+    el.querySelector("select").addEventListener("change", e => setStatus(o, e.target.value));
+    const ta = el.querySelector("textarea"), st = el.querySelector(".st");
+    ta.addEventListener("change", () => saveNotes(o, ta.value.trim(), st));
+  });
+}
+
+function card(o){
+  const items = Object.entries(o.items || {}).map(([k, q]) => `${q} ${LABELS[k] || k}${q > 1 ? "s" : ""}`).join(", ");
+  const d = daysUntil(o.event_date);
+  const dtxt = d < 0 ? `${-d} day${d === -1 ? "" : "s"} ago` : d === 0 ? "today" : d === 1 ? "tomorrow" : `in ${d} days`;
+  const phone = (o.phone || "").replace(/[^\d+]/g, "");
+  const opts = STATUS.map(([k, lab]) => `<option value="${k}"${k === o.status ? " selected" : ""}>${lab}</option>`).join("");
+  return `<article class="o s-${o.status}" id="o-${o.id}">
+    <div>
+      <div class="hd"><span class="n num">#${o.order_number}</span><span class="nm">${esc(o.name)}</span><span class="pill ${o.status}">${SLABEL[o.status] || o.status}</span></div>
+      <div class="ev"><b>${esc(o.event_type)}</b> · ${fmtDate(o.event_date)} (${dtxt})</div>
+      <div class="items">${esc(items)}<span class="t num">${money(o.total)}</span></div>
+      <div class="meta">
+        <a href="sms:${phone}">Text ${esc(o.phone)}</a>
+        <a href="tel:${phone}">Call</a>
+        ${o.email ? `<a href="mailto:${esc(o.email)}">${esc(o.email)}</a>` : ""}
+      </div>
+      ${o.colors ? `<div class="txt"><b>Colors</b>${esc(o.colors)}</div>` : ""}
+      ${o.notes ? `<div class="txt"><b>Their notes</b>${esc(o.notes)}</div>` : ""}
+    </div>
+    <div class="side">
+      <select aria-label="Status for order ${o.order_number}">${opts}</select>
+      <div class="when">Ordered ${fmtWhen(o.created_at)}${o.payment_sent_at ? `<br>Said paid ${fmtWhen(o.payment_sent_at)}` : ""}${o.paid_at ? `<br>Paid ${fmtWhen(o.paid_at)}` : ""}</div>
+    </div>
+    <div class="notes"><textarea placeholder="Your notes (only you see these)" aria-label="Private notes for order ${o.order_number}">${esc(o.internal_notes)}</textarea><div class="st"></div></div>
+  </article>`;
+}
+
+boot();
+</script>
+</body>
+</html>

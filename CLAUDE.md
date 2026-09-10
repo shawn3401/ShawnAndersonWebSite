@@ -64,7 +64,8 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers. Handmade corsages ($25), boutonnières ($15), and bouquets ($35) for homecoming, prom, winter formal, and weddings. Pickup in Idaho Falls, pay at pickup with cash or Venmo, no payment taken on the site. The page collects an order and Leah confirms by text or email within a day.
 
 ### Files
-- `danceflowers/index.html` the whole thing. CSS and JS inline, no `data.js`. Loads qrcodejs from cdnjs for the confirmation QR. Not linked from the root landing page yet (`index.html` at the root does not mention it).
+- `danceflowers/index.html` the public page. CSS and JS inline, no `data.js`. Loads qrcodejs from cdnjs for the confirmation QR.
+- `danceflowers/admin/index.html` Leah's order list (see "Admin page" below). Not linked from the root landing page yet (`index.html` at the root does not mention it).
 - `supabase/danceflowers/*.sql` database setup scripts, numbered. GitHub Pages publishes this folder too, which is fine, there is nothing secret in it.
 - No GoatCounter script on this page. Add the same `<script data-goatcounter=...>` tag the rick/ pages use if Shawn wants visit counts.
 
@@ -96,7 +97,8 @@ Every photo on the page is a stock placeholder hotlinked from Pexels or Unsplash
   - `mark_payment_sent(order_number, token)` flips status to `payment_sent`. Only works with the matching token and only from `new` or `confirmed`.
 - Order statuses: new, confirmed, payment_sent, paid, ready, picked_up, cancelled. `internal_notes` is Leah's private column.
 - Prices now live in SIX places: the five on the page plus the `products` table. The table is the one that decides the charged total; the page copies are display only.
-- RLS: anon has no table access (functions run as security definer). `authenticated` can select and update orders. Signups are disabled in Auth, so only accounts created in the dashboard (Leah, Shawn) can log in. The admin page is not built yet.
+- RLS: anon has no table access (functions run as security definer). `authenticated` can select and update orders. Signups are disabled in Auth, so only accounts created in the dashboard (Leah, Shawn) can log in.
+- Admin page: `danceflowers/admin/index.html`, at shawnandersonapps.com/danceflowers/admin/. Supabase Auth email+password via supabase-js v2 from jsDelivr, session kept in localStorage. `noindex`. Tabs: Needs attention (new, payment_sent), In progress (confirmed, paid, ready), Done (picked_up, cancelled), All. Each order card: number, name, status pill, event and days until, items and total, text/call/email links, colors, customer notes, a status dropdown (saving sets `paid_at` / `payment_sent_at` the first time), and a private notes textarea that saves on change. Search box matches name, phone, email, order number, event. Reloads every 90 s while visible. Same palette as the public page, cards stack under 600px.
 - Quantities are 0 to 50 per item. Required: at least one item, event type, event date (min today), name, phone. Email optional and format-checked. Honeypot field `website` drops bots.
 - After a successful submit the form and summary hide and the confirmation panel (`#confirm`) shows: order number, recap, and a "Next step" block with a "Pay on Venmo" button and a QR code of the same link (QR hidden under 720px). `VENMO_USER` at the top of the script is Leah's handle; while it is empty the whole payment block is hidden. The Venmo link prefills the amount and the note "Dance Flowers order #NNNN". "I sent my payment" calls `mark_payment_sent`. The panel survives a refresh via sessionStorage; "Place another order" clears it.
 - The site cannot see Venmo. "Payment sent" is the customer's word; Leah confirms it as `paid` in the admin once it shows in Venmo.
