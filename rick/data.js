@@ -16,13 +16,13 @@ const SEGMENTS = [
 ];
 const TOTAL_PLAN = Math.round(SEGMENTS.reduce((a,s)=>a+s.miles,0)*10)/10;
 
-// One entry per calendar day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
+// One entry per calendar day. miles = that day's distance. gain/loss in ft. lat/lng = that night's camp (decimal degrees, from Rick's Garmin pin); shown as a Google Maps link in the daily log and the Last camp block.
 // Multiple updates in one day: add updates:[{time:"10:30 am", miles:17, gain:370, text:"..."}] (oldest first) and they show grouped under the day's notes.
 // course:N on a row = how much a reroute that day changed the length of his course, from the onX segment route with reroutes vs his original. Negative = shortcut (saved miles), positive = detour (added miles). Applied to his position; the plan does not change.
 // While he is still riding, set done:false and keep miles/gain at the latest check-in; the row shows "Riding now" and stays out of the completed-day math. When the day ends, remove done:false and fill in end, miles, gain, loss, notes.
 const LOG = [
-  {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
-  {day:2, date:"2026-09-07", end:"Loon Lake Campground, MT", miles:0, gain:0, loss:0, notes:"Rain day. Sat tight at camp all day and waited it out."},
+  {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, lat:48.59786, lng:-115.67161, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
+  {day:2, date:"2026-09-07", end:"Loon Lake Campground, MT", miles:0, gain:0, loss:0, lat:48.59786, lng:-115.67161, notes:"Rain day. Sat tight at camp all day and waited it out."},
   {day:3, date:"2026-09-08", end:"Troy Mine, near Bull Lake, MT", miles:45.6, gain:1749, loss:2895, lat:48.30558, lng:-115.84547, course:-6.8, notes:"Loon Lake to Troy Mine. Mostly downhill to the Kootenai River at 1,884 ft, restocked food in Troy, then south along Hwy 56 to camp near Bull Lake. Took a shortcut that trimmed 6.8 miles off segment 1 (296.6 planned, 289.8 with the reroute)."},
   {day:4, date:"2026-09-09", end:"Porcupine Pass, ID (Montana/Idaho line)", miles:56.5, gain:4431, loss:1876, lat:47.84681, lng:-115.88983, notes:"Troy Mine to Porcupine Pass. Down Hwy 56 past Bull Lake to the Hwy 200 junction near Noxon, then a 3,000 ft climb from the low point at 2,189 ft to the 5,205 ft pass. Camped ten feet into Idaho. First state down.", updates:[
     {time:"8:30 am", text:"Rolled out after a great night's sleep at the Troy Mine camp."},

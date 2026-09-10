@@ -138,6 +138,9 @@ tr.future td{color:var(--ink-3)}
 .c-cur{background:var(--red);color:#fff}
 .seg-name{font-weight:600}
 .seg-sub{font-size:13px;color:var(--ink-3)}
+.camp{display:block;font-size:13px;font-weight:400;color:var(--ink-3);text-decoration:none;margin-top:3px;white-space:nowrap}
+.camp:hover,.camp:focus{color:var(--red);text-decoration:underline}
+.where .camp{font-size:14px;margin-top:6px}
 .upd{list-style:none;margin:6px 0 0;padding:0;font-size:14px}
 .upd li{padding:4px 0 4px 10px;border-left:2px solid var(--line)}
 .upd li+li{margin-top:2px}
@@ -264,6 +267,8 @@ const fmt = n => n.toLocaleString("en-US");
 const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
 const mdy = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
 const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+// Camp link: a LOG row with lat/lng gets a Google Maps link to that night's tent spot.
+const camp = e => (e && e.lat!=null && e.lng!=null) ? `<a class="camp num" href="https://www.google.com/maps?q=${e.lat},${e.lng}" target="_blank" rel="noopener" title="Open this camp in Google Maps">📍 ${e.lat.toFixed(5)}, ${e.lng.toFixed(5)}</a>` : "";
 
 // Build 63-day plan: each segment's official miles spread evenly over Rick's planned days.
 const planDaily = []; SEGMENTS.forEach(s => { s.mpd = s.miles/s.days; for(let i=0;i<s.days;i++) planDaily.push(s.mpd); });
@@ -339,7 +344,7 @@ bar.innerHTML = html;
 // Where
 const w = document.getElementById("where");
 w.innerHTML = last ? `
-  <div><div class="eyebrow" style="color:var(--ink-3)">Last camp · ${mdy(d2(last.date))}</div><div class="big">${last.end}</div>
+  <div><div class="eyebrow" style="color:var(--ink-3)">Last camp · ${mdy(d2(last.date))}</div><div class="big">${last.end}</div>${camp(last)}
     <dl class="kv">
       <dt>Segment</dt><dd>${curSeg.n} of 9, ${curSeg.from} to ${curSeg.to} (${fmt(Math.round(milesIntoSeg))} of ${fmt(curSeg.miles)} mi in)</dd>
       <dt>Next town</dt><dd>${curSeg.to}, planned arrival ${mdy(d2(curSeg.end))}</dd>
@@ -395,7 +400,7 @@ const updList = e => (e.updates&&e.updates.length) ? `<ul class="upd">${e.update
 document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
   const open = e.done===false;
   const dc = e.delta>=0?"delta-good":"delta-bad";
-  const ended = open ? `<span class="chip c-good">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : e.end;
+  const ended = open ? `<span class="chip c-good">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : `${e.end}${camp(e)}`;
   const miles = open ? `${fmt(e.miles||0)} <span class="sofar">so far</span>` : fmt(e.miles);
   const vs = open ? `<span class="sofar">pending</span>` : `<span class="${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</span>`;
   return `<tr class="${open?"open":""}"><td class="num l-day" data-l="Day">${e.day}</td><td class="num l-date" data-l="Date">${mdy(d2(e.date))}</td><td class="l-end" data-l="Ended at">${ended}</td><td class="r num l-stat" data-l="Miles">${miles}</td><td class="r num l-stat" data-l="Plan">${Math.round(planDaily[e.day-1])}</td><td class="r num l-stat" data-l="Climb">+${fmt(e.gain||0)}</td><td class="r num l-stat" data-l="Total">${fmt(e.cred)}</td><td class="r num l-stat" data-l="vs. plan">${vs}</td><td class="l-notes">${e.notes||""}${e.course<0?` <span class="chip c-good">Reroute saved ${fmt(-e.course)} mi</span>`:e.course>0?` <span class="chip c-warn">Reroute added ${fmt(e.course)} mi</span>`:""}${updList(e)}</td></tr>`;
