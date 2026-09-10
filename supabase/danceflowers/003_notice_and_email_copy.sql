@@ -79,3 +79,31 @@ begin
     v_venmo, to_char(o.total, 'FM9999990.00'), setting('venmo_user')
   );
 end $$;
+
+-- Customer email subject: neutral, no "next step is payment".
+create or replace function public.orders_notify() returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_to   text[] := array[setting('notify_to')];
+  v_cc   text[] := case when coalesce(setting('notify_cc'), '') <> '' then array[setting('notify_cc')] else null end;
+  v_when text   := to_char(new.event_date, 'Mon FMDD');
+begin
+  if tg_op = 'INSERT' then
+    perform send_email(v_to,
+      format('New order #%s from %s, %s %s, $%s', new.order_number, new.name, new.event_type, v_when, to_char(new.total, 'FM9999990')),
+      staff_order_email(new, 'new'), v_cc, new.email);
+    if setting('customer_emails') = 'true' and new.email is not null then
+      perform send_email(array[new.email],
+        format('Your Dance Flowers order #%s is in', new.order_number),
+        customer_order_email(new), null, setting('reply_to'));
+    end if;
+  elsif tg_op = 'UPDATE' and new.status = 'payment_sent' and old.status is distinct from 'payment_sent' then
+    perform send_email(v_to,
+      format('Payment sent for order #%s, %s, $%s', new.order_number, new.name, to_char(new.total, 'FM9999990')),
+      staff_order_email(new, 'payment_sent'), v_cc, new.email);
+  end if;
+  return new;
+end $$;

@@ -161,7 +161,7 @@ begin
       staff_order_email(new, 'new'), v_cc, new.email);
     if setting('customer_emails') = 'true' and new.email is not null then
       perform send_email(array[new.email],
-        format('Dance Flowers order #%s, next step is payment', new.order_number),
+        format('Your Dance Flowers order #%s is in', new.order_number),
         customer_order_email(new), null, setting('reply_to'));
     end if;
   elsif tg_op = 'UPDATE' and new.status = 'payment_sent' and old.status is distinct from 'payment_sent' then
