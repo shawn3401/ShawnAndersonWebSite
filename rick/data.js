@@ -48,6 +48,10 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-10-wallace-burger", date:"2026-09-10", caption:"Day 5. Lunch in Wallace, ID: bacon burger, sweet potato fries, and a berry shake."},
+  {file:"2026-09-10-food-inventory", date:"2026-09-10", caption:"Day 5. Food inventory laid out on the ground next to the pannier, counting what is left."},
+  {file:"2026-09-10-mossy-spring", date:"2026-09-10", caption:"Day 5. Mossy rock face with a spring trickling down it on the descent from Porcupine Pass toward Wallace."},
+  {file:"2026-09-09-porcupine-pass-sign-selfie", date:"2026-09-09", caption:"Day 4. Rick at the Porcupine Pass 9 / State Line 9 sign on the Montana side, nine miles below the pass, loaded bike behind him."},
   {file:"2026-09-09-kootenai-sign-selfie", date:"2026-09-09", caption:"Day 4 morning. Rick at the Kootenai National Forest sign, fresh off a good night's sleep and about to head south for the Idaho line."},
   {file:"2026-09-09-day4-ride-map", date:"2026-09-09", caption:"Day 4 route on onX Offroad: Troy Mine to Porcupine Pass on the Idaho border, 56.5 mi, +4,431 / -1,876 ft. Green is the day, purple is the plan."},
   {file:"2026-09-08-troy-mine-camp", date:"2026-09-08", caption:"Day 3 camp near Troy Mine: tent under the firs, bike leaned up, gear spread out on the tarp to dry, and food bags hung in the trees."},
@@ -63,5 +67,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 10, 2026, 4:35 pm MT";
+const LAST_UPDATED = "Sept 10, 2026, 4:44 pm MT";
 // ===== END DATA =====
