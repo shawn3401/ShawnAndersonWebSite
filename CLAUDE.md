@@ -73,7 +73,7 @@ A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers.
 - What I make (`#types`): three cards, one per product, each with a photo, price, blurb, three bullets, and an "Add a ... to my order" link that bumps that item's quantity in the form.
 - How it works (`#how`): three steps (send the order, Leah confirms, pick up and pay).
 - Order (`#order`): the form on the left, a sticky "Your order" summary with running total on the right. Stacks on mobile.
-- Good to know (`#faq`): six short Q&As (lead time, pickup, dress matching, keeping it fresh, group orders, payment).
+- Good to know (`#faq`): seven short Q&As (lead time, pickup, dress matching, keeping it fresh, group orders, payment, plans changing).
 - Footer with the "photos are placeholders" note and a link home.
 
 ### Look
@@ -100,10 +100,12 @@ Every photo on the page is a stock placeholder hotlinked from Pexels or Unsplash
 - Quantities are 0 to 50 per item. Required: at least one item, event type, event date (min today), name, phone. Email optional and format-checked. Honeypot field `website` drops bots.
 - After a successful submit the form and summary hide and the confirmation panel (`#confirm`) shows: order number, recap, and a "Next step" block with a "Pay on Venmo" button and a QR code of the same link (QR hidden under 720px). `VENMO_USER` at the top of the script is Leah's handle; while it is empty the whole payment block is hidden. The Venmo link prefills the amount and the note "Dance Flowers order #NNNN". "I sent my payment" calls `mark_payment_sent`. The panel survives a refresh via sessionStorage; "Place another order" clears it.
 - The site cannot see Venmo. "Payment sent" is the customer's word; Leah confirms it as `paid` in the admin once it shows in Venmo.
-- `CONTACT_PHONE` at the top of the script goes into the failure message if set. Ask Shawn or Leah for a number; do not invent it.
+- `CONTACT_PHONE` at the top of the script goes into the failure message.
 - Emails to Leah on new order and payment sent are NOT built yet. Plan: Supabase edge function plus Resend, which needs shawnandersonapps.com verified as a sending domain.
 - Test order #1001 (name "Test Order", 208-555-0100) was placed by Claude on Sept 10, 2026 while wiring this up. Cancel it from the admin once that exists.
 
 ### Copy rules specific to this page
 - The voice is Leah's, first person ("I confirm", "What I make"). Keep it that way.
-- Stated promises on the page: confirmation within a day, pickup in Idaho Falls the day of or the day before, cash or Venmo, no deposit, a week's notice is ideal. The confirmation panel now asks for Venmo payment as the next step, which sits awkwardly next to "pay at pickup" in the hero, step 3, the order intro, the summary note, and the FAQ. Shawn has not decided yet whether cash at pickup stays; do not rewrite those until he does. If Leah changes any of these, update the hero lead, the How it works steps, the Order intro, the summary note, and the FAQ, since several repeat the same promise.
+- Stated promises on the page: confirmation within a day, pickup in Idaho Falls the day of or the day before, a week's notice is ideal, and the payment policy below. Several sections repeat the same promise (hero lead, step 3, order intro, summary note, confirmation panel text, FAQ), so change them together.
+- Payment policy (Shawn, Sept 10, 2026, kept deliberately casual since customers are friends and the kids' friends): Venmo when you order is easiest, cash at pickup is fine, flowers are paid for by pickup, no deposit. If plans change, text Leah early because she buys fresh flowers a few days ahead.
+- Leah's contact details on the page: Venmo @Leah-Anderson-58 (`VENMO_USER`), phone 208-403-7323 (`CONTACT_PHONE`, also in the "What if plans change?" FAQ). Notification email, not yet wired: leah3401@gmail.com. If Leah changes any of these, update the hero lead, the How it works steps, the Order intro, the summary note, and the FAQ, since several repeat the same promise.

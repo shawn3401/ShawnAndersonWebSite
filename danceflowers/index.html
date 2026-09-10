@@ -183,7 +183,7 @@ textarea{min-height:96px;resize:vertical}
   <div class="in">
     <div class="eyebrow">Idaho Falls · Homecoming, prom, and weddings</div>
     <h1>Flowers for the big night.</h1>
-    <p class="lead">Handmade corsages, boutonnières, and bouquets, matched to the dress and the date. Order below and pick up before the dance.</p>
+    <p class="lead">Handmade corsages, boutonnières, and bouquets, matched to the dress and the date. Order below, pay with Venmo or cash, and pick up before the dance.</p>
     <div class="acts"><a class="cta" href="#order">Place an order</a><a class="cta ghost" href="#types">See what I make</a></div>
     <div class="pricebar">
       <div><div class="lab">Corsage</div><div class="val num">$25</div></div>
@@ -236,14 +236,14 @@ textarea{min-height:96px;resize:vertical}
   <div class="steps">
     <div class="step"><div class="n">1</div><h3>Send your order</h3><p>Fill out the form below with your event date and what you need. Tell me the colors. A photo of the dress helps a lot.</p></div>
     <div class="step"><div class="n">2</div><h3>I confirm</h3><p>I'll text or email you within a day to confirm the details, the total, and a pickup time.</p></div>
-    <div class="step"><div class="n">3</div><h3>Pick up and go</h3><p>Pickup in Idaho Falls the day of or the day before the event. Pay at pickup with cash or Venmo.</p></div>
+    <div class="step"><div class="n">3</div><h3>Pick up and go</h3><p>Pickup in Idaho Falls the day of or the day before the event. Venmo when you order is easiest, or bring cash to pickup.</p></div>
   </div>
 </section>
 
 <section id="order">
   <div class="eyebrow">Order</div>
   <h2>Tell me about your event.</h2>
-  <p class="lead" id="orderLead">No payment now. I'll confirm your order and you pay at pickup.</p>
+  <p class="lead" id="orderLead">Send the order, then pay with Venmo right away or bring cash to pickup. I'll confirm within a day.</p>
   <div class="order" id="orderGrid">
     <form id="orderForm" novalidate>
       <fieldset>
@@ -293,7 +293,7 @@ textarea{min-height:96px;resize:vertical}
       <h3>Your order</h3>
       <div id="sumLines"><div class="ln empty">Nothing added yet. Use the + buttons.</div></div>
       <div class="tot"><span>Estimated total</span><span class="v num" id="sumTotal">$0</span></div>
-      <p class="note"><b>No payment now.</b> The total is confirmed when I confirm your order. Pay at pickup with cash or Venmo.</p>
+      <p class="note"><b>Nothing due yet.</b> After you send the order you'll get a Venmo link for this total. Cash at pickup works too.</p>
     </aside>
   </div>
 
@@ -328,7 +328,8 @@ textarea{min-height:96px;resize:vertical}
     <div><h3>Can you match my dress?</h3><p>Yes. Send a photo of the dress or a swatch and I'll match the flowers and ribbon to it.</p></div>
     <div><h3>How do I keep it fresh?</h3><p>Keep it in the fridge in the box it comes in until you're ready to leave. It'll look great through the last song.</p></div>
     <div><h3>Group orders?</h3><p>Absolutely. Ordering for a whole friend group or a wedding party is welcome. Put everyone's colors in the notes.</p></div>
-    <div><h3>How do I pay?</h3><p>Cash or Venmo at pickup. No deposit needed for now.</p></div>
+    <div><h3>How do I pay?</h3><p>Venmo when you order is easiest, and the confirmation gives you the link. Cash at pickup is fine too. Flowers are paid for by pickup, no deposit needed.</p></div>
+    <div><h3>What if plans change?</h3><p>Text me at 208-403-7323 as early as you can. I buy fresh flowers a few days before the dance, so a heads up helps more than anything.</p></div>
   </div>
 </section>
 
@@ -343,8 +344,8 @@ textarea{min-height:96px;resize:vertical}
 // ---- Settings ----------------------------------------------------------
 const SUPABASE_URL = "https://mmxgxnrovxfpcsfzdzfn.supabase.co";
 const SUPABASE_KEY = "sb_publishable_F1b9LiMBe2RqsyJqEOCBjQ_UjejEnS7";   // publishable key, safe in the page
-const VENMO_USER   = "";        // Leah's Venmo username without the @. Empty = hide the Venmo button and QR.
-const CONTACT_PHONE = "";       // shown in the error message if set
+const VENMO_USER   = "Leah-Anderson-58";        // Leah's Venmo username without the @. Empty = hide the Venmo button and QR.
+const CONTACT_PHONE = "208-403-7323";       // shown in the error message if set
 
 const PRICES = { corsage: 25, boutonniere: 15, bouquet: 35 };   // display copy; the server prices the order itself
 const LABELS = { corsage: "Corsage", boutonniere: "Boutonnière", bouquet: "Bouquet" };
@@ -444,7 +445,7 @@ function showConfirm(o){
     pay.hidden = false;
     const link = venmoLink(o);
     $("#cVenmo").href = link;
-    $("#cPayText").textContent = `Send ${money(o.total)} to @${VENMO_USER}. The button fills in the amount and your order number. Then tap "I sent my payment" so I know to look for it.`;
+    $("#cPayText").textContent = `Send ${money(o.total)} to @${VENMO_USER}. The button fills in the amount and your order number. Then tap "I sent my payment" so I know to look for it. Rather pay cash? Just bring it to pickup.`;
     const box = $("#cQrBox"); box.innerHTML = "";
     if (window.QRCode) new QRCode(box, { text: link, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.M });
     else $("#cQr").hidden = true;
