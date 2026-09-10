@@ -55,6 +55,10 @@ input[type=email],input[type=password],input[type=text],select,textarea{width:10
 input:focus,select:focus,textarea:focus{outline:2px solid var(--rose);outline-offset:1px;border-color:var(--rose)}
 .login .btn{width:100%;margin-top:18px;padding:11px}
 .err{margin-top:12px;padding:10px 12px;border-radius:4px;background:var(--bad-soft);color:var(--bad);border-left:4px solid var(--bad);font-size:14px}
+.ok{margin-top:12px;padding:10px 12px;border-radius:4px;background:var(--good-soft);color:var(--good);border-left:4px solid var(--good);font-size:14px}
+.login .links{margin-top:14px;font-size:14px;text-align:center}
+.login .links a{cursor:pointer}
+.login .cancel{background:transparent;border:0;color:var(--ink-3);font:inherit;font-size:14px;cursor:pointer;margin-top:10px;width:100%;text-decoration:underline}
 
 /* filters */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 14px}
@@ -106,7 +110,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--rose);outline-of
 
 <div class="bar"><div class="in">
   <h1>Dance Flowers <small>Orders</small></h1>
-  <div class="who" id="who" hidden><span id="whoEmail"></span><button class="btn" id="signOut" type="button">Sign out</button></div>
+  <div class="who" id="who" hidden><span id="whoEmail"></span><button class="btn" id="changePw" type="button">Change password</button><button class="btn" id="signOut" type="button">Sign out</button></div>
 </div></div>
 
 <div class="wrap">
@@ -119,6 +123,32 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--rose);outline-of
       <label for="password">Password</label><input type="password" id="password" autocomplete="current-password" required>
       <button class="btn primary" type="submit" id="loginBtn">Sign in</button>
       <div class="err" id="loginErr" hidden></div>
+      <div class="links"><a id="forgot">Forgot your password?</a></div>
+    </form>
+  </div>
+
+  <div class="login" id="reset" hidden>
+    <h2>Reset password</h2>
+    <p>Enter your email and I'll send a link that lets you set a new password.</p>
+    <form id="resetForm">
+      <label for="resetEmail">Email</label><input type="email" id="resetEmail" autocomplete="username" required>
+      <button class="btn primary" type="submit" id="resetBtn">Email me a reset link</button>
+      <div class="err" id="resetErr" hidden></div>
+      <div class="ok" id="resetOk" hidden></div>
+      <button class="cancel" type="button" id="resetCancel">Back to sign in</button>
+    </form>
+  </div>
+
+  <div class="login" id="pw" hidden>
+    <h2>New password</h2>
+    <p id="pwIntro">Pick a new password for this account.</p>
+    <form id="pwForm">
+      <label for="pw1">New password</label><input type="password" id="pw1" autocomplete="new-password" minlength="8" required>
+      <label for="pw2">Type it again</label><input type="password" id="pw2" autocomplete="new-password" minlength="8" required>
+      <button class="btn primary" type="submit" id="pwBtn">Save password</button>
+      <div class="err" id="pwErr" hidden></div>
+      <div class="ok" id="pwOk" hidden></div>
+      <button class="cancel" type="button" id="pwCancel">Cancel</button>
     </form>
   </div>
 
@@ -169,16 +199,62 @@ let tab = "todo";
 try { tab = localStorage.getItem("df.admin.tab") || "todo"; } catch (_) {}
 
 // ---- auth ---------------------------------------------------------------
+let recovering = false;   // arrived from a password-reset email
 async function boot(){
+  sb.auth.onAuthStateChange((event, s) => {
+    if (event === "PASSWORD_RECOVERY") { recovering = true; showPanel("pw"); $("#pwIntro").textContent = "You're in from the reset link. Pick a new password."; return; }
+    setSession(s);
+  });
   const { data: { session } } = await sb.auth.getSession();
-  setSession(session);
-  sb.auth.onAuthStateChange((_e, s) => setSession(s));
+  if (!recovering) setSession(session);
+}
+function showPanel(which){   // "login" | "reset" | "pw" | null
+  for (const id of ["login","reset","pw"]) $("#"+id).hidden = id !== which;
 }
 function setSession(session){
   const on = !!session;
-  $("#login").hidden = on; $("#app").hidden = !on; $("#who").hidden = !on;
+  if (recovering) return;
+  showPanel(on ? null : "login");
+  $("#app").hidden = !on; $("#who").hidden = !on;
   if (on) { $("#whoEmail").textContent = session.user.email; load(); }
 }
+
+// ---- password reset (signed out) ------------------------------------------
+$("#forgot").addEventListener("click", () => { $("#resetEmail").value = $("#email").value; $("#resetErr").hidden = $("#resetOk").hidden = true; showPanel("reset"); });
+$("#resetCancel").addEventListener("click", () => showPanel("login"));
+$("#resetForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const b = $("#resetBtn"); b.disabled = true; $("#resetErr").hidden = $("#resetOk").hidden = true;
+  const { error } = await sb.auth.resetPasswordForEmail($("#resetEmail").value.trim(), { redirectTo: location.origin + location.pathname });
+  b.disabled = false;
+  if (error) { $("#resetErr").textContent = "Couldn't send that: " + error.message; $("#resetErr").hidden = false; }
+  else { $("#resetOk").textContent = "Sent. Check your email (and spam) for a link back here."; $("#resetOk").hidden = false; }
+});
+
+// ---- change password (signed in, or from a reset link) --------------------
+$("#changePw").addEventListener("click", () => { $("#pwIntro").textContent = "Pick a new password for this account."; $("#pw1").value = $("#pw2").value = ""; $("#pwErr").hidden = $("#pwOk").hidden = true; $("#app").hidden = true; showPanel("pw"); });
+$("#pwCancel").addEventListener("click", async () => {
+  if (recovering) { recovering = false; await sb.auth.signOut(); showPanel("login"); return; }
+  showPanel(null); $("#app").hidden = false;
+});
+$("#pwForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("#pwErr").hidden = $("#pwOk").hidden = true;
+  const a = $("#pw1").value, c = $("#pw2").value;
+  if (a.length < 8) { $("#pwErr").textContent = "Use at least 8 characters."; $("#pwErr").hidden = false; return; }
+  if (a !== c) { $("#pwErr").textContent = "Those don't match."; $("#pwErr").hidden = false; return; }
+  const b = $("#pwBtn"); b.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: a });
+  b.disabled = false;
+  if (error) {
+    const stale = /reauthenticat|recent/i.test(error.message);
+    $("#pwErr").textContent = stale ? "You've been signed in a while. Sign out, sign back in, then change it." : ("Couldn't save that: " + error.message);
+    $("#pwErr").hidden = false; return;
+  }
+  $("#pwOk").textContent = "Password saved."; $("#pwOk").hidden = false;
+  recovering = false;
+  setTimeout(async () => { const { data: { session } } = await sb.auth.getSession(); setSession(session); }, 900);
+});
 $("#loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const b = $("#loginBtn"); b.disabled = true; $("#loginErr").hidden = true;
