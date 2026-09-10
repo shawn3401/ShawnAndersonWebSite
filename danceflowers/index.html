@@ -495,7 +495,7 @@ $("#orderForm").addEventListener("submit", async (e) => {
   const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = "Sending…";
   try {
     const res = await rpc("place_order", { payload: o });
-    const rec = { order_number: res.order_number, token: res.token, total: res.total, name: res.name, phone: o.phone, items: o.items, status: "new" };
+    const rec = { order_number: res.order_number, token: res.token, total: res.total, name: res.name, phone: o.phone, items: o.items, status: "new", at: Date.now() };
     try { sessionStorage.setItem(ORDER_KEY, JSON.stringify(rec)); } catch (_) {}
     e.target.reset(); render();
     $("#msg").className = "msg"; $("#msg").innerHTML = "";
@@ -513,7 +513,7 @@ render();
 (function(){
   try {
     const saved = JSON.parse(sessionStorage.getItem(ORDER_KEY) || "null");
-    if (saved && saved.order_number) {
+    if (saved && saved.order_number && Date.now() - (saved.at || 0) < 12 * 3600 * 1000) {   // forget it after 12 hours
       const go = () => showConfirm(saved);
       if (window.QRCode || !VENMO_USER) go(); else window.addEventListener("load", go, { once: true });
     }
