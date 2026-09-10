@@ -96,6 +96,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--rose);outline-of
 .o .meta a:hover{text-decoration:underline}
 .o .txt{margin-top:8px;font-size:14px;color:var(--ink-2);white-space:pre-wrap}
 .o .txt b{color:var(--ink-3);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em;display:block}
+.o .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.o .chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:20px;padding:3px 10px 3px 5px;font-size:13px;background:var(--bg)}
+.o .chip i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.15);display:inline-block}
+.o .pics{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.o .pics a{display:block;width:110px;height:110px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--blush)}
+.o .pics img{width:100%;height:100%;object-fit:cover;display:block}
 .o .side{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-width:170px}
 .o .side select{font-size:15px;font-weight:600;padding:8px 10px}
 .o .side .when{font-size:12px;color:var(--ink-3);text-align:right}
@@ -180,6 +186,8 @@ const STATUS = [
 ];
 const SLABEL = Object.fromEntries(STATUS);
 const LABELS = { corsage: "Corsage", boutonniere: "Boutonnière", bouquet: "Bouquet" };
+const COLOR_HEX = { "White":"#FFFFFF","Ivory":"#F3EAD3","Blush":"#F4C6C6","Pink":"#F28CB1","Hot pink":"#E0218A","Red":"#C8102E","Burgundy":"#6D1A36","Coral":"#F88379","Peach":"#FFCBA4","Orange":"#F4791F","Yellow":"#F7D354","Lavender":"#B69CDA","Purple":"#6A3FA0","Light blue":"#A9CBEA","Dusty blue":"#7A9CC6","Royal blue":"#2A4BA0","Navy":"#1B2A4A","Emerald":"#1E7B4F","Sage":"#9CAF88","Teal":"#2A8C8C","Black":"#111111","Silver":"#C0C0C0","Gold":"#D4AF37" };   // keep in sync with the public page
+const PHOTO_BASE = SUPABASE_URL + "/storage/v1/object/public/order-photos/";
 const TABS = [
   ["todo",   "Needs attention", o => o.status === "new" || o.status === "payment_sent"],
   ["open",   "In progress",     o => ["confirmed","paid","ready"].includes(o.status)],
@@ -335,7 +343,9 @@ function card(o){
         <a href="tel:${phone}">Call</a>
         ${o.email ? `<a href="mailto:${esc(o.email)}">${esc(o.email)}</a>` : ""}
       </div>
-      ${o.colors ? `<div class="txt"><b>Colors</b>${esc(o.colors)}</div>` : ""}
+      ${(o.color_picks || []).length ? `<div class="txt"><b>Colors picked</b><div class="chips">${o.color_picks.map(c => `<span class="chip"><i style="background:${COLOR_HEX[c] || "#ccc"}"></i>${esc(c)}</span>`).join("")}</div></div>` : ""}
+      ${(o.photos || []).length ? `<div class="txt"><b>Photos</b><div class="pics">${o.photos.map(ph => `<a href="${PHOTO_BASE + ph}" target="_blank" rel="noopener"><img src="${PHOTO_BASE + ph}" alt="Customer photo" loading="lazy"></a>`).join("")}</div></div>` : ""}
+      ${o.colors ? `<div class="txt"><b>About colors</b>${esc(o.colors)}</div>` : ""}
       ${o.notes ? `<div class="txt"><b>Their notes</b>${esc(o.notes)}</div>` : ""}
     </div>
     <div class="side">

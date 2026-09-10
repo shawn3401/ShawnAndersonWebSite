@@ -161,6 +161,25 @@ textarea{min-height:96px;resize:vertical}
 .confirm .again{margin-top:18px;font-size:15px}
 @media (max-width:720px){.confirm .pay{grid-template-columns:1fr}.confirm .qr{display:none}.confirm h3{font-size:30px}}
 
+/* colors and photos */
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.sw{position:relative}
+.sw input{position:absolute;opacity:0;width:0;height:0}
+.sw span{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:20px;padding:6px 12px 6px 7px;font-size:14px;background:var(--paper);cursor:pointer;user-select:none;color:var(--ink-2)}
+.sw i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.15);display:inline-block;flex:none}
+.sw span:hover{border-color:var(--ink-3)}
+.sw input:checked+span{border-color:var(--rose);background:var(--blush);color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--rose) inset}
+.sw input:focus-visible+span{outline:2px solid var(--rose);outline-offset:2px}
+.photos{margin-top:6px}
+.photos .pick{display:inline-flex;align-items:center;gap:8px;border:1px dashed var(--ink-3);border-radius:4px;padding:10px 14px;background:var(--bg);cursor:pointer;font-size:15px;font-weight:600;color:var(--ink-2)}
+.photos .pick:hover{border-color:var(--rose);color:var(--rose)}
+.photos .pick input{position:absolute;opacity:0;width:0;height:0}
+.photos .hint{font-size:13px;color:var(--ink-3);margin:6px 0 0}
+.thumbs{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.thumb{position:relative;width:96px;height:96px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--blush)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:1;cursor:pointer}
+.thumb .st{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;text-align:center;padding:2px 0}
 /* faq */
 .faq{display:grid;grid-template-columns:1fr 1fr;gap:18px 32px;margin-top:22px}
 .faq div h3{font-size:22px}
@@ -234,7 +253,7 @@ textarea{min-height:96px;resize:vertical}
   <div class="eyebrow">How it works</div>
   <h2>Order once, pick up before the dance.</h2>
   <div class="steps">
-    <div class="step"><div class="n">1</div><h3>Send your order</h3><p>Fill out the form below with your event date and what you need. Tell me the colors. A photo of the dress helps a lot.</p></div>
+    <div class="step"><div class="n">1</div><h3>Send your order</h3><p>Fill out the form below with your event date and what you need. Pick your colors and add a photo of the dress or tie so I can match it.</p></div>
     <div class="step"><div class="n">2</div><h3>I confirm</h3><p>I'll text or email you within a day to confirm the details, the total, and a pickup time.</p></div>
     <div class="step"><div class="n">3</div><h3>Pick up and go</h3><p>Pickup in Idaho Falls the day of or the day before the event. Venmo when you order is easiest, or bring cash to pickup.</p></div>
   </div>
@@ -266,8 +285,22 @@ textarea{min-height:96px;resize:vertical}
               <option value="">Choose one</option><option>Homecoming</option><option>Prom</option><option>Winter formal</option><option>Sweethearts / Morp</option><option>Wedding</option><option>Other</option>
             </select></div>
           <div><label for="eventDate">Event date <span class="opt">(at least 5 days out)</span></label><input type="date" id="eventDate" name="event_date" required></div>
-          <div style="grid-column:1/-1"><label for="colors">Colors <span class="opt">(dress color, suit color, flowers you like or hate)</span></label>
-            <textarea id="colors" name="colors" placeholder="Example: dusty blue dress, black suit, white roses with a little baby's breath and silver ribbon"></textarea></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Colors</legend>
+        <div class="grid2">
+          <div style="grid-column:1/-1"><label>Pick the colors you want me to work with <span class="opt">(as many as you like)</span></label>
+            <div class="swatches" id="swatches"></div></div>
+          <div style="grid-column:1/-1"><label>Photo of the dress, tie, or anything you want matched <span class="opt">(optional, up to 3)</span></label>
+            <div class="photos">
+              <label class="pick"><input type="file" id="photoIn" accept="image/*" multiple>📷 Add a photo</label>
+              <p class="hint">A quick phone picture is perfect. I'll match the flowers and ribbon to it.</p>
+              <div class="thumbs" id="thumbs"></div>
+            </div></div>
+          <div style="grid-column:1/-1"><label for="colors">Anything else about colors? <span class="opt">(optional)</span></label>
+            <textarea id="colors" name="colors" placeholder="Example: navy suit with a silver tie, no yellow, loves baby's breath"></textarea></div>
         </div>
       </fieldset>
 
@@ -325,7 +358,7 @@ textarea{min-height:96px;resize:vertical}
   <div class="faq">
     <div><h3>How far ahead should I order?</h3><p>At least 5 days, and the order form won't take a date sooner than that. A week or more is better. Dance weekends fill up, so earlier is best.</p></div>
     <div><h3>Where do I pick up?</h3><p>Idaho Falls. I'll send you the address and a time window when I confirm your order.</p></div>
-    <div><h3>Can you match my dress?</h3><p>Yes. Send a photo of the dress or a swatch and I'll match the flowers and ribbon to it.</p></div>
+    <div><h3>Can you match my dress?</h3><p>Yes. Add a photo of the dress, tie, or a swatch right on the order form and I'll match the flowers and ribbon to it. You can pick colors from the list too, or do both.</p></div>
     <div><h3>How do I keep it fresh?</h3><p>Keep it in the fridge in the box it comes in until you're ready to leave. It'll look great through the last song.</p></div>
     <div><h3>Group orders?</h3><p>Absolutely. Ordering for a whole friend group or a wedding party is welcome. Put everyone's colors in the notes.</p></div>
     <div><h3>How do I pay?</h3><p>Venmo when you order is easiest, and the confirmation gives you the link. Cash at pickup is fine too. Flowers are paid for by pickup, no deposit needed.</p></div>
@@ -347,10 +380,70 @@ const SUPABASE_KEY = "sb_publishable_F1b9LiMBe2RqsyJqEOCBjQ_UjejEnS7";   // publ
 const VENMO_USER   = "Leah-Anderson-58";        // Leah's Venmo username without the @. Empty = hide the Venmo button and QR.
 const CONTACT_PHONE = "208-403-7323";       // shown in the error message if set
 
+const COLORS = [   // name shown to Leah, dot color. Keep in sync with admin/index.html and place_order's allowed list.
+  ["White","#FFFFFF"],["Ivory","#F3EAD3"],["Blush","#F4C6C6"],["Pink","#F28CB1"],["Hot pink","#E0218A"],["Red","#C8102E"],
+  ["Burgundy","#6D1A36"],["Coral","#F88379"],["Peach","#FFCBA4"],["Orange","#F4791F"],["Yellow","#F7D354"],["Lavender","#B69CDA"],
+  ["Purple","#6A3FA0"],["Light blue","#A9CBEA"],["Dusty blue","#7A9CC6"],["Royal blue","#2A4BA0"],["Navy","#1B2A4A"],["Emerald","#1E7B4F"],
+  ["Sage","#9CAF88"],["Teal","#2A8C8C"],["Black","#111111"],["Silver","#C0C0C0"],["Gold","#D4AF37"]
+];
+const MAX_PHOTOS = 3;
 const PRICES = { corsage: 25, boutonniere: 15, bouquet: 35 };   // display copy; the server prices the order itself
 const LABELS = { corsage: "Corsage", boutonniere: "Boutonnière", bouquet: "Bouquet" };
 const $ = (s) => document.querySelector(s);
 const money = (n) => "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+
+$("#swatches").innerHTML = COLORS.map(([n, hex]) => `<label class="sw"><input type="checkbox" name="color_picks" value="${n}"><span><i style="background:${hex}"></i>${n}</span></label>`).join("");
+function colorPicks(){ return [...document.querySelectorAll('input[name="color_picks"]:checked')].map(i => i.value); }
+
+// ---- Photos: shrink on the phone, upload to Supabase Storage before the order is placed ----------
+const photos = [];   // {id, file, blob, url, path, status}
+$("#photoIn").addEventListener("change", async (e) => {
+  for (const file of [...e.target.files]) {
+    if (photos.length >= MAX_PHOTOS) { showMsg("#msg", "err", `Up to ${MAX_PHOTOS} photos, so I can keep things straight.`); break; }
+    if (!file.type.startsWith("image/") && !/\.(heic|heif)$/i.test(file.name)) continue;
+    const ph = { id: Math.random().toString(36).slice(2), file, blob: null, url: "", path: "", status: "prep" };
+    photos.push(ph); renderThumbs();
+    try { ph.blob = await shrink(file); } catch (_) { ph.blob = file; }
+    ph.url = URL.createObjectURL(ph.blob); ph.status = "ready"; renderThumbs();
+  }
+  e.target.value = "";
+});
+function shrink(file){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1600, r = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas"); c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(img.src);
+      c.toBlob(b => b ? resolve(b) : reject(new Error("no blob")), "image/jpeg", 0.85);
+    };
+    img.onerror = () => reject(new Error("decode"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+function renderThumbs(){
+  $("#thumbs").innerHTML = photos.map(p => `<div class="thumb" data-id="${p.id}">${p.url ? `<img src="${p.url}" alt="">` : ""}<button type="button" aria-label="Remove photo">×</button>${p.status !== "ready" && p.status !== "done" ? `<div class="st">${p.status === "prep" ? "Preparing…" : p.status === "up" ? "Uploading…" : "Failed"}</div>` : ""}</div>`).join("");
+  document.querySelectorAll(".thumb button").forEach(b => b.addEventListener("click", () => { const i = photos.findIndex(p => p.id === b.parentElement.dataset.id); if (i > -1) photos.splice(i, 1); renderThumbs(); }));
+  $("#photoIn").parentElement.hidden = photos.length >= MAX_PHOTOS;
+}
+async function uploadPhotos(){
+  const paths = [];
+  for (const p of photos) {
+    if (p.status === "done" && p.path) { paths.push(p.path); continue; }
+    p.status = "up"; renderThumbs();
+    const ext = p.blob.type === "image/png" ? "png" : p.blob.type === "image/webp" ? "webp" : "jpg";
+    const path = `uploads/${crypto.randomUUID()}/${crypto.randomUUID()}.${ext}`;
+    const r = await fetch(`${SUPABASE_URL}/storage/v1/object/order-photos/${path}`, {
+      method: "POST",
+      headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": p.blob.type || "image/jpeg", "x-upsert": "false" },
+      body: p.blob
+    });
+    if (!r.ok) { p.status = "fail"; renderThumbs(); throw new Error("photo upload " + r.status); }
+    p.path = path; p.status = "done"; paths.push(path); renderThumbs();
+  }
+  return paths;
+}
 
 function qty(k){ return Math.max(0, Math.min(50, parseInt($("#q-"+k).value, 10) || 0)); }
 function setQty(k, n){ $("#q-"+k).value = Math.max(0, Math.min(50, n)); render(); }
@@ -389,6 +482,8 @@ function collect(){
     event_type: f.event_type.value.trim(),
     event_date: f.event_date.value,
     colors: f.colors.value.trim(),
+    color_picks: colorPicks(),
+    photos: [],
     name: f.name.value.trim(),
     phone: f.phone.value.trim(),
     email: f.email.value.trim() || null,
@@ -496,12 +591,15 @@ $("#orderForm").addEventListener("submit", async (e) => {
   const o = collect();
   const err = validate(o);
   if (err) { showMsg("#msg", "err", err); return; }
-  const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = "Sending…";
+  const btn = $("#submitBtn"); btn.disabled = true; btn.textContent = photos.length ? "Uploading photos…" : "Sending…";
   try {
+    try { o.photos = await uploadPhotos(); }
+    catch (_) { showMsg("#msg", "err", "One of the photos didn't upload. Try again, or remove it and add it later by text."); return; }
+    btn.textContent = "Sending…";
     const res = await rpc("place_order", { payload: o });
     const rec = { order_number: res.order_number, token: res.token, total: res.total, name: res.name, phone: o.phone, items: o.items, status: "new", at: Date.now() };
     try { sessionStorage.setItem(ORDER_KEY, JSON.stringify(rec)); } catch (_) {}
-    e.target.reset(); render();
+    e.target.reset(); render(); photos.length = 0; renderThumbs();
     $("#msg").className = "msg"; $("#msg").innerHTML = "";
     showConfirm(rec);
   } catch (ex) {
