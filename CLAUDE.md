@@ -3,7 +3,7 @@
 Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Two live sub-sites are actively maintained:
 
 - `rick/` Rick Saunders' Western Wildlands Route tracker (Canada to Mexico by bike, Sept 6 to Nov 7, 2026). Updated most days.
-- `danceflowers/` Leah's flowers page.
+- `danceflowers/` Dance Flowers, Leah's corsage, boutonnière, and bouquet business for school dances and weddings in Idaho Falls. Landing page plus order form. See "danceflowers/ page" below.
 
 Everything else at the root (`index.html`, etc.) is the personal landing site.
 
@@ -57,3 +57,44 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - "Needed pace" = miles left in the current segment / riding days left to its planned end date; note shows trip pace to Nov 7 too.
 - Under 720px the daily log and segments tables render as cards via CSS; any new `<td>` in those row templates needs the matching class (`l-*` / `s-*`) and a `data-l` label.
 - The hosted Claude artifact copy of the tracker (claude.ai) is retired as of Sept 10, 2026; the live site is the only copy.
+
+## danceflowers/ page
+
+### What it is
+A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers. Handmade corsages ($25), boutonnières ($15), and bouquets ($35) for homecoming, prom, winter formal, and weddings. Pickup in Idaho Falls, pay at pickup with cash or Venmo, no payment taken on the site. The page collects an order and Leah confirms by text or email within a day.
+
+### Files
+- `danceflowers/index.html` the whole thing. CSS and JS inline, no `data.js`, no other files. Not linked from the root landing page yet (`index.html` at the root does not mention it).
+- No GoatCounter script on this page. Add the same `<script data-goatcounter=...>` tag the rick/ pages use if Shawn wants visit counts.
+
+### Page sections (top to bottom, nav anchors in parentheses)
+- Hero with cover photo, eyebrow, headline, two buttons, and a three-up price bar.
+- What I make (`#types`): three cards, one per product, each with a photo, price, blurb, three bullets, and an "Add a ... to my order" link that bumps that item's quantity in the form.
+- How it works (`#how`): three steps (send the order, Leah confirms, pick up and pay).
+- Order (`#order`): the form on the left, a sticky "Your order" summary with running total on the right. Stacks on mobile.
+- Good to know (`#faq`): six short Q&As (lead time, pickup, dress matching, keeping it fresh, group orders, payment).
+- Footer with the "photos are placeholders" note and a link home.
+
+### Look
+Same structure as the tracker (color tokens on `:root`, dark palette under `prefers-color-scheme` guarded with `:root:not([data-theme="light"])` and again under `:root[data-theme="dark"]`), but a warmer palette: cream background, rose accent (`--rose`), sage for the step numbers. Display font is Cormorant Garamond, body is Source Sans 3, both from Google Fonts. Breakpoints at 820px (cards, steps, and the order grid go single column), 720px (hero and headline sizes), 560px (form fields single column), 440px (quantity rows).
+
+### Prices live in five places; change all of them together
+1. `<meta name="description">` in the head.
+2. The `.pricebar` in the hero.
+3. The `.price` div in each product card.
+4. The `.pr` div on each item row in the order form ("$25 each").
+5. The `PRICES` object in the script at the bottom. This one drives the running total and the order payload, so it is the one that matters for money.
+
+### Photos
+Every photo on the page is a stock placeholder hotlinked from Pexels or Unsplash, tagged "Placeholder photo" on the cards, with a matching note in the footer. When Leah sends real photos: put them in `danceflowers/photos/` (create it), resize to max 1600px wide with PIL and `exif_transpose` like the rick/ photos, point the hero `<img>`, the three card `<img>` tags, and the `og:image` meta at the local files, then delete the "Placeholder photo" tags and the footer note.
+
+### Order form and where orders go
+- Quantities are 0 to 50 per item, changed by the + and − buttons or typed. The summary and total re-render on every change.
+- Required: at least one item, event type, event date (date picker min is today), name, phone. Email and notes optional. Email is format-checked if given. A hidden honeypot field named `website` silently drops bot submissions.
+- Submission is decided by two constants at the top of the script, `SUPABASE_URL` and `SUPABASE_KEY`. Both are empty today, so the form uses the fallback: it opens the visitor's mail app with a prefilled order addressed to `FALLBACK_EMAIL` (currently shawn3401@gmail.com). The visitor still has to hit send. Change `FALLBACK_EMAIL` to Leah's address when she wants orders directly.
+- To switch to Supabase: create a project, make a table `orders` with columns matching the payload built by `collect()` (`items` jsonb, `total` numeric, `event_type`, `event_date` date, `colors`, `name`, `phone`, `email` nullable, `notes`, `page`, `ua` as text, plus a default `created_at`), enable RLS with an insert-only policy for the anon role and no select, then paste the project URL and the anon (publishable) key into the two constants. The page POSTs to `/rest/v1/orders` with `Prefer: return=minimal`. Confirm the success message reads right, since it promises a text to the phone number given.
+- The error message on a failed send says "text me directly" but the page shows no phone number anywhere. Ask Shawn or Leah for a number before adding one; do not invent it.
+
+### Copy rules specific to this page
+- The voice is Leah's, first person ("I confirm", "What I make"). Keep it that way.
+- Stated promises on the page: confirmation within a day, pickup in Idaho Falls the day of or the day before, cash or Venmo, no deposit, a week's notice is ideal. If Leah changes any of these, update the hero lead, the How it works steps, the Order intro, the summary note, and the FAQ, since several repeat the same promise.
