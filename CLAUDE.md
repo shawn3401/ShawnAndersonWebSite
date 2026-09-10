@@ -104,8 +104,10 @@ Every photo on the page is a stock placeholder hotlinked from Pexels or Unsplash
 - After a successful submit the form and summary hide and the confirmation panel (`#confirm`) shows: order number, recap, and a "Next step" block with a "Pay on Venmo" button and a QR code of the same link (QR hidden under 720px). `VENMO_USER` at the top of the script is Leah's handle; while it is empty the whole payment block is hidden. The Venmo link prefills the amount and the note "Dance Flowers order #NNNN". "I sent my payment" calls `mark_payment_sent`. The panel survives a refresh via sessionStorage; "Place another order" clears it.
 - The site cannot see Venmo. "Payment sent" is the customer's word; Leah confirms it as `paid` in the admin once it shows in Venmo.
 - `CONTACT_PHONE` at the top of the script goes into the failure message.
-- Emails to Leah on new order and payment sent are NOT built yet. Plan: Supabase edge function plus Resend, which needs shawnandersonapps.com verified as a sending domain.
-- Test order #1001 (name "Test Order", 208-555-0100) was placed by Claude on Sept 10, 2026 while wiring this up. Cancel it from the admin once that exists.
+- Emails (live Sept 10, 2026): `supabase/danceflowers/002_email.sql`. A trigger on `orders` (after insert, and after update of status) calls Resend's API from inside Postgres with pg_net. The Resend key is in Supabase Vault under the name `resend_api_key` (stored by Shawn with `vault.create_secret`; never in the repo or the page). Recipients and addresses are rows in the `settings` table: `notify_to` (leah3401@gmail.com), `notify_cc` (blank), `from_address` ("Dance Flowers <flowers@shawnandersonapps.com>"), `reply_to`, `admin_url`, `venmo_user`, `customer_emails` ('true' sends the customer a copy with the Venmo button if they gave an email). Change these with an update, no code.
+  - Leah gets "New order #N from Name, Event Date, $Total" on insert and "Payment sent for order #N" when status becomes payment_sent. Reply-to is the customer.
+  - Resend domain shawnandersonapps.com is verified (DKIM at resend._domainkey, MX and SPF on the `send` subdomain, all written by Resend's GoDaddy auto-configure). Resend region us-east-1.
+  - Test orders 1001 and 1003 were placed by Claude; 1002 was probably Leah's Venmo test. Cancel them in the admin.
 
 ### Copy rules specific to this page
 - The voice is Leah's, first person ("I confirm", "What I make"). Keep it that way.
