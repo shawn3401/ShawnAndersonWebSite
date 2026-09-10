@@ -163,6 +163,22 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
   #log td.l-stat .sofar{display:block;font-size:11px}
   #log td.l-notes{grid-column:1/6;grid-row:4;margin-top:10px;font-size:15px}
   #log .upd li{padding-left:8px}
+  #segs thead{display:none}
+  #segs,#segs tbody{display:block}
+  #segs tr{display:grid;grid-template-columns:repeat(3,1fr);gap:0 8px;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
+  #segs tr:last-child{border-bottom:0}
+  #segs td{display:block;padding:0;border:0;text-align:left;white-space:normal}
+  #segs td.s-n{grid-column:1;grid-row:1;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:26px;line-height:1}
+  #segs td.s-n::before{content:"Segment ";font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:2px}
+  #segs td.s-status{grid-column:2/4;grid-row:1;justify-self:end;align-self:start}
+  #segs td.s-name{grid-column:1/4;grid-row:2;margin-top:8px;font-size:16px;line-height:1.25}
+  #segs td.s-stat{grid-row:3;margin-top:12px;padding-top:8px;border-top:1px solid var(--line);font-size:17px;line-height:1.1}
+  #segs td.s-stat::before,#segs td.s-dates::before,#segs td.s-season::before{content:attr(data-l);display:block;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+  #segs td.s-dates{grid-column:1/3;grid-row:4;margin-top:10px;font-size:15px}
+  #segs td.s-season{grid-column:3;grid-row:4;margin-top:10px;font-size:13px}
+  #segs td.s-season .seg-sub{display:none}
+  #segs tr.cur{background:color-mix(in srgb,var(--red-soft) 55%,var(--paper))} #segs tr.cur td{background:transparent}
+  #log tr.open{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))} #log tr.open td{background:transparent}
   h1{font-size:34px}
   .cover{min-height:480px}
   .cover .inner{min-height:480px;padding-top:260px}
@@ -185,7 +201,7 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
   <div>
     <div class="eyebrow">Western Wildlands Route · Roosville, MT to Sierra Vista, AZ</div>
     <h1>Rick Saunders, Canada to Mexico</h1>
-    <div class="sub">2,693 miles of dirt in 63 days. Rolled out Sept 6, 2026, aiming for Nov 7.</div>
+    <div class="sub" id="subline">2,693 miles of dirt in 63 days. Rolled out Sept 6, 2026, aiming for Nov 7.</div>
   </div>
 </header>
   </div>
@@ -205,7 +221,7 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
 <div class="route">
   <div class="eyebrow" style="color:var(--ink-3)">Route progress</div>
   <div class="bar" id="bar"></div>
-  <div class="legend"><span class="a">Rick's actual miles</span><span class="p">Where the plan says he should be today</span></div>
+  <div class="legend"><span class="a">Rick's position on the route (miles ridden, adjusted for reroutes)</span><span class="p">Where the plan says he should be today</span></div>
 </div>
 <div class="bigmap" id="bigmap" hidden><div class="hd"><div class="eyebrow" style="color:var(--ink-3)">The whole route, zoomed out</div><div class="asof" id="bigmap-asof"></div></div><img id="bigmap-img" alt="Rick's track so far on a map of the western United States"><div class="cap" id="bigmap-cap"></div></div>
 
@@ -230,12 +246,12 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
 <section>
   <h2>Daily log</h2>
   <div class="tblwrap"><table id="log">
-    <thead><tr><th>Day</th><th>Date</th><th>Ended at</th><th class="r">Miles</th><th class="r">Plan</th><th class="r">Climb</th><th class="r">Total</th><th class="r">vs. plan</th><th>Notes</th></tr></thead>
+    <thead><tr><th>Day</th><th>Date</th><th>Ended at</th><th class="r">Miles</th><th class="r">Plan</th><th class="r">Climb</th><th class="r">Position</th><th class="r">vs. plan</th><th>Notes</th></tr></thead>
     <tbody></tbody>
   </table></div>
 </section>
 
-<div class="foot"><a href="/">shawnandersonapps.com</a> · Route: 2,693 mi, about 120,000 ft of climbing, more than 80% unpaved, per <a href="https://bikepackingroots.org/project/western-wildlands-route/" target="_blank" rel="noopener">Bikepacking Roots</a>. Segment miles and climbing are theirs; days and dates are Rick's plan. Season windows from the Western Wildlands Route guide's "recommended riding season during typical years" map. Daily stats from Rick's tracking app. Maintained by Shawn. · <span id="visits"></span></div>
+<div class="foot"><a href="/">shawnandersonapps.com</a> · Route: 2,693 mi official, about 120,000 ft of climbing, more than 80% unpaved, per <a href="https://bikepackingroots.org/project/western-wildlands-route/" target="_blank" rel="noopener">Bikepacking Roots</a>. Segment miles are from Rick's own onX Offroad route plan; climbing is theirs. Days and dates are Rick's plan. When he reroutes, the miles saved or added are applied to his position rather than changing the plan. Season windows from the Western Wildlands Route guide's "recommended riding season during typical years" map. Daily stats from Rick's tracking app. Maintained by Shawn. · <span id="visits"></span></div>
 </div>
 
 <script src="data.js"></script>
@@ -256,19 +272,25 @@ const segCum = []; SEGMENTS.reduce((a,s,i)=>(segCum[i]=a+s.miles),0);
 // A LOG row with done:false is today, still in progress: shown in the table with its updates, excluded from completed-day math.
 const DONE = LOG.filter(e => e.done !== false);
 const OPEN = LOG.find(e => e.done === false) || null;
-let cum = 0; DONE.forEach(e => { cum += e.miles; e.cum = cum; e.planCum = planCum[e.day-1]; e.delta = e.cum - e.planCum; });
-if (OPEN) { OPEN.cum = cum + (OPEN.miles||0); OPEN.planCum = planCum[OPEN.day-1]; OPEN.delta = OPEN.cum - OPEN.planCum; }
+// e.course = how much a reroute that day changed the length of his course: negative = shortcut (miles saved), positive = detour (miles added). Position = ridden - course. The plan itself never changes.
+let cum = 0, sav = 0; DONE.forEach(e => { cum += e.miles; sav -= (e.course||0); e.cum = cum; e.savedCum = sav; e.cred = cum + sav; e.planCum = planCum[e.day-1]; e.delta = e.cred - e.planCum; });
+if (OPEN) { OPEN.cum = cum + (OPEN.miles||0); OPEN.savedCum = sav - (OPEN.course||0); OPEN.cred = OPEN.cum + OPEN.savedCum; OPEN.planCum = planCum[OPEN.day-1]; OPEN.delta = OPEN.cred - OPEN.planCum; }
 const last = DONE[DONE.length-1];
 const daysRidden = DONE.length;
 const actualCum = last ? last.cum : 0;
+const savedTotal = last ? last.savedCum : 0;
+const credited = actualCum + savedTotal;
 const avg = daysRidden ? actualCum/daysRidden : 0;
-const remaining = TOTAL_PLAN - actualCum;
+const remaining = TOTAL_PLAN - credited;
 const daysToGo = avg>0 ? Math.ceil(remaining/avg) : null;
 const projFinish = daysToGo!=null ? addDays(d2(last.date), daysToGo) : null;
 const planFinish = addDays(START, 62);
 const delta = last ? last.delta : 0;
-const curSeg = SEGMENTS.find(s => actualCum < segCum[s.n-1]) || SEGMENTS[SEGMENTS.length-1];
-const milesIntoSeg = actualCum - (segCum[curSeg.n-2]||0);
+const curSeg = SEGMENTS.find(s => credited < segCum[s.n-1]) || SEGMENTS[SEGMENTS.length-1];
+const milesIntoSeg = credited - (segCum[curSeg.n-2]||0);
+
+// Plan-total copy
+document.getElementById("subline").textContent = `${fmt(TOTAL_PLAN)} miles of dirt in 63 days. Rolled out Sept 6, 2026, aiming for Nov 7.`;
 
 // Cover photo
 if (typeof COVER === "string" && COVER) { const ci = document.getElementById("coverimg"); if (ci && !ci.src.startsWith("data:")) ci.src = "photos/" + COVER + ".jpg"; }
@@ -277,10 +299,11 @@ if (typeof COVER === "string" && COVER) { const ci = document.getElementById("co
 document.getElementById("up-when").textContent = LAST_UPDATED;
 document.getElementById("up-day").textContent = OPEN ? `Day ${OPEN.day} of 63 in progress` : `After day ${daysRidden} of 63`;
 const dcls = delta>=0 ? "delta-good" : "delta-bad";
-const dtxt = (delta>=0?"+":"") + fmt(Math.round(delta));
+const fmt1 = n => n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+const dtxt = (delta>=0?"+":"") + fmt1(delta);
 document.getElementById("status").innerHTML = `
-  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(actualCum)}<small>of ${fmt(TOTAL_PLAN)}</small></div><div class="note">${(100*actualCum/TOTAL_PLAN).toFixed(1)}% of the route${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
-  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${dtxt}<small>mi</small></div><div class="note">Plan had him at ${fmt(Math.round(last?last.planCum:0))} mi after day ${daysRidden}</div></div>
+  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(actualCum)}<small>of ${fmt(TOTAL_PLAN)}</small></div><div class="note">${(100*credited/TOTAL_PLAN).toFixed(1)}% of the route${savedTotal>0?`, counting ${fmt(savedTotal)} mi saved by rerouting`:savedTotal<0?`, less ${fmt(-savedTotal)} mi added by rerouting`:""}${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
+  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${dtxt}<small>mi</small></div><div class="note">Plan had him at ${fmt1(last?last.planCum:0)} mi after day ${daysRidden}${savedTotal>0?`. He is credited ${fmt1(credited)}: ${fmt(actualCum)} ridden plus ${fmt(savedTotal)} saved by rerouting`:savedTotal<0?`. He is credited ${fmt1(credited)}: ${fmt(actualCum)} ridden less ${fmt(-savedTotal)} added by rerouting`:""}</div></div>
   <div class="tile"><div class="lab">Average per day</div><div class="val num">${avg.toFixed(1)}<small>mi</small></div><div class="note">Plan pace is ${(TOTAL_PLAN/63).toFixed(1)} mi/day</div></div>
   <div class="tile"><div class="lab">Projected finish</div><div class="val num">${projFinish?mdy(projFinish):"TBD"}</div><div class="note">At current pace. Plan says ${mdy(planFinish)}.</div></div>`;
 
@@ -295,7 +318,7 @@ if (typeof PROGRESS_MAP !== "undefined" && PROGRESS_MAP && PROGRESS_MAP.file) {
 
 // Route bar
 const bar = document.getElementById("bar");
-let html = `<div class="fill" style="width:${(100*actualCum/TOTAL_PLAN).toFixed(2)}%"></div>`;
+let html = `<div class="fill" style="width:${(100*credited/TOTAL_PLAN).toFixed(2)}%"></div>`;
 html += `<div class="planmark" style="left:${(100*(last?last.planCum:0)/TOTAL_PLAN).toFixed(2)}%"></div>`;
 const labels = ["Roosville", ...SEGMENTS.map(s=>s.to.split(/[,(]/)[0].trim())];
 const pts = [0, ...segCum];
@@ -331,16 +354,16 @@ w.innerHTML = last ? `
   s += `<path d="${p}" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="6 4"/>`;
   // actual
   if(DONE.length){
-    let a = `M${x(0)},${y(0)}`; DONE.forEach(e=>{ a+=` L${x(e.day)},${y(e.cum)}`; });
+    let a = `M${x(0)},${y(0)}`; DONE.forEach(e=>{ a+=` L${x(e.day)},${y(e.cred)}`; });
     s += `<path d="${a}" fill="none" stroke="var(--red)" stroke-width="3" stroke-linejoin="round"/>`;
-    s += `<circle cx="${x(last.day)}" cy="${y(last.cum)}" r="5" fill="var(--red)" stroke="var(--paper)" stroke-width="2"/>`;
-    s += `<text x="${x(last.day)+10}" y="${y(last.cum)-8}" style="fill:var(--red);font-weight:600">${fmt(last.cum)} mi</text>`;
+    s += `<circle cx="${x(last.day)}" cy="${y(last.cred)}" r="5" fill="var(--red)" stroke="var(--paper)" stroke-width="2"/>`;
+    s += `<text x="${x(last.day)+10}" y="${y(last.cred)-8}" style="fill:var(--red);font-weight:600">${fmt(last.cred)} mi</text>`;
   }
-  if(OPEN && OPEN.miles){ const px = last?x(last.day):x(0), py = last?y(last.cum):y(0);
-    s += `<line x1="${px}" y1="${py}" x2="${x(OPEN.day)}" y2="${y(OPEN.cum)}" stroke="var(--red)" stroke-width="2" stroke-dasharray="3 4"/>`;
-    s += `<circle cx="${x(OPEN.day)}" cy="${y(OPEN.cum)}" r="5" fill="var(--paper)" stroke="var(--red)" stroke-width="2.5"/>`;
+  if(OPEN && OPEN.miles){ const px = last?x(last.day):x(0), py = last?y(last.cred):y(0);
+    s += `<line x1="${px}" y1="${py}" x2="${x(OPEN.day)}" y2="${y(OPEN.cred)}" stroke="var(--red)" stroke-width="2" stroke-dasharray="3 4"/>`;
+    s += `<circle cx="${x(OPEN.day)}" cy="${y(OPEN.cred)}" r="5" fill="var(--paper)" stroke="var(--red)" stroke-width="2.5"/>`;
   }
-  s += `<text x="${x(63)-4}" y="${y(TOTAL_PLAN)-8}" text-anchor="end" style="fill:var(--plan)">Plan, 2,693 mi by Nov 7</text>`;
+  s += `<text x="${x(63)-4}" y="${y(TOTAL_PLAN)-8}" text-anchor="end" style="fill:var(--plan)">Plan, ${fmt(TOTAL_PLAN)} mi by Nov 7</text>`;
   s += `</svg>`;
   document.getElementById("chart").innerHTML = s;
 })();
@@ -348,9 +371,9 @@ w.innerHTML = last ? `
 // Segments table
 const seasonChip = st => st==="ok"?`<span class="chip c-good">In season</span>`: st==="tight"?`<span class="chip c-warn">Edge of season</span>`:`<span class="chip c-bad">Past typical season</span>`;
 document.querySelector("#segs tbody").innerHTML = SEGMENTS.map((s,i)=>{
-  const done = actualCum >= segCum[i]; const cur = s===curSeg && !done;
+  const done = credited >= segCum[i]; const cur = s===curSeg && !done;
   const status = done?`<span class="chip c-muted">Done</span>`: cur?`<span class="chip c-cur">Riding · ${fmt(Math.round(milesIntoSeg))}/${fmt(s.miles)} mi</span>`:`<span class="chip c-muted">Upcoming</span>`;
-  return `<tr class="${done?"done":cur?"cur":"future"}"><td class="num">${s.n}</td><td><span class="seg-name">${s.from} to ${s.to}</span><div class="seg-sub">${s.days} days${s.note?" · "+s.note:""}</div></td><td class="r num">${fmt(s.miles)}</td><td class="r num">${fmt(s.gain)} ft</td><td class="r num">${Math.round(s.mpd)}</td><td class="num">${mdy(d2(s.start))} to ${mdy(d2(s.end))}</td><td><div class="seg-sub" style="margin-bottom:3px">${s.season}</div>${seasonChip(s.seasonState)}</td><td>${status}</td></tr>`;
+  return `<tr class="${done?"done":cur?"cur":"future"}"><td class="num s-n" data-l="Segment">${s.n}</td><td class="s-name"><span class="seg-name">${s.from} to ${s.to}</span><div class="seg-sub">${s.days} days${s.note?" · "+s.note:""}</div></td><td class="r num s-stat" data-l="Miles">${fmt(s.miles)}</td><td class="r num s-stat" data-l="Climb">${fmt(s.gain)} ft</td><td class="r num s-stat" data-l="Mi/day">${Math.round(s.mpd)}</td><td class="num s-dates" data-l="Planned">${mdy(d2(s.start))} to ${mdy(d2(s.end))}</td><td class="s-season" data-l="Season"><div class="seg-sub" style="margin-bottom:3px">${s.season}</div>${seasonChip(s.seasonState)}</td><td class="s-status">${status}</td></tr>`;
 }).join("");
 
 // Daily log (most recent first)
@@ -364,7 +387,7 @@ document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
   const ended = open ? `<span class="chip c-good">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : e.end;
   const miles = open ? `${fmt(e.miles||0)} <span class="sofar">so far</span>` : fmt(e.miles);
   const vs = open ? `<span class="sofar">pending</span>` : `<span class="${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</span>`;
-  return `<tr class="${open?"open":""}"><td class="num l-day" data-l="Day">${e.day}</td><td class="num l-date" data-l="Date">${mdy(d2(e.date))}</td><td class="l-end" data-l="Ended at">${ended}</td><td class="r num l-stat" data-l="Miles">${miles}</td><td class="r num l-stat" data-l="Plan">${Math.round(planDaily[e.day-1])}</td><td class="r num l-stat" data-l="Climb">+${fmt(e.gain||0)}</td><td class="r num l-stat" data-l="Total">${fmt(e.cum)}</td><td class="r num l-stat" data-l="vs. plan">${vs}</td><td class="l-notes">${e.notes||""}${updList(e)}</td></tr>`;
+  return `<tr class="${open?"open":""}"><td class="num l-day" data-l="Day">${e.day}</td><td class="num l-date" data-l="Date">${mdy(d2(e.date))}</td><td class="l-end" data-l="Ended at">${ended}</td><td class="r num l-stat" data-l="Miles">${miles}</td><td class="r num l-stat" data-l="Plan">${Math.round(planDaily[e.day-1])}</td><td class="r num l-stat" data-l="Climb">+${fmt(e.gain||0)}</td><td class="r num l-stat" data-l="Total">${fmt(e.cred)}</td><td class="r num l-stat" data-l="vs. plan">${vs}</td><td class="l-notes">${e.notes||""}${e.course<0?` <span class="chip c-good">Reroute saved ${fmt(-e.course)} mi</span>`:e.course>0?` <span class="chip c-warn">Reroute added ${fmt(e.course)} mi</span>`:""}${updList(e)}</td></tr>`;
 }).join("");
 
 // Where is Rick (hero)

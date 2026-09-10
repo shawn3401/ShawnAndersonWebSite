@@ -1,27 +1,29 @@
 // ===== DATA: edit here each day =====
 const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
-const TOTAL_PLAN = 2693;
 
-// miles + gain are the official Bikepacking Roots segment figures (they sum to 2,693). days/dates are Rick's plan.
+// miles = Rick's pre-trip onX Offroad route for each segment (his true plan; the official Bikepacking Roots figures were 304/326/289/342/250/337/209/344/292 = 2,693). gain = official. days/dates = Rick's plan.
+// DO NOT edit miles when he reroutes; put the change on that day's LOG row as course:N instead (negative saved, positive added).
 const SEGMENTS = [
-  {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:304, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass"},
-  {n:2, from:"Superior",           to:"Darby, MT",      miles:326, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Moon Pass"},
-  {n:3, from:"Darby",              to:"Hailey, ID",     miles:289, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:"Magruder Corridor, 125 mi / 14,000 ft"},
-  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:342, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
-  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
-  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:337, gain:24000, days:8, start:"2026-10-11", end:"2026-10-18", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
-  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:209, gain:10000, days:5, start:"2026-10-19", end:"2026-10-23", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
-  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344, gain:22000, days:8, start:"2026-10-24", end:"2026-10-31", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
-  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:292, gain:21000, days:7, start:"2026-11-01", end:"2026-11-07", season:"Mid Sep to early May", seasonState:"ok", note:""},
+  {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:296.6, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass"},
+  {n:2, from:"Superior",           to:"Darby, MT",      miles:320.5, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Moon Pass"},
+  {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:"Magruder Corridor, 125 mi / 14,000 ft"},
+  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
+  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
+  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:334.1, gain:24000, days:8, start:"2026-10-11", end:"2026-10-18", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
+  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:202.6, gain:10000, days:5, start:"2026-10-19", end:"2026-10-23", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
+  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344.9, gain:22000, days:8, start:"2026-10-24", end:"2026-10-31", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
+  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:284.6, gain:21000, days:7, start:"2026-11-01", end:"2026-11-07", season:"Mid Sep to early May", seasonState:"ok", note:""},
 ];
+const TOTAL_PLAN = Math.round(SEGMENTS.reduce((a,s)=>a+s.miles,0)*10)/10;
 
 // One entry per calendar day. miles = that day's distance. gain/loss in ft. lat/lng optional (end-of-day camp).
 // Multiple updates in one day: add updates:[{time:"10:30 am", miles:17, gain:370, text:"..."}] (oldest first) and they show grouped under the day's notes.
+// course:N on a row = how much a reroute that day changed the length of his course, from the onX segment route with reroutes vs his original. Negative = shortcut (saved miles), positive = detour (added miles). Applied to his position; the plan does not change.
 // While he is still riding, set done:false and keep miles/gain at the latest check-in; the row shows "Riding now" and stays out of the completed-day math. When the day ends, remove done:false and fill in end, miles, gain, loss, notes.
 const LOG = [
   {day:1, date:"2026-09-06", end:"Loon Lake Campground, MT", miles:60, gain:3761, loss:2838, notes:"Roosville border to Loon Lake. Big opener with a 4,266 ft high point."},
   {day:2, date:"2026-09-07", end:"Loon Lake Campground, MT", miles:0, gain:0, loss:0, notes:"Rain day. Sat tight at camp all day and waited it out."},
-  {day:3, date:"2026-09-08", end:"Troy Mine, near Bull Lake, MT", miles:45.6, gain:1749, loss:2895, lat:48.30558, lng:-115.84547, notes:"Loon Lake to Troy Mine. Mostly downhill to the Kootenai River at 1,884 ft, restocked food in Troy, then south along Hwy 56 to camp near Bull Lake."},
+  {day:3, date:"2026-09-08", end:"Troy Mine, near Bull Lake, MT", miles:45.6, gain:1749, loss:2895, lat:48.30558, lng:-115.84547, course:-6.8, notes:"Loon Lake to Troy Mine. Mostly downhill to the Kootenai River at 1,884 ft, restocked food in Troy, then south along Hwy 56 to camp near Bull Lake. Took a shortcut that trimmed 6.8 miles off segment 1 (296.6 planned, 289.8 with the reroute)."},
   {day:4, date:"2026-09-09", end:"Porcupine Pass, ID (Montana/Idaho line)", miles:56.5, gain:4431, loss:1876, lat:47.84681, lng:-115.88983, notes:"Troy Mine to Porcupine Pass. Down Hwy 56 past Bull Lake to the Hwy 200 junction near Noxon, then a 3,000 ft climb from the low point at 2,189 ft to the 5,205 ft pass. Camped ten feet into Idaho. First state down.", updates:[
     {time:"8:30 am", text:"Rolled out after a great night's sleep at the Troy Mine camp."},
     {time:"10:30 am", miles:17, gain:370, text:"Heading south on Hwy 56 toward Cabinet Gorge Reservoir, then he picks up Hwy 200 and keeps going south."},
@@ -57,5 +59,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 9, 2026, 9:30 pm MT";
+const LAST_UPDATED = "Sept 9, 2026, 11:40 pm MT";
 // ===== END DATA =====
