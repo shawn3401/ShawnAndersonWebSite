@@ -265,7 +265,7 @@ textarea{min-height:96px;resize:vertical}
             <select id="eventType" name="event_type" required>
               <option value="">Choose one</option><option>Homecoming</option><option>Prom</option><option>Winter formal</option><option>Sweethearts / Morp</option><option>Wedding</option><option>Other</option>
             </select></div>
-          <div><label for="eventDate">Event date</label><input type="date" id="eventDate" name="event_date" required></div>
+          <div><label for="eventDate">Event date <span class="opt">(at least 5 days out)</span></label><input type="date" id="eventDate" name="event_date" required></div>
           <div style="grid-column:1/-1"><label for="colors">Colors <span class="opt">(dress color, suit color, flowers you like or hate)</span></label>
             <textarea id="colors" name="colors" placeholder="Example: dusty blue dress, black suit, white roses with a little baby's breath and silver ribbon"></textarea></div>
         </div>
@@ -323,7 +323,7 @@ textarea{min-height:96px;resize:vertical}
   <div class="eyebrow">Good to know</div>
   <h2>Details</h2>
   <div class="faq">
-    <div><h3>How far ahead should I order?</h3><p>A week is ideal. A few days usually works. Dance weekends fill up, so earlier is better.</p></div>
+    <div><h3>How far ahead should I order?</h3><p>At least 5 days, and the order form won't take a date sooner than that. A week or more is better. Dance weekends fill up, so earlier is best.</p></div>
     <div><h3>Where do I pick up?</h3><p>Idaho Falls. I'll send you the address and a time window when I confirm your order.</p></div>
     <div><h3>Can you match my dress?</h3><p>Yes. Send a photo of the dress or a swatch and I'll match the flowers and ribbon to it.</p></div>
     <div><h3>How do I keep it fresh?</h3><p>Keep it in the fridge in the box it comes in until you're ready to leave. It'll look great through the last song.</p></div>
@@ -373,8 +373,11 @@ document.querySelectorAll("[data-dec]").forEach(b => b.addEventListener("click",
 document.querySelectorAll(".qty input").forEach(i => i.addEventListener("input", render));
 document.querySelectorAll("[data-add]").forEach(a => a.addEventListener("click", () => { showForm(); setQty(a.dataset.add, qty(a.dataset.add) + 1); }));
 
-// Default the date picker to today or later
-(function(){ const d = new Date(); const iso = d.toISOString().slice(0,10); $("#eventDate").min = iso; })();
+// Earliest event date: 5 days from today (local time). Leah needs the notice to buy flowers.
+const MIN_DAYS = 5;
+function isoLocal(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function minEventDate(){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() + MIN_DAYS); return d; }
+(function(){ $("#eventDate").min = isoLocal(minEventDate()); })();
 
 function showMsg(el, kind, html){ const m = $(el); m.className = "msg " + kind; m.innerHTML = html; m.scrollIntoView({block:"nearest", behavior:"smooth"}); }
 
@@ -399,6 +402,7 @@ function validate(o){
   if (!Object.keys(o.items).length) return "Add at least one corsage, boutonnière, or bouquet.";
   if (!o.event_type) return "Pick the event.";
   if (!o.event_date) return "Enter the event date.";
+  if (o.event_date < isoLocal(minEventDate())) return `I need at least ${MIN_DAYS} days' notice to get fresh flowers in. The earliest date I can take is ${minEventDate().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}.`;
   if (!o.name) return "Enter your name.";
   if (!o.phone) return "Enter a phone number so I can confirm your order.";
   if (o.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(o.email)) return "That email doesn't look right.";
