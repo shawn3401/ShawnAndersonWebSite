@@ -36,6 +36,8 @@ const LOCATION = {lat:47.84681, lng:-115.88983, town:"Porcupine Pass", state:"ID
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
 const STATUS = "Day 4 done: 56.5 miles and 4,431 ft of climbing, Troy Mine to Porcupine Pass. Montana is behind him. Camped ten feet into Idaho at 5,205 ft. Four days in, 162.1 miles.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
+// Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 9, 2026, end of day 4", caption:"Blue and green at the top is Rick's track so far, Roosville to Porcupine Pass. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -55,5 +57,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 9, 2026, 7:45 pm MT";
+const LAST_UPDATED = "Sept 9, 2026, 9:30 pm MT";
 // ===== END DATA =====
