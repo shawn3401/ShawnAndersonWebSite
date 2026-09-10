@@ -147,6 +147,22 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
 .sofar{font-size:12px;color:var(--ink-3);font-weight:400}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){
+  #log thead{display:none}
+  #log,#log tbody{display:block}
+  #log tr{display:grid;grid-template-columns:repeat(5,1fr);gap:0 6px;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
+  #log tr:last-child{border-bottom:0}
+  #log td{display:block;padding:0;border:0;text-align:left;white-space:normal}
+  #log td.l-day{grid-column:1;grid-row:1;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:26px;line-height:1}
+  #log td.l-day::before{content:"Day ";font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:2px}
+  #log td.l-date{grid-column:2/6;grid-row:1;align-self:end;color:var(--ink-2);font-size:15px}
+  #log td.l-end{grid-column:1/6;grid-row:2;margin-top:6px;font-weight:600;font-size:17px;line-height:1.25}
+  #log td.l-end::before{content:"Ended at ";font-weight:400;color:var(--ink-3)}
+  #log tr.open td.l-end::before{content:""}
+  #log td.l-stat{grid-row:3;margin-top:12px;padding-top:8px;border-top:1px solid var(--line);font-size:17px;line-height:1.1}
+  #log td.l-stat::before{content:attr(data-l);display:block;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+  #log td.l-stat .sofar{display:block;font-size:11px}
+  #log td.l-notes{grid-column:1/6;grid-row:4;margin-top:10px;font-size:15px}
+  #log .upd li{padding-left:8px}
   h1{font-size:34px}
   .cover{min-height:480px}
   .cover .inner{min-height:480px;padding-top:260px}
@@ -348,7 +364,7 @@ document.querySelector("#log tbody").innerHTML = [...LOG].reverse().map(e=>{
   const ended = open ? `<span class="chip c-good">Riding now</span>${e.end?`<div class="seg-sub" style="margin-top:4px">${e.end}</div>`:""}` : e.end;
   const miles = open ? `${fmt(e.miles||0)} <span class="sofar">so far</span>` : fmt(e.miles);
   const vs = open ? `<span class="sofar">pending</span>` : `<span class="${dc}">${(e.delta>=0?"+":"")+Math.round(e.delta)}</span>`;
-  return `<tr class="${open?"open":""}"><td class="num">${e.day}</td><td class="num">${mdy(d2(e.date))}</td><td>${ended}</td><td class="r num">${miles}</td><td class="r num">${Math.round(planDaily[e.day-1])}</td><td class="r num">+${fmt(e.gain||0)}</td><td class="r num">${fmt(e.cum)}</td><td class="r num">${vs}</td><td>${e.notes||""}${updList(e)}</td></tr>`;
+  return `<tr class="${open?"open":""}"><td class="num l-day" data-l="Day">${e.day}</td><td class="num l-date" data-l="Date">${mdy(d2(e.date))}</td><td class="l-end" data-l="Ended at">${ended}</td><td class="r num l-stat" data-l="Miles">${miles}</td><td class="r num l-stat" data-l="Plan">${Math.round(planDaily[e.day-1])}</td><td class="r num l-stat" data-l="Climb">+${fmt(e.gain||0)}</td><td class="r num l-stat" data-l="Total">${fmt(e.cum)}</td><td class="r num l-stat" data-l="vs. plan">${vs}</td><td class="l-notes">${e.notes||""}${updList(e)}</td></tr>`;
 }).join("");
 
 // Where is Rick (hero)
