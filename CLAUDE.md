@@ -76,7 +76,7 @@ A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers.
 - How it works (`#how`): three steps (send the order, Leah confirms, pick up and pay).
 - Order (`#order`): the form on the left, a sticky "Your order" summary with running total on the right. Stacks on mobile.
 - Good to know (`#faq`): seven short Q&As (lead time, pickup, dress matching, keeping it fresh, group orders, payment, plans changing).
-- Footer with the "photos are placeholders" note and a link home.
+- Footer with the "photos are placeholders" note, a link home, and a small "Leah's orders" link to the admin sign-in.
 
 ### Look
 Same structure as the tracker (color tokens on `:root`, dark palette under `prefers-color-scheme` guarded with `:root:not([data-theme="light"])` and again under `:root[data-theme="dark"]`), but a warmer palette: cream background, rose accent (`--rose`), sage for the step numbers. Display font is Cormorant Garamond, body is Source Sans 3, both from Google Fonts. Breakpoints at 820px (cards, steps, and the order grid go single column), 720px (hero and headline sizes), 560px (form fields single column), 440px (quantity rows).
