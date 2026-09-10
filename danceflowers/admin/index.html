@@ -184,7 +184,11 @@ $("#loginForm").addEventListener("submit", async (e) => {
   const b = $("#loginBtn"); b.disabled = true; $("#loginErr").hidden = true;
   const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#password").value });
   b.disabled = false;
-  if (error) { $("#loginErr").textContent = "That didn't work. Check the email and password."; $("#loginErr").hidden = false; }
+  if (error) {
+    const why = { email_provider_disabled: "Email sign-in is turned off in Supabase (Authentication, Sign In / Providers, Email).", email_not_confirmed: "This account's email isn't confirmed yet. Confirm it in the Supabase Users list.", invalid_credentials: "Wrong email or password." }[error.code];
+    $("#loginErr").textContent = why || ("That didn't work: " + error.message);
+    $("#loginErr").hidden = false;
+  }
 });
 $("#signOut").addEventListener("click", () => sb.auth.signOut());
 
