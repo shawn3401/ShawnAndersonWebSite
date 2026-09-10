@@ -29,17 +29,18 @@ const LOG = [
     {time:"10:30 am", miles:17, gain:370, text:"Heading south on Hwy 56 toward Cabinet Gorge Reservoir, then he picks up Hwy 200 and keeps going south."},
     {time:"7:20 pm", miles:56.5, gain:4431, text:"Made the Idaho state line at Porcupine Pass and set up camp ten feet into Idaho. Big afternoon climb to the 5,205 ft pass."},
   ]},
-  {day:5, date:"2026-09-10", end:"", miles:16.3, gain:108, loss:2579, done:false, notes:"", updates:[
+  {day:5, date:"2026-09-10", end:"", miles:45.6, gain:2093, loss:4423, done:false, notes:"", updates:[
     {time:"12:00 pm", miles:16.3, gain:108, text:"Down off Porcupine Pass into Idaho, 2,579 ft of descent to Shoshone Creek at about 2,600 ft. Stopped to fill up with 7 liters of water from the creek."},
+    {time:"4:30 pm", miles:45.6, gain:2093, text:"Checked in from Wallace, ID, down out of the Coeur d'Alene National Forest to the town on I-90. Low point of the day was 2,384 ft. Already past the 43 miles he needed today and not done yet."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.74075, lng:-115.97103, town:"Shoshone Creek", state:"ID", label:"Filling water at Shoshone Creek, about 2,600 ft and 16 miles below Porcupine Pass", asOf:"Sept 10, 12:00 pm MT", approx:false};
+const LOCATION = {lat:47.4741, lng:-115.9281, town:"Wallace", state:"ID", label:"In town on I-90 after the long descent out of the Coeur d'Alene National Forest, 45.6 miles into day 5", asOf:"Sept 10, 4:30 pm MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 5 under way. Off Porcupine Pass and down into Idaho, 2,579 ft of descent to Shoshone Creek at about 2,600 ft. At noon he was 16.3 miles in and loading up 7 liters of water from the creek. He needs about 43 miles today to stay on pace for Superior by Sept 12.";
+const STATUS = "Day 5 still under way. Rick checked in from Wallace, ID at 4:30 pm with 45.6 miles so far, 2,093 ft of climbing and 4,423 ft of descent, off Porcupine Pass and down through the Coeur d'Alene National Forest. That is already past the 43 miles he needed today, and he is still rolling.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 9, 2026, end of day 4", caption:"Blue and green at the top is Rick's track so far, Roosville to Porcupine Pass. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -62,5 +63,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 10, 2026, 12:15 pm MT";
+const LAST_UPDATED = "Sept 10, 2026, 4:35 pm MT";
 // ===== END DATA =====
