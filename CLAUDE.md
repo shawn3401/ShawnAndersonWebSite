@@ -65,7 +65,8 @@ A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers.
 
 ### Files
 - `danceflowers/index.html` the public page. CSS and JS inline, no `data.js`. Loads qrcodejs from cdnjs for the confirmation QR.
-- `danceflowers/admin/index.html` Leah's order list (see "Admin page" below). Not linked from the root landing page yet (`index.html` at the root does not mention it).
+- `danceflowers/admin/index.html` Leah's order list (see "Admin page" below).
+- The public page is not linked from the root landing page yet. Shawn is adding that link in a separate session (Sept 10, 2026); if it is still missing later, ask before adding it here.
 - `supabase/danceflowers/*.sql` database setup scripts, numbered. GitHub Pages publishes this folder too, which is fine, there is nothing secret in it.
 - No GoatCounter script on this page. Add the same `<script data-goatcounter=...>` tag the rick/ pages use if Shawn wants visit counts.
 
