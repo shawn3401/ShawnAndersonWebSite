@@ -34,17 +34,18 @@ const LOG = [
     {time:"4:30 pm", miles:45.6, gain:2093, text:"Checked in from Wallace, ID, down out of the Coeur d'Alene National Forest to the town on I-90. Low point of the day was 2,384 ft. Already past the 43 miles he needed today and not done yet."},
     {time:"Evening", miles:55.4, gain:2936, text:"Done for the day at Placer Creek south of Wallace. 55.4 miles, +2,936 / -5,273 ft. Segment 1 ends in Superior on Saturday, 72.3 miles away."},
   ]},
-  {day:6, date:"2026-09-11", end:"", miles:0, gain:0, loss:0, done:false, notes:"", updates:[
+  {day:6, date:"2026-09-11", end:"", miles:12.8, gain:1327, loss:1801, done:false, notes:"", updates:[
     {time:"9:20 am", text:"Rolled out from the Placer Creek camp. Got a bath and laundry done last night. Rain overnight, clearing this morning."},
+    {time:"11:40 am", miles:12.8, gain:1327, text:"Up Placer Creek to a 4,921 ft high point and down the other side to 3,138 ft. 23.4 more to hit today's share of 36.2."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.43047, lng:-115.89064, town:"Placer Creek, south of Wallace", state:"ID", label:"Rolled out from the Placer Creek camp at 9:20 am on day 6, heading for Superior, MT", asOf:"Sept 11, 9:20 am MT", approx:true};
+const LOCATION = {lat:47.37397, lng:-115.75369, town:"Southeast of Wallace", state:"ID", label:"Over the 4,921 ft high point above Placer Creek and heading down, 12.8 miles into day 6", asOf:"Sept 11, 11:40 am MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 6 under way. Rick rolled out of the Placer Creek camp at 9:20 am after a bath and laundry last night. It rained overnight but was clearing as he left. Forecast is dry with highs in the mid 60s. 72.3 miles to Superior, MT by Saturday to close out segment 1, about 36 a day.";
+const STATUS = "Day 6 under way. Rick rolled out of the Placer Creek camp at 9:20 am after a bath and laundry last night, with overnight rain clearing as he left. At 11:40 am he was 12.8 miles in, over a 4,921 ft high point and descending, with 1,327 ft climbed and 1,801 ft of descent. He needs about 36 a day to reach Superior, MT by Saturday and close out segment 1."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 10, 2026, end of day 5", caption:"Blue and green at the top is Rick's track so far, Roosville to Placer Creek near Wallace, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -71,5 +72,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 11, 2026, 9:43 am MT";
+const LAST_UPDATED = "Sept 11, 2026, 11:47 am MT";
 // ===== END DATA =====
