@@ -29,7 +29,7 @@ const LOG = [
     {time:"10:30 am", miles:17, gain:370, text:"Heading south on Hwy 56 toward Cabinet Gorge Reservoir, then he picks up Hwy 200 and keeps going south."},
     {time:"7:20 pm", miles:56.5, gain:4431, text:"Made the Idaho state line at Porcupine Pass and set up camp ten feet into Idaho. Big afternoon climb to the 5,205 ft pass."},
   ]},
-  {day:5, date:"2026-09-10", end:"Placer Creek, ID (south of Wallace)", miles:55.4, gain:2936, loss:5273, notes:"Porcupine Pass to Placer Creek. Long descent off the pass into Idaho, 5,156 ft high point at the start to a 2,365 ft low point, water from Shoshone Creek, then down through the Coeur d'Alene National Forest to Wallace for a burger and a shake. Climbed out of town along Placer Creek to camp. Biggest descent day so far, 5,273 ft.", updates:[
+  {day:5, date:"2026-09-10", end:"Placer Creek, ID (south of Wallace)", miles:55.4, gain:2936, loss:5273, lat:47.43047, lng:-115.89064, notes:"Porcupine Pass to Placer Creek. Long descent off the pass into Idaho, 5,156 ft high point at the start to a 2,365 ft low point, water from Shoshone Creek, then down through the Coeur d'Alene National Forest to Wallace for a burger and a shake. Climbed out of town along Placer Creek to camp. Biggest descent day so far, 5,273 ft.", updates:[
     {time:"12:00 pm", miles:16.3, gain:108, text:"Down off Porcupine Pass into Idaho, 2,579 ft of descent to Shoshone Creek at about 2,600 ft. Stopped to fill up with 7 liters of water from the creek."},
     {time:"4:30 pm", miles:45.6, gain:2093, text:"Checked in from Wallace, ID, down out of the Coeur d'Alene National Forest to the town on I-90. Low point of the day was 2,384 ft. Already past the 43 miles he needed today and not done yet."},
     {time:"Evening", miles:55.4, gain:2936, text:"Done for the day at Placer Creek south of Wallace. 55.4 miles, +2,936 / -5,273 ft. Segment 1 ends in Superior on Saturday, 72.3 miles away."},
@@ -38,7 +38,7 @@ const LOG = [
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.4741, lng:-115.9281, town:"Wallace", state:"ID", label:"Camped on Placer Creek south of Wallace after 55.4 miles on day 5 (pin pending, marker shows Wallace)", asOf:"Sept 10, evening MT", approx:true};
+const LOCATION = {lat:47.43047, lng:-115.89064, town:"Placer Creek, south of Wallace", state:"ID", label:"Camped on Placer Creek about three miles south of Wallace after 55.4 miles on day 5", asOf:"Sept 10, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
 const STATUS = "Day 5 is in the books: 55.4 miles from Porcupine Pass down to Wallace and up Placer Creek to camp, with 5,273 ft of descent, the most of the trip so far. He is 12.4 miles ahead of plan with 72.3 miles left to Superior, MT by Saturday, about 36 a day.";
@@ -68,5 +68,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 10, 2026, 8:11 pm MT";
+const LAST_UPDATED = "Sept 10, 2026, 8:12 pm MT";
 // ===== END DATA =====
