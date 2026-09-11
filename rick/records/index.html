@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Trip records from Rick Saunders' Western Wildlands Route ride: longest day, biggest climb, coldest night, highest camp, and more.">
+<title>Rick's WWR Records</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light dark;
+  --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
+  --line:#CBD3CB; --contour:#DDE3DB;
+  --red:#B4232C; --red-soft:#F3DCDD;
+  --plan:#6F8A72; --plan-soft:#DCE6DD; --rain:#2F6F9F; --rain-soft:#DCE8F1;
+  --good:#2E7D4F; --good-soft:#D9EEDF; --warn:#A6681B; --warn-soft:#F6E7CF; --bad:#9B2A2A; --bad-soft:#F2DADA;
+  --gold:#C9A227; --gold-soft:#F5EBC8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
+    --line:#33403A; --contour:#26312C;
+    --red:#E1555E; --red-soft:#3C1F22;
+    --plan:#8FAA92; --plan-soft:#25332A; --rain:#7FB3DA; --rain-soft:#1E2E3A;
+    --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
+    --gold:#E2BE4A; --gold-soft:#3A3115;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
+  --line:#33403A; --contour:#26312C;
+  --red:#E1555E; --red-soft:#3C1F22;
+  --plan:#8FAA92; --plan-soft:#25332A; --rain:#7FB3DA; --rain-soft:#1E2E3A;
+  --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
+  --gold:#E2BE4A; --gold-soft:#3A3115;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+a{color:var(--red)}
+.crumbs{font-size:13px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:22px}
+.crumbs a{text-decoration:none}
+.crumbs a:hover,.crumbs a:focus{text-decoration:underline}
+.crumbs span{color:var(--ink-3);margin:0 8px}
+h1,h2,.disp{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:44px;line-height:1;text-transform:uppercase}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:600}
+.sub{color:var(--ink-2);margin-top:6px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+section{margin-top:38px}
+h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:4px}
+h2 .ic{margin-right:6px}
+.segsub{font-size:13px;color:var(--ink-3);margin-bottom:12px}
+.num{font-variant-numeric:tabular-nums}
+
+/* The tally: dark strip of totals */
+.tally{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:22px}
+.tally>div{background:var(--ink);color:var(--bg);padding:14px 16px 12px;min-width:0}
+.tally .lab{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.tally .val{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:38px;line-height:1.05;margin-top:4px}
+.tally .val small{font-size:16px;font-weight:600;color:color-mix(in srgb,var(--bg) 75%,transparent);margin-left:4px}
+.tally .note{font-size:13px;color:color-mix(in srgb,var(--bg) 70%,transparent);margin-top:4px}
+@media (max-width:820px){.tally{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:480px){.tally{grid-template-columns:repeat(2,1fr)}.tally .val{font-size:32px}}
+
+/* Record cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{position:relative;background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--red);padding:14px 16px 12px;min-width:0;display:flex;flex-direction:column}
+.card.gold{border-top-color:var(--gold)}
+.card.rain{border-top-color:var(--rain)}
+.card.plan{border-top-color:var(--plan)}
+.card .medal{position:absolute;top:10px;right:12px;font-size:30px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.card .lab{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);padding-right:40px}
+.card .val{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:46px;line-height:1;margin-top:6px}
+.card .val small{font-size:18px;font-weight:600;color:var(--ink-2);margin-left:5px}
+.card .who{margin-top:6px;font-size:15px}
+.card .who b{font-weight:600}
+.card .who .d{color:var(--ink-3)}
+.card .note{font-size:13px;color:var(--ink-2);margin-top:6px;flex:1}
+.card .strip{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.card .strip svg{display:block;width:100%;height:44px}
+.card .strip .k{font-size:11px;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;display:flex;justify-content:space-between}
+.bar{fill:var(--plan-soft);stroke:var(--plan);stroke-width:.5}
+.bar.hi{fill:var(--red);stroke:var(--red)}
+.card.gold .bar.hi{fill:var(--gold);stroke:var(--gold)}
+.card.rain .bar.hi{fill:var(--rain);stroke:var(--rain)}
+.card.plan .bar.hi{fill:var(--good);stroke:var(--good)}
+.bar.zero{fill:var(--contour);stroke:var(--line)}
+.card.empty{border-top-color:var(--line)}
+.card.empty .val{color:var(--ink-3);font-size:26px;margin-top:10px}
+.card.pending .val{color:var(--ink-3)}
+
+/* Honor roll: podium list */
+.podium{background:var(--paper);border:1px solid var(--line);padding:14px 16px 6px}
+.podium ol{list-style:none;margin:0;padding:0}
+.podium li{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.podium li:last-child{border-bottom:0}
+.podium .pl{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;line-height:1;color:var(--ink-3);text-align:center}
+.podium li:nth-child(1) .pl{color:var(--gold)}
+.podium li:nth-child(2) .pl{color:var(--ink-2)}
+.podium li:nth-child(3) .pl{color:var(--warn)}
+.podium .nm b{font-weight:600}
+.podium .nm .d{display:block;font-size:13px;color:var(--ink-3)}
+.podium .sc{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24px;line-height:1;white-space:nowrap}
+.podium .sc small{font-size:13px;font-weight:600;color:var(--ink-3);margin-left:3px;font-family:"Source Sans 3",sans-serif}
+.podium .meter{grid-column:2/4;height:6px;background:var(--plan-soft);border-radius:2px;overflow:hidden;margin-top:-2px}
+.podium .meter i{display:block;height:100%;background:var(--red)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+
+.foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:720px){ h1{font-size:34px} .card .val{font-size:40px} }
+</style>
+<script data-goatcounter="https://shawnandersonapps.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs"><a href="/">shawnandersonapps.com</a><span>/</span><a href="../">Rick's WWR Tracker</a><span>/</span>Records</div>
+  <div class="eyebrow">Western Wildlands Route · Canada to Mexico</div>
+  <h1>Trip records</h1>
+  <div class="sub" id="sub">Loading the daily log…</div>
+
+  <div class="tally" id="tally"></div>
+
+  <section>
+    <h2><span class="ic">🚴</span>Distance</h2>
+    <div class="segsub">Miles are what he pedaled. "Versus plan" uses his credited position, so a shortcut counts for him and a detour against him.</div>
+    <div class="grid" id="g-dist"></div>
+  </section>
+
+  <section>
+    <h2><span class="ic">⛰️</span>Up and down</h2>
+    <div class="segsub">Climbing and descent from the onX ride cards. High and low points are only known for days Rick reported them.</div>
+    <div class="grid" id="g-elev"></div>
+  </section>
+
+  <section>
+    <h2><span class="ic">🌦️</span>Weather at camp</h2>
+    <div class="segsub" id="wxsub">Looked up from Open-Meteo at each night's camp pin when this page loads. Daytime numbers are for the camp he rode to that day; the night is the low at that camp before he rolled out.</div>
+    <div class="grid" id="g-wx"></div>
+  </section>
+
+  <section>
+    <h2><span class="ic">⛺</span>Camps</h2>
+    <div class="segsub">One pin per night from his Garmin. Elevations from Open-Meteo's terrain model, so they are close but not survey grade.</div>
+    <div class="grid" id="g-camp"></div>
+  </section>
+
+  <section>
+    <h2><span class="ic">🏅</span>Honor roll</h2>
+    <div class="segsub">Every riding day, ranked. Ties go to the earlier day.</div>
+    <div class="two">
+      <div class="podium"><div class="eyebrow">Miles</div><ol id="p-miles"></ol></div>
+      <div class="podium"><div class="eyebrow">Climbing</div><ol id="p-gain"></ol></div>
+    </div>
+  </section>
+
+  <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a> · Records are recomputed from the daily log every time this page loads, so a new record shows the day it happens. · <span id="visits"></span></div>
+</div>
+<script src="../data.js"></script>
+<script>
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const fmt1 = n => n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const mdy = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const place = e => (e.end||"").split(/[,(]/)[0].trim();
+
+// Plan per day, same as the tracker
+const planDaily = []; SEGMENTS.forEach(s => { const mpd = s.miles/s.days; for(let i=0;i<s.days;i++) planDaily.push(mpd); });
+
+// Closed days only. Today (done:false) is not a record until it is over.
+const DONE = LOG.filter(e => e.done !== false);
+const OPEN = LOG.find(e => e.done === false) || null;
+DONE.forEach(e => { e.net = (e.gain||0) - (e.loss||0); e.vs = (e.miles - (e.course||0)) - planDaily[e.day-1]; e.perMile = e.miles>0 ? (e.gain||0)/e.miles : null; });
+const RIDE = DONE.filter(e => e.miles > 0);
+const ZERO = DONE.filter(e => !(e.miles > 0));
+const N = DONE.length;
+const last = DONE[N-1];
+
+document.getElementById("sub").textContent = N
+  ? `Best, worst, highest, and coldest through day ${N}${last?` (${mdy(d2(last.date))})`:""}${OPEN?`. Day ${OPEN.day} is still being ridden and joins the board when it closes.`:"."}`
+  : "Nothing to rank yet. Records start when the first day closes.";
+
+// The tally
+const miles = DONE.reduce((a,e)=>a+e.miles,0), gain = DONE.reduce((a,e)=>a+(e.gain||0),0), loss = DONE.reduce((a,e)=>a+(e.loss||0),0);
+const everests = gain/29032;
+const states = []; DONE.forEach(e => { const m = /,\s*([A-Z]{2})\b/.exec(e.end||""); if (m && !states.includes(m[1])) states.push(m[1]); });
+const photosSoFar = (typeof PHOTOS!=="undefined") ? PHOTOS.length : 0;
+document.getElementById("tally").innerHTML = `
+  <div><div class="lab">Days on the road</div><div class="val num">${N}<small>of 63</small></div><div class="note">${RIDE.length} riding, ${ZERO.length} zero day${ZERO.length===1?"":"s"}</div></div>
+  <div><div class="lab">Miles pedaled</div><div class="val num">${fmt1(miles)}</div><div class="note">${RIDE.length?`${fmt1(miles/RIDE.length)} per riding day`:""}</div></div>
+  <div><div class="lab">Climbing</div><div class="val num">${fmt(gain)}<small>ft</small></div><div class="note">${everests>=0.95?`${fmt1(everests)} Everests`:`${Math.round(everests*100)}% of an Everest`}</div></div>
+  <div><div class="lab">Descent</div><div class="val num">${fmt(loss)}<small>ft</small></div><div class="note">Net ${gain-loss>=0?"up":"down"} ${fmt(Math.abs(gain-loss))} ft since Roosville</div></div>
+  <div><div class="lab">States</div><div class="val num">${states.length}</div><div class="note">${states.join(", ")||"–"}, after Canada</div></div>
+  <div><div class="lab">Photos</div><div class="val num">${photosSoFar}</div><div class="note"><a href="../photos/" style="color:inherit">See the gallery</a></div></div>`;
+
+// Strip chart: one bar per closed day, record day highlighted
+function strip(vals, hiDays, opts={}){
+  const n = vals.length; if (!n) return "";
+  const W = 300, H = 40, pad = 1;
+  const nums = vals.filter(v => v!=null && !isNaN(v));
+  const lo = Math.min(0, ...nums), hi = Math.max(0, ...nums);
+  const span = (hi - lo) || 1;
+  const bw = W/n;
+  const y0 = H - ((0 - lo)/span)*H;
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">`;
+  vals.forEach((v,i) => {
+    const e = DONE[i];
+    const x = i*bw + pad, w = Math.max(1, bw - pad*2);
+    if (v==null || isNaN(v)) { s += `<rect class="bar zero" x="${x}" y="${H-3}" width="${w}" height="3"><title>Day ${e.day}: no data</title></rect>`; return; }
+    const yv = H - ((v - lo)/span)*H;
+    const y = Math.min(y0, yv), h = Math.max(2, Math.abs(y0 - yv));
+    const cls = "bar" + (hiDays.includes(e.day)?" hi":"") + (v===0?" zero":"");
+    s += `<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}"><title>Day ${e.day}, ${mdy(d2(e.date))}: ${opts.fmt?opts.fmt(v):v}</title></rect>`;
+  });
+  s += `</svg>`;
+  return `<div class="strip">${s}<div class="k"><span>Day 1</span><span>${opts.key||"each bar is a day"}</span><span>Day ${N}</span></div></div>`;
+}
+
+function card({label, value, unit, day, days, note, medal, cls, vals, valFmt, key, pending}){
+  const e = day ? DONE.find(x => x.day===day) : null;
+  const who = e ? `<div class="who"><b>Day ${e.day}</b> <span class="d">· ${mdy(d2(e.date))} · ${esc(place(e)||"")}</span></div>` : "";
+  return `<div class="card ${cls||""}${pending?" pending":""}">${medal?`<div class="medal">${medal}</div>`:""}<div class="lab">${label}</div>
+    <div class="val num">${value}${unit?`<small>${unit}</small>`:""}</div>${who}${note?`<div class="note">${note}</div>`:""}
+    ${vals?strip(vals, days||(day?[day]:[]), {fmt:valFmt, key}):""}</div>`;
+}
+const emptyCard = (label, why) => `<div class="card empty"><div class="lab">${label}</div><div class="val">${why}</div></div>`;
+
+const best = (arr, f, dir=1) => arr.reduce((b,e) => (b==null || dir*(f(e)-f(b))>0) ? e : b, null);
+
+// Distance
+(function(){
+  const g = document.getElementById("g-dist"); const out = [];
+  const mv = DONE.map(e=>e.miles), mf = v=>`${fmt1(v)} mi`;
+  const longest = best(RIDE, e=>e.miles);
+  const shortest = best(RIDE, e=>e.miles, -1);
+  out.push(longest ? card({label:"Longest day", value:fmt1(longest.miles), unit:"mi", day:longest.day, medal:"🥇", cls:"gold", vals:mv, valFmt:mf, key:"miles", note:`${fmt(longest.gain||0)} ft of climbing on the way to ${esc(place(longest))}.`}) : emptyCard("Longest day","No riding days yet"));
+  out.push(shortest && RIDE.length>1 ? card({label:"Shortest riding day", value:fmt1(shortest.miles), unit:"mi", day:shortest.day, medal:"🐢", vals:mv, valFmt:mf, key:"miles", note:`Zero days do not count here. ${ZERO.length?`There ${ZERO.length===1?"has been 1 zero day":`have been ${ZERO.length} zero days`}: ${ZERO.map(e=>`day ${e.day} at ${esc(place(e))}`).join(", ")}.`:"No zero days so far."}`}) : emptyCard("Shortest riding day","Needs two riding days"));
+  const bv = DONE.map(e=>e.vs), bf = v=>`${v>=0?"+":""}${fmt1(v)} mi vs plan`;
+  const bestVs = best(DONE, e=>e.vs), worstVs = best(DONE, e=>e.vs, -1);
+  out.push(bestVs ? card({label:"Best day against the plan", value:(bestVs.vs>=0?"+":"")+fmt1(bestVs.vs), unit:"mi", day:bestVs.day, medal:"🚀", cls:"plan", vals:bv, valFmt:bf, key:"vs plan", note:`Plan share that day was ${fmt1(planDaily[bestVs.day-1])} mi${bestVs.course?`, and a reroute ${bestVs.course<0?"saved":"added"} ${fmt1(Math.abs(bestVs.course))}`:""}.`}) : emptyCard("Best day against the plan","No days yet"));
+  out.push(worstVs ? card({label:"Roughest day against the plan", value:(worstVs.vs>=0?"+":"")+fmt1(worstVs.vs), unit:"mi", day:worstVs.day, medal:"🌧️", vals:bv, valFmt:bf, key:"vs plan", note:esc(worstVs.miles===0 ? `A zero day. ${worstVs.notes||""}` : (worstVs.notes||"")).slice(0,160)}) : emptyCard("Roughest day against the plan","No days yet"));
+  // Longest streak of 40+ mile days
+  let run=[], bestRun=[]; DONE.forEach(e => { if (e.miles>=40) { run.push(e.day); if (run.length>bestRun.length) bestRun=run.slice(); } else run=[]; });
+  out.push(bestRun.length ? card({label:"Longest run of 40+ mile days", value:bestRun.length, unit:bestRun.length===1?"day":"days", days:bestRun, medal:"🔥", vals:mv, valFmt:mf, key:"miles, streak in red", note:`Days ${bestRun[0]} to ${bestRun[bestRun.length-1]}${run.length===bestRun.length&&run.length?", and still going":""}. Plan pace is ${fmt1(TOTAL_PLAN/63)} a day.`}) : emptyCard("Longest run of 40+ mile days","No 40-mile day yet"));
+  const rer = DONE.filter(e=>e.course);
+  const bigRer = best(rer, e=>Math.abs(e.course));
+  if (bigRer) out.push(card({label:"Biggest reroute", value:(bigRer.course<0?"−":"+")+fmt1(Math.abs(bigRer.course)), unit:"mi", day:bigRer.day, medal:"🧭", vals:DONE.map(e=>-(e.course||0)), valFmt:v=>`${v>=0?"+":""}${fmt1(v)} mi credit`, key:"miles credited", note:`${bigRer.course<0?"A shortcut that saved":"A detour that added"} ${fmt1(Math.abs(bigRer.course))} mi against his onX plan. The plan itself never changes.`}));
+  g.innerHTML = out.join("");
+})();
+
+// Up and down
+(function(){
+  const g = document.getElementById("g-elev"); const out = [];
+  const gv = DONE.map(e=>e.gain||0), lv = DONE.map(e=>e.loss||0), nv = DONE.map(e=>e.net), ff = v=>`${fmt(v)} ft`;
+  const mostUp = best(RIDE, e=>e.gain||0), mostDown = best(RIDE, e=>e.loss||0);
+  out.push(mostUp ? card({label:"Most climbing", value:fmt(mostUp.gain), unit:"ft", day:mostUp.day, medal:"🥇", cls:"gold", vals:gv, valFmt:ff, key:"ft climbed", note:`${(mostUp.gain/29032*100).toFixed(0)}% of an Everest in one day, over ${fmt1(mostUp.miles)} mi.`}) : emptyCard("Most climbing","No riding days yet"));
+  out.push(mostDown ? card({label:"Most descent", value:fmt(mostDown.loss), unit:"ft", day:mostDown.day, medal:"🎢", vals:lv, valFmt:ff, key:"ft descended", note:`Down ${fmt(mostDown.loss)} ft and up ${fmt(mostDown.gain||0)} ft. Brakes earned their keep.`}) : emptyCard("Most descent","No riding days yet"));
+  const netUp = best(RIDE, e=>e.net), netDown = best(RIDE, e=>e.net, -1);
+  const nf = v=>`${v>=0?"+":"−"}${fmt(Math.abs(v))} ft net`;
+  out.push(netUp && netUp.net>0 ? card({label:"Biggest net gain", value:"+"+fmt(netUp.net), unit:"ft", day:netUp.day, medal:"📈", vals:nv, valFmt:nf, key:"net ft, camp to camp", note:`Ended the day ${fmt(netUp.net)} ft higher than he started it.`}) : emptyCard("Biggest net gain","No uphill day yet"));
+  out.push(netDown && netDown.net<0 ? card({label:"Biggest net drop", value:"−"+fmt(-netDown.net), unit:"ft", day:netDown.day, medal:"📉", vals:nv, valFmt:nf, key:"net ft, camp to camp", note:`Ended the day ${fmt(-netDown.net)} ft lower than he started it.`}) : emptyCard("Biggest net drop","No downhill day yet"));
+  const steep = best(RIDE, e=>e.perMile);
+  out.push(steep ? card({label:"Steepest day", value:fmt(steep.perMile), unit:"ft per mile", day:steep.day, medal:"🧗", vals:DONE.map(e=>e.perMile), valFmt:v=>`${fmt(v)} ft/mi`, key:"climbing per mile", note:`${fmt(steep.gain)} ft in ${fmt1(steep.miles)} mi. Trip average is ${fmt(RIDE.reduce((a,e)=>a+(e.gain||0),0)/Math.max(1,RIDE.reduce((a,e)=>a+e.miles,0)))} ft per mile.`}) : emptyCard("Steepest day","No riding days yet"));
+  const withHigh = DONE.filter(e=>e.high!=null), withLow = DONE.filter(e=>e.low!=null);
+  const hiPt = best(withHigh, e=>e.high), loPt = best(withLow, e=>e.low, -1);
+  out.push(hiPt ? card({label:"Highest point reached", value:fmt(hiPt.high), unit:"ft", day:hiPt.day, medal:"🏔️", vals:DONE.map(e=>e.high!=null?e.high:null), valFmt:ff, key:"day's high point", note:`Known for ${withHigh.length} of ${N} days, from Rick's onX ride cards. The route tops out above 11,000 ft in Utah.`}) : emptyCard("Highest point reached","No high points reported yet"));
+  out.push(loPt ? card({label:"Lowest point reached", value:fmt(loPt.low), unit:"ft", day:loPt.day, medal:"🌊", vals:DONE.map(e=>e.low!=null?e.low:null), valFmt:ff, key:"day's low point", note:`Known for ${withLow.length} of ${N} days. The route bottoms out near the Colorado River at the Arizona end, so this one will fall.`}) : emptyCard("Lowest point reached","No low points reported yet"));
+  g.innerHTML = out.join("");
+})();
+
+// Honor roll
+(function(){
+  const top = (f, unit, fmtv) => {
+    const rows = RIDE.slice().sort((a,b)=>f(b)-f(a)).slice(0,5); const mx = rows.length?f(rows[0]):1;
+    return rows.map((e,i)=>`<li><div class="pl">${i+1}</div><div class="nm"><b>Day ${e.day}</b> to ${esc(place(e))}<span class="d">${mdy(d2(e.date))}</span></div><div class="sc num">${fmtv(f(e))}<small>${unit}</small></div><div class="meter"><i style="width:${(100*f(e)/mx).toFixed(1)}%"></i></div></li>`).join("") || `<li><div class="pl">–</div><div class="nm">No riding days yet</div><div></div></li>`;
+  };
+  document.getElementById("p-miles").innerHTML = top(e=>e.miles, "mi", fmt1);
+  document.getElementById("p-gain").innerHTML = top(e=>e.gain||0, "ft", fmt);
+})();
+
+// Weather and camps, both from Open-Meteo
+const PINS = DONE.filter(e => e.lat!=null && e.lng!=null);
+const gw = document.getElementById("g-wx"), gc = document.getElementById("g-camp");
+if (!PINS.length) {
+  gw.innerHTML = emptyCard("Weather","No camp pins yet"); gc.innerHTML = emptyCard("Camps","No camp pins yet");
+} else {
+  gw.innerHTML = ["Hottest day","Coldest night","Wettest day","Windiest day"].map(l=>`<div class="card pending"><div class="lab">${l}</div><div class="val">Looking it up…</div></div>`).join("");
+  gc.innerHTML = ["Highest camp","Lowest camp"].map(l=>`<div class="card pending"><div class="lab">${l}</div><div class="val">Looking it up…</div></div>`).join("");
+  const lats = PINS.map(e=>e.lat).join(","), lngs = PINS.map(e=>e.lng).join(",");
+  const first = DONE[0].date, lastD = iso(addDays(d2(last.date), 1));
+  const today = iso(new Date());
+  const endDate = lastD <= today ? lastD : today;
+  const wxUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lngs}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_gusts_10m_max&start_date=${first}&end_date=${endDate}&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FBoise`;
+  const elUrl = `https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`;
+
+  fetch(wxUrl).then(r=>r.json()).then(j => {
+    const arr = Array.isArray(j) ? j : [j];
+    PINS.forEach((e,i) => {
+      const d = arr[i] && arr[i].daily; if (!d) return;
+      const k = d.time.indexOf(e.date), k2 = d.time.indexOf(iso(addDays(d2(e.date),1)));
+      e.wx = e.wx || {};
+      if (k>=0) { if (e.wx.hi==null) e.wx.hi = d.temperature_2m_max[k]; if (e.wx.rain==null) e.wx.rain = d.precipitation_sum[k]; if (e.wx.gust==null) e.wx.gust = d.wind_gusts_10m_max[k]; }
+      if (k2>=0 && e.wx.lo==null) e.wx.lo = d.temperature_2m_min[k2];
+    });
+    const has = f => DONE.filter(e => e.wx && e.wx[f]!=null);
+    const vals = f => DONE.map(e => e.wx && e.wx[f]!=null ? e.wx[f] : null);
+    const out = [];
+    const hot = best(has("hi"), e=>e.wx.hi);
+    out.push(hot ? card({label:"Hottest day", value:Math.round(hot.wx.hi)+"°", unit:"F", day:hot.day, medal:"🥵", cls:"gold", vals:vals("hi"), valFmt:v=>`${Math.round(v)}°F high`, key:"daily high at camp", note:`Daytime high near ${esc(place(hot))}. The desert in Utah and Arizona is still ahead.`}) : emptyCard("Hottest day","Weather lookup came back empty"));
+    const cold = best(has("lo"), e=>e.wx.lo, -1);
+    out.push(cold ? card({label:"Coldest night", value:Math.round(cold.wx.lo)+"°", unit:"F", day:cold.day, medal:"🥶", cls:"rain", vals:vals("lo"), valFmt:v=>`${Math.round(v)}°F low`, key:"overnight low at camp", note:`Low at the ${esc(place(cold))} camp the morning after day ${cold.day}.`}) : emptyCard("Coldest night","Weather lookup came back empty"));
+    const wet = best(has("rain"), e=>e.wx.rain);
+    out.push(wet ? card({label:"Wettest day", value:wet.wx.rain>=0.1?fmt1(wet.wx.rain):wet.wx.rain.toFixed(2), unit:"in", day:wet.day, medal:"☔", cls:"rain", vals:vals("rain"), valFmt:v=>`${v.toFixed(2)} in`, key:"rain at camp", note:wet.wx.rain>0?`Rain measured near ${esc(place(wet))} that day. ${has("rain").filter(e=>e.wx.rain>=0.05).length} of ${N} days have had measurable rain.`:"Bone dry so far. Not one wet day on the board."}) : emptyCard("Wettest day","Weather lookup came back empty"));
+    const wind = best(has("gust"), e=>e.wx.gust);
+    out.push(wind ? card({label:"Windiest day", value:Math.round(wind.wx.gust), unit:"mph gusts", day:wind.day, medal:"💨", vals:vals("gust"), valFmt:v=>`${Math.round(v)} mph gusts`, key:"peak gust at camp", note:`Peak gust near ${esc(place(wind))}. Headwind or tailwind, the model does not say.`}) : emptyCard("Windiest day","Weather lookup came back empty"));
+    gw.innerHTML = out.join("");
+  }).catch(() => { gw.innerHTML = emptyCard("Weather","Open-Meteo did not answer. Try a refresh."); });
+
+  fetch(elUrl).then(r=>r.json()).then(j => {
+    const els = j.elevation || [];
+    PINS.forEach((e,i) => { if (els[i]!=null) e.campEl = Math.round(els[i]*3.28084); });
+    const withEl = DONE.filter(e=>e.campEl!=null);
+    const ev = DONE.map(e=>e.campEl!=null?e.campEl:null), ef = v=>`${fmt(v)} ft camp`;
+    const hiC = best(withEl, e=>e.campEl), loC = best(withEl, e=>e.campEl, -1);
+    // Longest stay: consecutive nights at the same pin
+    let stay=[], bestStay=[]; DONE.forEach((e,i) => { const p = DONE[i-1]; if (p && p.lat===e.lat && p.lng===e.lng) { stay.push(e.day); } else { stay=[e.day]; } if (stay.length>bestStay.length) bestStay=stay.slice(); });
+    const stayCamp = DONE.find(e=>e.day===bestStay[0]);
+    const out = [];
+    out.push(hiC ? card({label:"Highest camp", value:fmt(hiC.campEl), unit:"ft", day:hiC.day, medal:"🏕️", cls:"gold", vals:ev, valFmt:ef, key:"camp elevation", note:`${esc(hiC.end||"")}. Thin air and cold nights start up here.`}) : emptyCard("Highest camp","Elevation lookup came back empty"));
+    out.push(loC ? card({label:"Lowest camp", value:fmt(loC.campEl), unit:"ft", day:loC.day, medal:"🛶", cls:"rain", vals:ev, valFmt:ef, key:"camp elevation", note:`${esc(loC.end||"")}. Average camp so far sits at ${fmt(withEl.reduce((a,e)=>a+e.campEl,0)/withEl.length)} ft.`}) : emptyCard("Lowest camp","Elevation lookup came back empty"));
+    out.push(bestStay.length>1 && stayCamp ? card({label:"Longest stay in one camp", value:bestStay.length, unit:"nights", days:bestStay, medal:"⏳", vals:DONE.map(e=>1), valFmt:()=>"one night", key:"nights, the stay in red", note:`${esc(stayCamp.end||"")}, days ${bestStay[0]} to ${bestStay[bestStay.length-1]}. ${esc((DONE.find(e=>e.day===bestStay[1])||{}).notes||"").split(". ")[0]}.`}) : card({label:"Longest stay in one camp", value:"1", unit:"night", medal:"⏳", note:"A new camp every night so far."}));
+    // Most photographed day
+    if (typeof PHOTOS!=="undefined" && PHOTOS.length) {
+      const counts = {}; PHOTOS.forEach(p => { counts[p.date] = (counts[p.date]||0)+1; });
+      const byDay = DONE.map(e => counts[e.date]||0);
+      const topDay = best(DONE, e => counts[e.date]||0);
+      out.push(card({label:"Most photographed day", value:counts[topDay.date]||0, unit:"photos", day:topDay.day, medal:"📸", vals:byDay, valFmt:v=>`${v} photo${v===1?"":"s"}`, key:"photos per day", note:`<a href="../photos/">All ${PHOTOS.length} in the gallery</a>.`}));
+    }
+    gc.innerHTML = out.join("");
+  }).catch(() => { gc.innerHTML = emptyCard("Camps","Open-Meteo did not answer. Try a refresh."); });
+}
+</script>
+<script>
+(function(){ var el=document.getElementById("visits"); if(!el) return;
+  fetch("https://shawnandersonapps.goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{ el.textContent = String(j.count).replace(/\s/g,",") + " visits since Sept 6"; }).catch(()=>{ el.remove(); });
+})();
+</script>
+</body>
+</html>
