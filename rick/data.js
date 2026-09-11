@@ -34,18 +34,19 @@ const LOG = [
     {time:"4:30 pm", miles:45.6, gain:2093, text:"Checked in from Wallace, ID, down out of the Coeur d'Alene National Forest to the town on I-90. Low point of the day was 2,384 ft. Already past the 43 miles he needed today and not done yet."},
     {time:"Evening", miles:55.4, gain:2936, text:"Done for the day at Placer Creek south of Wallace. 55.4 miles, +2,936 / -5,273 ft. Segment 1 ends in Superior on Saturday, 72.3 miles away."},
   ]},
-  {day:6, date:"2026-09-11", end:"", miles:12.8, gain:1327, loss:1801, done:false, notes:"", updates:[
+  {day:6, date:"2026-09-11", end:"", miles:27.9, gain:4680, loss:4198, done:false, notes:"", updates:[
     {time:"9:20 am", text:"Rolled out from the Placer Creek camp. Got a bath and laundry done last night. Rain overnight, clearing this morning."},
     {time:"11:40 am", miles:12.8, gain:1327, text:"Up Placer Creek to a 4,921 ft high point and down the other side to 3,138 ft. 23.4 more to hit today's share of 36.2."},
+    {time:"2:49 pm", miles:27.9, gain:4680, text:"Spent the better part of the afternoon on a rarely used stretch of the Hiawatha rail trail, working north toward Taft, MT before turning back south toward Mexico. Low point 3,021 ft. A big climbing day already at 4,680 ft. 8.3 more to hit today's share."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.37397, lng:-115.75369, town:"Southeast of Wallace", state:"ID", label:"Over the 4,921 ft high point above Placer Creek and heading down, 12.8 miles into day 6", asOf:"Sept 11, 11:40 am MT", approx:false};
+const LOCATION = {lat:47.37583, lng:-115.66786, town:"Hiawatha rail trail, near the Montana line", state:"ID", label:"On a rarely used stretch of the Hiawatha rail trail heading north toward Taft, MT, 27.9 miles into day 6", asOf:"Sept 11, 2:49 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 6 under way. Rick rolled out of the Placer Creek camp at 9:20 am after a bath and laundry last night, with overnight rain clearing as he left. At 11:40 am he was 12.8 miles in, over a 4,921 ft high point and descending, with 1,327 ft climbed and 1,801 ft of descent. He needs about 36 a day to reach Superior, MT by Saturday and close out segment 1."; 
+const STATUS = "Day 6 under way. Rick rolled out of Placer Creek at 9:20 am, went over a 4,904 ft high point, and by 2:49 pm was 27.9 miles in on a rarely used stretch of the Hiawatha rail trail, working north toward Taft, MT before he turns south again. Already 4,680 ft of climbing today, the second biggest of the trip. 44.4 miles to Superior, MT by Saturday to close out segment 1."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 10, 2026, end of day 5", caption:"Blue and green at the top is Rick's track so far, Roosville to Placer Creek near Wallace, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -72,5 +73,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 11, 2026, 11:47 am MT";
+const LAST_UPDATED = "Sept 11, 2026, 2:50 pm MT";
 // ===== END DATA =====
