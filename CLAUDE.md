@@ -59,6 +59,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - Status tiles (5): Miles ridden, Versus plan, Average per day, Needed pace, Projected finish.
 - "Needed pace" = miles left in the current segment / riding days left to its planned end date; note shows trip pace to Nov 7 too.
 - Under 720px the daily log and segments tables render as cards via CSS; any new `<td>` in those row templates needs the matching class (`l-*` / `s-*`) and a `data-l` label.
+- Nav bar (Sept 11, 2026): the same `.nav` row of four pills (Tracker, Weather, Photos, Records) is on all four rick/ pages, under the cover on the tracker and at the top of the sub-pages. The current page's link has `class="on"` (red, with a caret). The CSS is duplicated in each page; if you add a page, add it to all four navs.
 - The hosted Claude artifact copy of the tracker (claude.ai) is retired as of Sept 10, 2026; the live site is the only copy.
 
 ## danceflowers/ page
