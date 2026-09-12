@@ -34,19 +34,20 @@ const LOG = [
     {time:"4:30 pm", miles:45.6, gain:2093, text:"Checked in from Wallace, ID, down out of the Coeur d'Alene National Forest to the town on I-90. Low point of the day was 2,384 ft. Already past the 43 miles he needed today and not done yet."},
     {time:"Evening", miles:55.4, gain:2936, text:"Done for the day at Placer Creek south of Wallace. 55.4 miles, +2,936 / -5,273 ft. Segment 1 ends in Superior on Saturday, 72.3 miles away."},
   ]},
-  {day:6, date:"2026-09-11", end:"", miles:27.9, gain:4680, loss:4198, done:false, notes:"", updates:[
+  {day:6, date:"2026-09-11", end:"St Regis River, MT (near DeBorgia)", miles:46.3, gain:6051, loss:6593, high:5074, low:3072, lat:47.37447, lng:-115.36806, course:1.2, notes:"Placer Creek to the St Regis River. Climbed out of camp over a 4,900 ft high point, dropped to 3,072 ft, then spent the afternoon on a rarely used stretch of the Hiawatha rail trail working north toward Taft before turning south. Topped out at 5,074 ft and rolled down the St Regis River to camp near DeBorgia, back in Montana. Biggest climbing day of the trip so far, 6,051 ft up and 6,593 ft down. The Hiawatha loop added 1.2 miles to his course.", updates:[
     {time:"9:20 am", text:"Rolled out from the Placer Creek camp. Got a bath and laundry done last night. Rain overnight, clearing this morning."},
     {time:"11:40 am", miles:12.8, gain:1327, text:"Up Placer Creek to a 4,921 ft high point and down the other side to 3,138 ft. 23.4 more to hit today's share of 36.2."},
     {time:"2:49 pm", miles:27.9, gain:4680, text:"Spent the better part of the afternoon on a rarely used stretch of the Hiawatha rail trail, working north toward Taft, MT before turning back south toward Mexico. Low point 3,021 ft. A big climbing day already at 4,680 ft. 8.3 more to hit today's share."},
+    {time:"Evening", miles:46.3, gain:6051, text:"Camped on the St Regis River near DeBorgia, MT. 46.3 miles, +6,051 / -6,593 ft, high point 5,074 ft. Biggest climbing day yet. 27.2 miles to Superior to close out segment 1 tomorrow."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.37583, lng:-115.66786, town:"Hiawatha rail trail, near the Montana line", state:"ID", label:"On a rarely used stretch of the Hiawatha rail trail heading north toward Taft, MT, 27.9 miles into day 6", asOf:"Sept 11, 2:49 pm MT", approx:false};
+const LOCATION = {lat:47.37447, lng:-115.36806, town:"DeBorgia", state:"MT", label:"Camped on the St Regis River near DeBorgia after 46.3 miles on day 6, back in Montana", asOf:"Sept 11, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 6 under way. Rick rolled out of Placer Creek at 9:20 am, went over a 4,904 ft high point, and by 2:49 pm was 27.9 miles in on a rarely used stretch of the Hiawatha rail trail, working north toward Taft, MT before he turns south again. Already 4,680 ft of climbing today, the second biggest of the trip. 44.4 miles to Superior, MT by Saturday to close out segment 1."; 
+const STATUS = "Day 6 is in the books: 46.3 miles from Placer Creek over two high points, an afternoon on a quiet stretch of the Hiawatha rail trail, and down the St Regis River to camp near DeBorgia, MT. 6,051 ft of climbing, the most of any day so far. He is 15.2 miles ahead of plan with 27.2 miles left to Superior, MT tomorrow to close out segment 1."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 10, 2026, end of day 5", caption:"Blue and green at the top is Rick's track so far, Roosville to Placer Creek near Wallace, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -73,5 +74,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 11, 2026, 2:50 pm MT";
+const LAST_UPDATED = "Sept 11, 2026, 9:01 pm MT";
 // ===== END DATA =====
