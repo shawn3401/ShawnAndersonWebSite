@@ -55,6 +55,15 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-11-st-regis-river-dinner", date:"2026-09-11", caption:"Day 6. Dinner on the bank of the St Regis River near DeBorgia: Mountain House Mexican rice and chicken on the MSR stove, with a tortilla on the side."},
+  {file:"2026-09-11-st-regis-river-camp", date:"2026-09-11", caption:"Day 6 camp on a gravel bar by the St Regis River, back in Montana. Tent up, bike parked, and the day's riding clothes drying on the handlebars."},
+  {file:"2026-09-11-waterfall-selfie", date:"2026-09-11", caption:"Day 6. Rick at a waterfall beside the trail, headlamp still on the helmet from the tunnels."},
+  {file:"2026-09-11-tuna-wrap-lunch", date:"2026-09-11", caption:"Day 6. Trail lunch at a picnic table: tuna salad in a tortilla, cut with the Gerber."},
+  {file:"2026-09-11-1910-fires-sign", date:"2026-09-11", caption:"Day 6. The 1910 Fires interpretive sign on the Hiawatha rail trail. The Big Burn swept three million acres of Idaho and Montana in two days, including the valley behind the sign."},
+  {file:"2026-09-11-bike-on-trestle", date:"2026-09-11", caption:"Day 6. The loaded bike on one of the Hiawatha rail trail trestles, the Bitterroots stacked up behind."},
+  {file:"2026-09-11-trestle-looking-down", date:"2026-09-11", caption:"Day 6. Looking straight down off a Hiawatha trestle at the steel and the forest a long way below."},
+  {file:"2026-09-11-hiawatha-tunnel", date:"2026-09-11", caption:"Day 6. One of the old Milwaukee Road tunnels on the Hiawatha rail trail, daylight at the far end."},
+  {file:"2026-09-11-hiawatha-sign-selfie", date:"2026-09-11", caption:"Day 6. Rick at the Route of the Hiawatha sign. The Milwaukee Road was the last transcontinental railroad, built over the Bitterroots between 1907 and 1909 and run until 1980."},
   {file:"2026-09-10-wallace-burger", date:"2026-09-10", caption:"Day 5. Lunch in Wallace, ID: bacon burger, sweet potato fries, and a berry shake."},
   {file:"2026-09-10-food-inventory", date:"2026-09-10", caption:"Day 5. Food inventory laid out on the ground next to the pannier, counting what is left."},
   {file:"2026-09-10-mossy-spring", date:"2026-09-10", caption:"Day 5. Mossy rock face with a spring trickling down it on the descent from Porcupine Pass toward Wallace."},
@@ -74,5 +83,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 11, 2026, 9:01 pm MT";
+const LAST_UPDATED = "Sept 11, 2026, 9:09 pm MT";
 // ===== END DATA =====
