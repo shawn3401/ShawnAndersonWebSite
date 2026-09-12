@@ -57,6 +57,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 
 ### Layout notes
 - Status tiles (5): Miles ridden, Versus plan, Average per day, Needed pace, Projected finish.
+- The segments table uses the live position (today's open row included), so a segment finished mid-day shows "Done · day N" right away and the next one shows "Riding". The five tiles, route bar, and chart use closed days only (Shawn's call, Sept 10, 2026).
 - "Needed pace" = miles left in the current segment / riding days left to its planned end date; note shows trip pace to Nov 7 too.
 - Under 720px the daily log and segments tables render as cards via CSS; any new `<td>` in those row templates needs the matching class (`l-*` / `s-*`) and a `data-l` label.
 - Nav bar (Sept 11, 2026): the same `.nav` row of four pills (Tracker, Weather, Photos, Records) is on all four rick/ pages, under the cover on the tracker and at the top of the sub-pages. The current page's link has `class="on"` (red, with a caret). The CSS is duplicated in each page; if you add a page, add it to all four navs.

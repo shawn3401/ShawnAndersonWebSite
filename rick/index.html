@@ -388,9 +388,14 @@ w.innerHTML = last ? `
 
 // Segments table
 const seasonChip = st => st==="ok"?`<span class="chip c-good">In season</span>`: st==="tight"?`<span class="chip c-warn">Edge of season</span>`:`<span class="chip c-bad">Past typical season</span>`;
+// The table uses the live position (today's miles included) so a segment finished mid-day shows Done right away.
+const liveCred = OPEN ? OPEN.cred : credited;
+const liveSeg = SEGMENTS.find(s => liveCred < segCum[s.n-1]) || SEGMENTS[SEGMENTS.length-1];
+const liveInto = liveCred - (segCum[liveSeg.n-2]||0);
+const finishedOn = i => { const rows = OPEN ? [...DONE, OPEN] : DONE; const r = rows.find(e => e.cred >= segCum[i]); return r ? `day ${r.day}` : ""; };
 document.querySelector("#segs tbody").innerHTML = SEGMENTS.map((s,i)=>{
-  const done = credited >= segCum[i]; const cur = s===curSeg && !done;
-  const status = done?`<span class="chip c-muted">Done</span>`: cur?`<span class="chip c-cur">Riding · ${fmt(Math.round(milesIntoSeg))}/${fmt(s.miles)} mi</span>`:`<span class="chip c-muted">Upcoming</span>`;
+  const done = liveCred >= segCum[i]; const cur = s===liveSeg && !done;
+  const status = done?`<span class="chip c-good">Done · ${finishedOn(i)}</span>`: cur?`<span class="chip c-cur">Riding · ${fmt(Math.round(liveInto))}/${fmt(s.miles)} mi</span>`:`<span class="chip c-muted">Upcoming</span>`;
   return `<tr class="${done?"done":cur?"cur":"future"}"><td class="num s-n" data-l="Segment">${s.n}</td><td class="s-name"><span class="seg-name">${s.from} to ${s.to}</span><div class="seg-sub">${s.days} days${s.note?" · "+s.note:""}</div></td><td class="r num s-stat" data-l="Miles">${fmt(s.miles)}</td><td class="r num s-stat" data-l="Climb">${fmt(s.gain)} ft</td><td class="r num s-stat" data-l="Mi/day">${Math.round(s.mpd)}</td><td class="num s-dates" data-l="Planned">${mdy(d2(s.start))} to ${mdy(d2(s.end))}</td><td class="s-season" data-l="Season"><div class="seg-sub" style="margin-bottom:3px">${s.season}</div>${seasonChip(s.seasonState)}</td><td class="s-status">${status}</td></tr>`;
 }).join("");
 
