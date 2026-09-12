@@ -50,7 +50,7 @@ const LOCATION = {lat:47.37447, lng:-115.36806, town:"DeBorgia", state:"MT", lab
 const STATUS = "Day 6 is in the books: 46.3 miles from Placer Creek over two high points, an afternoon on a quiet stretch of the Hiawatha rail trail, and down the St Regis River to camp near DeBorgia, MT. 6,051 ft of climbing, the most of any day so far. He is 15.2 miles ahead of plan with 27.2 miles left to Superior, MT tomorrow to close out segment 1."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 10, 2026, end of day 5", caption:"Blue and green at the top is Rick's track so far, Roosville to Placer Creek near Wallace, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 11, 2026, end of day 6", caption:"Blue and green at the top is Rick's track so far, Roosville to the St Regis River near DeBorgia, MT, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
