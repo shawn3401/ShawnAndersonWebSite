@@ -42,15 +42,16 @@ const LOG = [
   ]},
   {day:7, date:"2026-09-12", end:"", miles:33.5, gain:1193, loss:1514, done:false, notes:"", updates:[
     {time:"2:07 pm", miles:33.5, gain:1193, text:"Segment 1 is done. Rolled down the St Regis River valley from the DeBorgia camp into Superior, MT, 33.5 miles with 1,193 ft up and 1,514 ft down. Canada to Superior in 7 days, right on the planned date and 6 miles ahead on distance."},
+    {time:"Afternoon", text:"Taking a break at the Church of Jesus Christ of Latter-day Saints in Superior to charge every power bank and dry out the tent and clothes. Plan is to roll on this afternoon and put the first miles on segment 2."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.1916, lng:-114.8918, town:"Superior", state:"MT", label:"In Superior after 33.5 miles on day 7. Segment 1, Canada to Superior, is complete", asOf:"Sept 12, 2:07 pm MT", approx:true};
+const LOCATION = {lat:47.1916, lng:-114.8918, town:"Superior", state:"MT", label:"Charging batteries and drying gear at the church in Superior after 33.5 miles on day 7. Segment 1, Canada to Superior, is complete", asOf:"Sept 12, afternoon MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Segment 1 is in the books. Rick rode into Superior, MT at about 2 pm on day 7, 33.5 miles down the St Regis River valley from DeBorgia, finishing the Canada to Superior segment on the day his plan called for. Seven days, one zero day for rain, and about 300 miles. Segment 2 to Darby, MT starts from here: 320.5 miles and the biggest climbing of the whole route, planned for 8 days."; 
+const STATUS = "Segment 1 is in the books. Rick rode into Superior, MT at about 2 pm on day 7, 33.5 miles down the St Regis River valley from DeBorgia, finishing the Canada to Superior segment on the day his plan called for. He is spending the afternoon at the Church of Jesus Christ of Latter-day Saints in town, charging every power bank and drying out the tent and clothes, then heading out to start segment 2. Superior to Darby, MT is 320.5 miles with the biggest climbing on the whole route, planned for 8 days."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 11, 2026, end of day 6", caption:"Blue and green at the top is Rick's track so far, Roosville to the St Regis River near DeBorgia, MT, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -86,5 +87,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 12, 2026, 2:11 pm MT";
+const LAST_UPDATED = "Sept 12, 2026, 2:12 pm MT";
 // ===== END DATA =====
