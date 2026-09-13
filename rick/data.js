@@ -40,18 +40,19 @@ const LOG = [
     {time:"2:49 pm", miles:27.9, gain:4680, text:"Spent the better part of the afternoon on a rarely used stretch of the Hiawatha rail trail, working north toward Taft, MT before turning back south toward Mexico. Low point 3,021 ft. A big climbing day already at 4,680 ft. 8.3 more to hit today's share."},
     {time:"Evening", miles:46.3, gain:6051, text:"Camped on the St Regis River near DeBorgia, MT. 46.3 miles, +6,051 / -6,593 ft, high point 5,074 ft. Biggest climbing day yet. 27.2 miles to Superior to close out segment 1 tomorrow."},
   ]},
-  {day:7, date:"2026-09-12", end:"", miles:33.5, gain:1193, loss:1514, done:false, notes:"", updates:[
+  {day:7, date:"2026-09-12", end:"Hills south of Superior, MT (segment 2, day 1)", miles:69, gain:2767, loss:2661, high:3196, low:2632, lat:47.03492, lng:-114.76697, notes:"Two rides in one day. Morning: 33.5 miles down the St Regis River valley from DeBorgia into Superior, closing out segment 1 on the planned date. Afternoon at the church in town charging power banks and drying gear. Evening: rolled straight into segment 2, 35.5 more miles climbing south out of the Clark Fork valley from 2,718 ft to 3,196 ft, with a short backtrack at the end to find a place to camp. 69 miles total, the longest day of the trip so far.", updates:[
     {time:"2:07 pm", miles:33.5, gain:1193, text:"Segment 1 is done. Rolled down the St Regis River valley from the DeBorgia camp into Superior, MT, 33.5 miles with 1,193 ft up and 1,514 ft down. Canada to Superior in 7 days, right on the planned date and 6 miles ahead on distance."},
     {time:"Afternoon", text:"Taking a break at the Church of Jesus Christ of Latter-day Saints in Superior to charge every power bank and dry out the tent and clothes. Plan is to roll on this afternoon and put the first miles on segment 2."},
+    {time:"Evening", miles:69, gain:2767, text:"Camped in the hills south of Superior after a second ride of 35.5 miles, +1,574 / -1,147 ft, starting segment 2 a day early. Backtracked a little at the end to find a camp spot. 69 miles on the day, a new longest."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.1916, lng:-114.8918, town:"Superior", state:"MT", label:"Charging batteries and drying gear at the church in Superior after 33.5 miles on day 7. Segment 1, Canada to Superior, is complete", asOf:"Sept 12, afternoon MT", approx:true};
+const LOCATION = {lat:47.03492, lng:-114.76697, town:"South of Superior", state:"MT", label:"Camped in the hills south of Superior after 69 miles on day 7, the first night of segment 2", asOf:"Sept 12, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Segment 1 is in the books. Rick rode into Superior, MT at about 2 pm on day 7, 33.5 miles down the St Regis River valley from DeBorgia, finishing the Canada to Superior segment on the day his plan called for. He is spending the afternoon at the Church of Jesus Christ of Latter-day Saints in town, charging every power bank and drying out the tent and clothes, then heading out to start segment 2. Superior to Darby, MT is 320.5 miles with the biggest climbing on the whole route, planned for 8 days."; 
+const STATUS = "Day 7 was two rides. Rick closed out segment 1 in Superior, MT at 2 pm, spent the afternoon at the church in town charging batteries and drying gear, then rode 35.5 more miles south into segment 2 and camped in the hills, with a short backtrack to find a spot. 69 miles on the day, his longest yet. Segment 2 to Darby, MT is under way a day ahead of plan, 320.5 miles with the biggest climbing on the route."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 11, 2026, end of day 6", caption:"Blue and green at the top is Rick's track so far, Roosville to the St Regis River near DeBorgia, MT, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -87,5 +88,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 12, 2026, 2:12 pm MT";
+const LAST_UPDATED = "Sept 12, 2026, 9:58 pm MT";
 // ===== END DATA =====
