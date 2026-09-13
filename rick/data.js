@@ -55,7 +55,7 @@ const LOCATION = {lat:47.03492, lng:-114.76697, town:"South of Superior", state:
 const STATUS = "Day 7 was two rides. Rick closed out segment 1 in Superior, MT at 2 pm, spent the afternoon at the church in town charging batteries and drying gear, then rode 35.5 more miles south into segment 2 and camped in the hills, with a short backtrack to find a spot. 69 miles on the day, his longest yet. Segment 2 to Darby, MT is under way a day ahead of plan, 320.5 miles with the biggest climbing on the route."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 11, 2026, end of day 6", caption:"Blue and green at the top is Rick's track so far, Roosville to the St Regis River near DeBorgia, MT, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 12, 2026, end of day 7", caption:"Blue and green at the top is Rick's track so far, Roosville to Superior, MT and on into the hills south of town, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
