@@ -45,14 +45,17 @@ const LOG = [
     {time:"Afternoon", text:"Taking a break at the Church of Jesus Christ of Latter-day Saints in Superior to charge every power bank and dry out the tent and clothes. Plan is to roll on this afternoon and put the first miles on segment 2."},
     {time:"Evening", miles:69, gain:2767, text:"Camped in the hills south of Superior after a second ride of 35.5 miles, +1,574 / -1,147 ft, starting segment 2 a day early. Backtracked a little at the end to find a camp spot. 69 miles on the day, a new longest."},
   ]},
+  {day:8, date:"2026-09-13", end:"", miles:0, gain:0, loss:0, done:false, notes:"", updates:[
+    {time:"1:06 pm", text:"Lunch stop in Alberton, MT at the Senior Citizen Center. Feeling right at home, probably."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.03492, lng:-114.76697, town:"South of Superior", state:"MT", label:"Camped in the hills south of Superior after 69 miles on day 7, the first night of segment 2", asOf:"Sept 12, evening MT", approx:false};
+const LOCATION = {lat:47.00203, lng:-114.47631, town:"Alberton", state:"MT", label:"Lunch at the Senior Citizen Center in Alberton on day 8, second day of segment 2", asOf:"Sept 13, 1:06 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 7 was two rides. Rick closed out segment 1 in Superior, MT at 2 pm, spent the afternoon at the church in town charging batteries and drying gear, then rode 35.5 more miles south into segment 2 and camped in the hills, with a short backtrack to find a spot. 69 miles on the day, his longest yet. Segment 2 to Darby, MT is under way a day ahead of plan, 320.5 miles with the biggest climbing on the route."; 
+const STATUS = "Day 8 under way. Rick checked in from Alberton, MT at 1:06 pm, having lunch at the Senior Citizen Center, where he probably feels right at home. Segment 2 to Darby continues from here, a day ahead of plan after yesterday's 69-mile double."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 12, 2026, end of day 7", caption:"Blue and green at the top is Rick's track so far, Roosville to Superior, MT and on into the hills south of town, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -88,5 +91,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 12, 2026, 9:58 pm MT";
+const LAST_UPDATED = "Sept 13, 2026, 1:07 pm MT";
 // ===== END DATA =====
