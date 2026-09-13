@@ -45,8 +45,8 @@ const LOG = [
     {time:"Afternoon", text:"Taking a break at the Church of Jesus Christ of Latter-day Saints in Superior to charge every power bank and dry out the tent and clothes. Plan is to roll on this afternoon and put the first miles on segment 2."},
     {time:"Evening", miles:69, gain:2767, text:"Camped in the hills south of Superior after a second ride of 35.5 miles, +1,574 / -1,147 ft, starting segment 2 a day early. Backtracked a little at the end to find a camp spot. 69 miles on the day, a new longest."},
   ]},
-  {day:8, date:"2026-09-13", end:"", miles:0, gain:0, loss:0, done:false, notes:"", updates:[
-    {time:"1:06 pm", text:"Lunch stop in Alberton, MT at the Senior Citizen Center. Feeling right at home, probably."},
+  {day:8, date:"2026-09-13", end:"", miles:19.1, gain:1274, loss:1383, done:false, notes:"", updates:[
+    {time:"1:06 pm", miles:19.1, gain:1274, text:"Lunch stop in Alberton, MT at the Senior Citizen Center. Feeling right at home, probably. 19.1 miles so far from the camp south of Superior, up over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork. 15.7 more to hit today's share of 34.8."},
   ]},
 ];
 
@@ -55,7 +55,7 @@ const LOG = [
 const LOCATION = {lat:47.00203, lng:-114.47631, town:"Alberton", state:"MT", label:"Lunch at the Senior Citizen Center in Alberton on day 8, second day of segment 2", asOf:"Sept 13, 1:06 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 8 under way. Rick checked in from Alberton, MT at 1:06 pm, having lunch at the Senior Citizen Center, where he probably feels right at home. Segment 2 to Darby continues from here, a day ahead of plan after yesterday's 69-mile double."; 
+const STATUS = "Day 8 under way. Rick checked in from Alberton, MT at 1:06 pm with 19.1 miles done, over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork, and was having lunch at the Senior Citizen Center, where he probably feels right at home. Segment 2 to Darby continues, a day ahead of plan after yesterday's 69-mile double."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 12, 2026, end of day 7", caption:"Blue and green at the top is Rick's track so far, Roosville to Superior, MT and on into the hills south of town, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -91,5 +91,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 13, 2026, 1:07 pm MT";
+const LAST_UPDATED = "Sept 13, 2026, 1:19 pm MT";
 // ===== END DATA =====
