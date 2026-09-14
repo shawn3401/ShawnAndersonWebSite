@@ -28,7 +28,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 
 ### data.js fields
 - `START` Sept 6, 2026. 63 planned days, finish Nov 7.
-- `SEGMENTS` nine segments. `miles` are Rick's own pre-trip onX Offroad routes (296.6, 320.5, 348.5, 341.6, 250.6, 334.1, 202.6, 344.9, 284.6 = 2,724.0). Segment 3 at 348.5 is correct, not a typo. `gain` is the official Bikepacking Roots climb. `days`, `start`, `end` are Rick's plan. `TOTAL_PLAN` is computed from SEGMENTS; never hardcode 2,724 in copy, read TOTAL_PLAN.
+- `SEGMENTS` nine segments. `miles` are Rick's own pre-trip onX Offroad routes (296.6, 320.5, 348.5, 341.6, 250.6, 334.1, 202.6, 344.9, 284.6 = 2,724.0). Segment 3 at 348.5 is correct, not a typo. Segment 2 was revised to 123.4 mi / 3,975 ft on Sept 14, 2026 (Moose Mountain fire bypass); the original numbers live in `revised:{on, miles, gain, why}` on that row and the segments table shows a "Revised" chip. TOTAL_PLAN is now about 2,527. `gain` is the official Bikepacking Roots climb. `days`, `start`, `end` are Rick's plan. `TOTAL_PLAN` is computed from SEGMENTS; never hardcode 2,724 in copy, read TOTAL_PLAN.
 - `LOG` one row per calendar day: `{day, date, end, miles, gain, loss, lat?, lng?, notes, updates?, course?, done?}`.
   - `updates: [{time:"10:30 am", miles:17, gain:370, text:"..."}]` oldest first; multiple check-ins in one day, shown grouped under the day.
   - `done:false` marks today while he is still riding. Row shows "Riding now", is excluded from completed-day math. To close the day remove `done:false` and fill in end, miles, gain, loss, notes.
@@ -43,7 +43,8 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - `LAST_UPDATED` page edit time as "Sept 9, 2026, 7:45 pm MT". Shawn is America/Boise; if your clock is UTC, convert. Shown in the blue "Last updated" band under the nav.
 
 ### Plan model (Shawn's decision, Sept 9, 2026; he is Rick's "race engineer")
-- THE PLAN IS FIXED. Never edit `SEGMENTS.miles` because Rick rerouted.
+- THE PLAN IS FIXED against Rick's own choices. Never edit `SEGMENTS.miles` because Rick rerouted.
+- Exception (Shawn, Sept 14, 2026): a closure that removes the road (fire, washout) is a plan revision, not a reroute. Change the segment's `miles` and `gain` to the bypass route, add `revised:{on, miles, gain, why}` with the originals, keep the dates, and do not add a `course` for it. Rick keeps riding and finishes sooner; the dates are not pulled forward unless he says so.
 - Reroutes are recorded on that day's LOG row as `course:N`. Shawn computes N in onX: he keeps a cloned route "Segment N with Shortcuts" mirroring what Rick actually rode plus the remaining plan; N = that route's total minus the original segment total. Day 3: 296.6 original, 289.8 with the shortcut, so `course:-6.8`. A detour (for example into Idaho Falls to see family) would be positive.
 - Position = miles ridden minus sum of `course`. Versus plan, route bar, chart, segment status, remaining miles, projected finish and needed pace all use position. "Miles ridden" always shows real pedaled miles with a note about miles saved or added.
 - Rick's onX plan is the target he committed to; a shortcut is a gain against it and a detour a cost.

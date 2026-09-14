@@ -5,7 +5,7 @@ const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
 // DO NOT edit miles when he reroutes; put the change on that day's LOG row as course:N instead (negative saved, positive added).
 const SEGMENTS = [
   {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:296.6, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass, Moon Pass"},
-  {n:2, from:"Superior",           to:"Darby, MT",      miles:320.5, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Magruder Corridor, 125 mi / 14,000 ft"},
+  {n:2, from:"Superior",           to:"Darby, MT",      miles:123.4, gain:3975,  days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Moose Mountain fire bypass: Alberton, Petty Creek, and down the Bitterroot valley", revised:{on:"2026-09-14", miles:320.5, gain:31000, why:"Fire closure. The original line looped west through the Clearwater and back over the Magruder Corridor (125 mi / 14,000 ft); the Moose Mountain Bypass replaces it"}},
   {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:""},
   {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
   {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
@@ -56,7 +56,7 @@ const LOG = [
 const LOCATION = {lat:46.77636, lng:-114.38472, town:"Lolo Creek Campground", state:"MT", label:"Camped at Lolo Creek Campground on Highway 12 after 39.5 miles on day 8, up Petty Creek from Alberton", asOf:"Sept 13, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 8 is done: 39.5 miles from the hills south of Superior, down to Alberton for lunch at the Senior Citizen Center, then a long climb up Petty Creek to 4,370 ft and down to Lolo Creek Campground on Highway 12. Segment 2 to Darby is about a quarter done and he remains a day ahead of plan."; 
+const STATUS = "Plan revision, Sept 14: segment 2 is now the Moose Mountain fire bypass, 123.4 miles from Superior down the Bitterroot valley to Darby instead of the 320.5-mile loop through the Clearwater and over the Magruder Corridor. The fire closed the original line, so the target changed, not Rick. He will keep riding and finish sooner. Day 8 ended at Lolo Creek Campground after 39.5 miles."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 13, 2026, end of day 8", caption:"Blue and green at the top is Rick's track so far, Roosville to Lolo Creek west of Missoula, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -100,5 +100,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 13, 2026, 7:32 pm MT";
+const LAST_UPDATED = "Sept 14, 2026, 11:54 am MT";
 // ===== END DATA =====
