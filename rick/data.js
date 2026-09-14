@@ -4,9 +4,9 @@ const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
 // miles = Rick's pre-trip onX Offroad route for each segment (his true plan; the official Bikepacking Roots figures were 304/326/289/342/250/337/209/344/292 = 2,693). gain = official. days/dates = Rick's plan.
 // DO NOT edit miles when he reroutes; put the change on that day's LOG row as course:N instead (negative saved, positive added).
 const SEGMENTS = [
-  {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:296.6, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass"},
-  {n:2, from:"Superior",           to:"Darby, MT",      miles:320.5, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Moon Pass"},
-  {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:"Magruder Corridor, 125 mi / 14,000 ft"},
+  {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:296.6, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass, Moon Pass"},
+  {n:2, from:"Superior",           to:"Darby, MT",      miles:320.5, gain:31000, days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Biggest climbing segment. Magruder Corridor, 125 mi / 14,000 ft"},
+  {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:""},
   {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
   {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
   {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:334.1, gain:24000, days:8, start:"2026-10-11", end:"2026-10-18", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
@@ -73,6 +73,14 @@ const PHOTOS = [
   {file:"2026-09-11-trestle-looking-down", date:"2026-09-11", caption:"Day 6. Looking straight down off a Hiawatha trestle at the steel and the forest a long way below."},
   {file:"2026-09-11-hiawatha-tunnel", date:"2026-09-11", caption:"Day 6. One of the old Milwaukee Road tunnels on the Hiawatha rail trail, daylight at the far end."},
   {file:"2026-09-11-hiawatha-sign-selfie", date:"2026-09-11", caption:"Day 6. Rick at the Route of the Hiawatha sign. The Milwaukee Road was the last transcontinental railroad, built over the Bitterroots between 1907 and 1909 and run until 1980."},
+  {file:"2026-09-11-trestle-across-the-valley", date:"2026-09-11", caption:"Day 6. From one Hiawatha trestle, looking across the valley to the next one."},
+  {file:"2026-09-11-hiawatha-trailhead-gate", date:"2026-09-11", caption:"Day 6. The timber gate at the Route of the Hiawatha trailhead."},
+  {file:"2026-09-11-burned-meadow-snags", date:"2026-09-11", caption:"Day 6. Old snags standing over a meadow on the way up from Placer Creek, leftovers from the 1910 burn that the trail signs describe."},
+  {file:"2026-09-11-leaning-snag", date:"2026-09-11", caption:"Day 6. A big leaning snag beside the road on the climb."},
+  {file:"2026-09-11-high-point-view", date:"2026-09-11", caption:"Day 6. The view from near the first high point of the day, ridges stacked into the haze."},
+  {file:"2026-09-11-tall-pines-valley-view", date:"2026-09-11", caption:"Day 6. Tall pines on the climb out of Placer Creek, the valley opening up behind them."},
+  {file:"2026-09-11-larch-forest-climb", date:"2026-09-11", caption:"Day 6. Larch and fir along the road on the morning climb."},
+  {file:"2026-09-11-placer-creek-camp-morning", date:"2026-09-11", caption:"Day 6, 6:50 am. Placer Creek camp under the firs, tent still up and gear hanging to dry after the overnight rain."},
   {file:"2026-09-10-wallace-burger", date:"2026-09-10", caption:"Day 5. Lunch in Wallace, ID: bacon burger, sweet potato fries, and a berry shake."},
   {file:"2026-09-10-food-inventory", date:"2026-09-10", caption:"Day 5. Food inventory laid out on the ground next to the pannier, counting what is left."},
   {file:"2026-09-10-mossy-spring", date:"2026-09-10", caption:"Day 5. Mossy rock face with a spring trickling down it on the descent from Porcupine Pass toward Wallace."},
@@ -92,5 +100,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 13, 2026, 7:30 pm MT";
+const LAST_UPDATED = "Sept 13, 2026, 7:32 pm MT";
 // ===== END DATA =====
