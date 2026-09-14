@@ -45,20 +45,21 @@ const LOG = [
     {time:"Afternoon", text:"Taking a break at the Church of Jesus Christ of Latter-day Saints in Superior to charge every power bank and dry out the tent and clothes. Plan is to roll on this afternoon and put the first miles on segment 2."},
     {time:"Evening", miles:69, gain:2767, text:"Camped in the hills south of Superior after a second ride of 35.5 miles, +1,574 / -1,147 ft, starting segment 2 a day early. Backtracked a little at the end to find a camp spot. 69 miles on the day, a new longest."},
   ]},
-  {day:8, date:"2026-09-13", end:"", miles:19.1, gain:1274, loss:1383, done:false, notes:"", updates:[
+  {day:8, date:"2026-09-13", end:"Lolo Creek Campground, MT", miles:39.5, gain:2657, loss:2055, high:4370, low:2903, lat:46.77636, lng:-114.38472, notes:"Whiskey Gulch to Lolo Creek Campground. Out of the hills south of Superior over a 3,249 ft high point and down to the Clark Fork for lunch at the Senior Citizen Center in Alberton, then south up Petty Creek on a long steady climb to a 4,370 ft high point at mile 34 and a short drop to camp on Lolo Creek along Highway 12.", updates:[
     {time:"1:06 pm", miles:19.1, gain:1274, text:"Lunch stop in Alberton, MT at the Senior Citizen Center. Feeling right at home, probably. 19.1 miles so far from the camp south of Superior, up over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork. 15.7 more to hit today's share of 34.8."},
+    {time:"Evening", miles:39.5, gain:2657, text:"Done at Lolo Creek Campground. 39.5 miles, +2,657 / -2,055 ft, high point 4,370 ft at the top of the Petty Creek climb."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:46.77636, lng:-114.38472, town:"Lolo Creek, west of Lolo", state:"MT", label:"Camped for the night on Lolo Creek along Highway 12 after day 8, south of Alberton by way of Petty Creek", asOf:"Sept 13, evening MT", approx:false};
+const LOCATION = {lat:46.77636, lng:-114.38472, town:"Lolo Creek Campground", state:"MT", label:"Camped at Lolo Creek Campground on Highway 12 after 39.5 miles on day 8, up Petty Creek from Alberton", asOf:"Sept 13, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 8 under way. Rick checked in from Alberton, MT at 1:06 pm with 19.1 miles done, over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork, and was having lunch at the Senior Citizen Center, where he probably feels right at home. Segment 2 to Darby continues, a day ahead of plan after yesterday's 69-mile double."; 
+const STATUS = "Day 8 is done: 39.5 miles from the hills south of Superior, down to Alberton for lunch at the Senior Citizen Center, then a long climb up Petty Creek to 4,370 ft and down to Lolo Creek Campground on Highway 12. Segment 2 to Darby is about a quarter done and he remains a day ahead of plan."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 12, 2026, end of day 7", caption:"Blue and green at the top is Rick's track so far, Roosville to Superior, MT and on into the hills south of town, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 13, 2026, end of day 8", caption:"Blue and green at the top is Rick's track so far, Roosville to Lolo Creek west of Missoula, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -91,5 +92,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 13, 2026, 7:21 pm MT";
+const LAST_UPDATED = "Sept 13, 2026, 7:30 pm MT";
 // ===== END DATA =====
