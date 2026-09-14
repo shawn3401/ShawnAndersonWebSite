@@ -52,7 +52,7 @@ const LOG = [
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:47.00203, lng:-114.47631, town:"Alberton", state:"MT", label:"Lunch at the Senior Citizen Center in Alberton on day 8, second day of segment 2", asOf:"Sept 13, 1:06 pm MT", approx:false};
+const LOCATION = {lat:46.77636, lng:-114.38472, town:"Lolo Creek, west of Lolo", state:"MT", label:"Camped for the night on Lolo Creek along Highway 12 after day 8, south of Alberton by way of Petty Creek", asOf:"Sept 13, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
 const STATUS = "Day 8 under way. Rick checked in from Alberton, MT at 1:06 pm with 19.1 miles done, over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork, and was having lunch at the Senior Citizen Center, where he probably feels right at home. Segment 2 to Darby continues, a day ahead of plan after yesterday's 69-mile double."; 
@@ -91,5 +91,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 13, 2026, 1:19 pm MT";
+const LAST_UPDATED = "Sept 13, 2026, 7:21 pm MT";
 // ===== END DATA =====
