@@ -49,14 +49,17 @@ const LOG = [
     {time:"1:06 pm", miles:19.1, gain:1274, text:"Lunch stop in Alberton, MT at the Senior Citizen Center. Feeling right at home, probably. 19.1 miles so far from the camp south of Superior, up over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork. 15.7 more to hit today's share of 34.8."},
     {time:"Evening", miles:39.5, gain:2657, text:"Done at Lolo Creek Campground. 39.5 miles, +2,657 / -2,055 ft, high point 4,370 ft at the top of the Petty Creek climb."},
   ]},
+  {day:9, date:"2026-09-14", end:"", miles:32.4, gain:322, loss:773, done:false, notes:"", updates:[
+    {time:"12:00 pm", miles:32.4, gain:322, text:"Cruising down the Bitterroot valley. 32.4 miles by midday with only 322 ft of climbing, checked in from Stevensville. Dry so far but chilly, with fresh snow on the hills. About 10 miles to Darby and the end of segment 2."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:46.77636, lng:-114.38472, town:"Lolo Creek Campground", state:"MT", label:"Camped at Lolo Creek Campground on Highway 12 after 39.5 miles on day 8, up Petty Creek from Alberton", asOf:"Sept 13, evening MT", approx:false};
+const LOCATION = {lat:46.52258, lng:-114.11475, town:"Stevensville", state:"MT", label:"Rolling down the Bitterroot valley, 32.4 miles into day 9 with Darby about 10 miles ahead", asOf:"Sept 14, 12:00 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Plan revision, Sept 14: segment 2 is now the Moose Mountain fire bypass, 123.4 miles from Superior down the Bitterroot valley to Darby instead of the 320.5-mile loop through the Clearwater and over the Magruder Corridor. The fire closed the original line, so the target changed, not Rick. He will keep riding and finish sooner. Day 8 ended at Lolo Creek Campground after 39.5 miles."; 
+const STATUS = "Day 9 under way and he is cruising. Rick checked in from Stevensville at midday with 32.4 miles down the Bitterroot valley and only 322 ft of climbing, dry but chilly, with fresh snow on the hills above him. Darby and the end of segment 2 are about 10 miles ahead. Segment 2 became the Moose Mountain fire bypass on Sept 14, 123.4 miles instead of the 320.5-mile loop through the Clearwater and over the Magruder Corridor, so he will finish it days early and roll straight into segment 3."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 13, 2026, end of day 8", caption:"Blue and green at the top is Rick's track so far, Roosville to Lolo Creek west of Missoula, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -100,5 +103,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 11:54 am MT";
+const LAST_UPDATED = "Sept 14, 2026, 12:00 pm MT";
 // ===== END DATA =====
