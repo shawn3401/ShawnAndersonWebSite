@@ -71,10 +71,10 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
-  {file:"2026-09-11-st-regis-river-dinner", date:"2026-09-11", caption:"Day 6. Dinner on the bank of the St Regis River near DeBorgia: Mountain House Mexican rice and chicken on the MSR stove, with a tortilla on the side."},
-  {file:"2026-09-11-st-regis-river-camp", date:"2026-09-11", caption:"Day 6 camp on a gravel bar by the St Regis River, back in Montana. Tent up, bike parked, and the day's riding clothes drying on the handlebars."},
-  {file:"2026-09-11-waterfall-selfie", date:"2026-09-11", caption:"Day 6. Rick at a waterfall beside the trail, headlamp still on the helmet from the tunnels."},
-  {file:"2026-09-11-tuna-wrap-lunch", date:"2026-09-11", caption:"Day 6. Trail lunch at a picnic table: tuna salad in a tortilla, cut with the Gerber."},
+  {file:"2026-09-11-st-regis-river-dinner", date:"2026-09-11", time:"18:39", caption:"Day 6. Dinner on the bank of the St Regis River near DeBorgia: Mountain House Mexican rice and chicken on the MSR stove, with a tortilla on the side."},
+  {file:"2026-09-11-st-regis-river-camp", date:"2026-09-11", time:"18:35", caption:"Day 6 camp on a gravel bar by the St Regis River, back in Montana. Tent up, bike parked, and the day's riding clothes drying on the handlebars."},
+  {file:"2026-09-11-waterfall-selfie", date:"2026-09-11", time:"15:19", caption:"Day 6. Rick at a waterfall beside the trail, headlamp still on the helmet from the tunnels."},
+  {file:"2026-09-11-tuna-wrap-lunch", date:"2026-09-11", time:"14:35", caption:"Day 6. Trail lunch at a picnic table: tuna salad in a tortilla, cut with the Gerber."},
   {file:"2026-09-11-1910-fires-sign", date:"2026-09-11", time:"13:32", caption:"Day 6. The 1910 Fires interpretive sign on the Hiawatha rail trail. The Big Burn swept three million acres of Idaho and Montana in two days, including the valley behind the sign."},
   {file:"2026-09-11-bike-on-trestle", date:"2026-09-11", time:"12:57", caption:"Day 6. The loaded bike on one of the Hiawatha rail trail trestles, the Bitterroots stacked up behind."},
   {file:"2026-09-11-trestle-looking-down", date:"2026-09-11", time:"12:57", caption:"Day 6. Looking straight down off a Hiawatha trestle at the steel and the forest a long way below."},
