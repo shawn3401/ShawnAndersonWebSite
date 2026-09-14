@@ -52,7 +52,7 @@ const LOG = [
     {time:"1:06 pm", miles:19.1, gain:1274, text:"Lunch stop in Alberton, MT at the Senior Citizen Center. Feeling right at home, probably. 19.1 miles so far from the camp south of Superior, up over a 3,249 ft high point out of Whiskey Gulch and down to the Clark Fork. 15.7 more to hit today's share of 34.8."},
     {time:"Evening", miles:39.5, gain:2657, text:"Done at Lolo Creek Campground. 39.5 miles, +2,657 / -2,055 ft, high point 4,370 ft at the top of the Petty Creek climb."},
   ]},
-  {day:9, date:"2026-09-14", end:"", miles:68, gain:998, loss:878, done:false, notes:"", updates:[
+  {day:9, date:"2026-09-14", end:"Darby, MT", miles:68, gain:998, loss:878, high:3864, low:3165, lat:46.02869, lng:-114.17847, course:19.6, notes:"Lolo Creek to Darby, and segment 2 done three days ahead of the re-timed plan. A cruising day down the Bitterroot valley, dry but chilly with fresh snow on the hills, only 998 ft of climbing in 68 miles, and a run at the single-day record that came up one mile short of the 69 on day 7. Stocked up on fresh strawberries and Wheat Thins at the Darby grocery store and camped in town. His Garmin logged 143 miles through segment 2 against the 123.4-mile bypass route, so the extra 19.6 miles (the Quartz Flats backtrack, town riding, and GPS wander) are booked here as a detour to keep his position on the route line.", updates:[
     {time:"12:00 pm", miles:32.4, gain:322, text:"Cruising down the Bitterroot valley. 32.4 miles by midday with only 322 ft of climbing, checked in from Stevensville. Dry so far but chilly, with fresh snow on the hills. About 10 miles to Darby and the end of segment 2."},
     {time:"1:33 pm", miles:47.2, gain:513, text:"47.2 miles by 1:33 pm and going for a single-day mileage record. Darby is 21 miles ahead and he means to get there tonight, which would make it about 68 for the day, right at the 69 he rode on day 7."},
     {time:"4:44 pm", miles:68, gain:998, text:"Made it to Darby. 68 miles from Lolo Creek, +998 / -878 ft, which closes out segment 2 three days ahead of the re-timed plan. Stocking up at the grocery store on fresh strawberries and Wheat Thins, then off to find a camp for the night."},
@@ -61,10 +61,10 @@ const LOG = [
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:46.02869, lng:-114.17847, town:"Darby", state:"MT", label:"At the grocery store in Darby after 68 miles on day 9. Segment 2 is complete, three days early", asOf:"Sept 14, 4:44 pm MT", approx:false};
+const LOCATION = {lat:46.02869, lng:-114.17847, town:"Darby", state:"MT", label:"Camped in Darby after 68 miles on day 9. Segment 2 complete, three days early. Segment 3 to Hailey, ID starts here", asOf:"Sept 14, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is in Darby. Day 9 was 68 miles down the Bitterroot valley from Lolo Creek, dry but chilly with fresh snow on the hills, and it closes out segment 2 three days ahead of the re-timed plan. He is stocking up at the grocery store on fresh strawberries and Wheat Thins, then heading out to find a camp for the night. Segment 3, Darby to Hailey, ID, starts from here: 348.5 miles over the Salmon River country, the longest segment on the route."; 
+const STATUS = "Day 9 is in the books and so is segment 2. Rick rode 68 miles down the Bitterroot valley from Lolo Creek to Darby, dry but chilly with fresh snow on the hills, stocked up on strawberries and Wheat Thins at the grocery store, and camped in town. He finished the segment three days ahead of the re-timed plan. Segment 3, Darby to Hailey, ID, starts tomorrow: 348.5 miles over the Salmon River country, the longest segment on the route, planned for seven days."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 13, 2026, end of day 8", caption:"Blue and green at the top is Rick's track so far, Roosville to Lolo Creek west of Missoula, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -121,5 +121,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 4:44 pm MT";
+const LAST_UPDATED = "Sept 14, 2026, 4:51 pm MT";
 // ===== END DATA =====
