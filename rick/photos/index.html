@@ -38,6 +38,8 @@ h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-
 .photos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
 .photos figcaption{padding:8px 10px 10px;font-size:14px;color:var(--ink-2);line-height:1.35}
 .photos figcaption .d{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:2px}
+.photos .who{float:right;font-size:11px;font-weight:600;letter-spacing:.06em;padding:1px 7px;border-radius:3px;background:var(--contour);color:var(--ink-2)}
+.photos .who.rick{background:var(--red);color:#fff}
 .empty{font-size:14px;color:var(--ink-3);padding:14px 16px;background:var(--paper);border:1px dashed var(--line)}
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){ h1{font-size:34px} }
@@ -61,14 +63,14 @@ const esc = s => s.replace(/"/g,'&quot;');
 const segFor = p => p.seg || (SEGMENTS.find(s => d2(p.date) <= d2(s.end)) || SEGMENTS[SEGMENTS.length-1]).n;
 const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || []).push(p); });
 const total = PHOTOS.length;
-document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, organized by segment. Tap a photo for full size.`;
+document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, organized by segment. Tap a photo for full size. Captions tagged Rick are his own words from the trail; the rest are Shawn's.`;
 document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
   // Newest first. Within a day, photos with a time sort by it; those without keep their PHOTOS order after the timed ones.
   const key = p => p.date + " " + (p.time || "99:99");
   const ps = (bySeg[s.n]||[]).map((p,i)=>({p,i})).sort((a,b)=> key(a.p)<key(b.p)?1: key(a.p)>key(b.p)?-1: a.i-b.i).map(x=>x.p);
   const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
   const body = ps.length
-    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}</span>${p.caption}</figcaption></figure>`).join("")}</div>`
+    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}<span class="who ${p.by==="rick"?"rick":"home"}">${p.by==="rick"?"Rick":"Shawn"}</span></span>${p.caption}</figcaption></figure>`).join("")}</div>`
     : `<div class="empty">Nothing from this stretch yet.</div>`;
   return `<section><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div>${body}</section>`;
 }).join("");
