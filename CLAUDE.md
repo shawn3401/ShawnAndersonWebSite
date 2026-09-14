@@ -22,7 +22,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - `rick/index.html` the tracker page. All CSS and JS inline. Reads `data.js` at load.
 - `rick/data.js` ALL daily data. This is the only file that changes on a normal day.
 - `rick/weather/index.html` weather page (Open-Meteo + Windy embed), reads `LOCATION` from `../data.js`.
-- `rick/photos/index.html` gallery, reads `PHOTOS` from `../data.js`. Photo files live in `rick/photos/`.
+- `rick/photos/index.html` gallery, reads `PHOTOS` from `../data.js`. Photo files live in `rick/photos/`. Segments are collapsible `<details>` strips, newest segment on top and only the newest one with photos open by default. Each strip shows a cover photo chosen in `PICKS` (segment number to file name) near the top of the script; add a pick when a new segment gets photos, otherwise it falls back to the segment's newest photo.
 - `rick/records/index.html` trip records page (longest day, most climbing, coldest night, highest camp, honor roll). Computed from `LOG` and `PHOTOS` at load, closed days only. Weather and camp elevations come from Open-Meteo at each row's camp pin when the page loads (one request each), so nothing is stored. Linked from the tracker's nav tab "Records".
 - GoatCounter analytics, account `shawnandersonapps`, counter in the footer.
 

@@ -41,6 +41,30 @@ h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-
 .photos .who{float:right;font-size:11px;font-weight:600;letter-spacing:.06em;padding:1px 7px;border-radius:3px;background:var(--contour);color:var(--ink-2)}
 .photos .who.rick{background:var(--red);color:#fff}
 .empty{font-size:14px;color:var(--ink-3);padding:14px 16px;background:var(--paper);border:1px dashed var(--line)}
+/* Collapsible segments: a cover strip with the segment's pick, a summary line, and a caret. */
+details.seg{margin-top:18px;background:var(--paper);border:1px solid var(--line)}
+details.seg summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:200px 1fr auto;gap:0 16px;align-items:center;min-height:120px}
+details.seg summary::-webkit-details-marker{display:none}
+details.seg summary .pick{position:relative;width:200px;height:100%;min-height:120px;overflow:hidden;background:var(--contour)}
+details.seg summary .pick img{width:100%;height:100%;object-fit:cover;display:block}
+details.seg summary .pick.none{display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--ink-3)}
+details.seg summary .txt{padding:12px 0;min-width:0}
+details.seg summary h2{margin:0}
+details.seg summary .segsub{margin:2px 0 0}
+details.seg summary .count{font-size:13px;color:var(--ink-2);margin-top:6px}
+details.seg summary .count b{color:var(--red);font-weight:600}
+details.seg summary .caret{padding:0 18px;font-size:22px;color:var(--ink-3);transition:transform .15s}
+details.seg[open] summary .caret{transform:rotate(90deg)}
+details.seg[open] summary{border-bottom:1px solid var(--line)}
+details.seg .body{padding:14px}
+details.seg.upcoming{margin-top:8px}
+details.seg.upcoming summary{min-height:0;grid-template-columns:44px 1fr auto}
+details.seg.upcoming summary .pick{width:44px;min-height:44px;font-size:20px}
+details.seg.upcoming summary h2{font-size:17px}
+details.seg.upcoming summary .txt{padding:8px 0}
+details.seg.upcoming summary .count{display:none}
+details.seg summary:hover .count b,details.seg summary:focus-visible .count b{text-decoration:underline}
+@media (max-width:600px){ details.seg.upcoming summary{grid-template-columns:44px 1fr auto} details.seg summary{grid-template-columns:120px 1fr auto} details.seg summary .pick{width:120px;min-height:100px} details.seg summary .caret{padding:0 12px} details.seg .body{padding:10px} .photos{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))} }
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){ h1{font-size:34px} }
 </style>
@@ -63,16 +87,27 @@ const esc = s => s.replace(/"/g,'&quot;');
 const segFor = p => p.seg || (SEGMENTS.find(s => d2(p.date) <= d2(s.end)) || SEGMENTS[SEGMENTS.length-1]).n;
 const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || []).push(p); });
 const total = PHOTOS.length;
-document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, organized by segment. Tap a photo for full size. Captions tagged Rick are his own words from the trail; the rest are Shawn's.`;
-document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
-  // Newest first. Within a day, photos with a time sort by it; those without keep their PHOTOS order after the timed ones.
-  const key = p => p.date + " " + (p.time || "99:99");
+document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, newest on top. Tap a segment to open it and a photo for full size. Captions tagged Rick are his own words from the trail; the rest are Shawn's.`;
+// Segment picks: the cover photo on each collapsed segment strip (file name from PHOTOS). Falls back to that segment's newest photo.
+const PICKS = {1:"2026-09-11-bike-on-trestle", 2:"2026-09-12-superior-exit-sign-selfie"};
+const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
+const key = p => p.date + " " + (p.time || "99:99");
+// Newest segment on top. Within a segment newest first; within a day, timed photos sort by time and untimed ones follow in PHOTOS order.
+// Segments with photos first (newest on top), then the empty upcoming ones as slim rows underneath.
+const withPhotos = SEGMENTS.slice().reverse().filter(s => (bySeg[s.n]||[]).length);
+const withoutPhotos = SEGMENTS.filter(s => !(bySeg[s.n]||[]).length);
+const segsNewestFirst = withPhotos.concat(withoutPhotos);
+const firstWithPhotos = segsNewestFirst.find(s => (bySeg[s.n]||[]).length);
+document.getElementById("gallery").innerHTML = segsNewestFirst.map(s => {
   const ps = (bySeg[s.n]||[]).map((p,i)=>({p,i})).sort((a,b)=> key(a.p)<key(b.p)?1: key(a.p)>key(b.p)?-1: a.i-b.i).map(x=>x.p);
-  const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
+  const pick = ps.find(p => p.file===PICKS[s.n]) || ps[0];
+  const open = s===firstWithPhotos ? " open" : "";
+  const days = new Set(ps.map(p=>p.date)).size;
   const body = ps.length
     ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}<span class="who ${p.by==="rick"?"rick":"home"}">${p.by==="rick"?"Rick":"Shawn"}</span></span>${p.caption}</figcaption></figure>`).join("")}</div>`
     : `<div class="empty">Nothing from this stretch yet.</div>`;
-  return `<section><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div>${body}</section>`;
+  const count = ps.length ? `<b>${ps.length} photo${ps.length===1?"":"s"}</b> over ${days} day${days===1?"":"s"}${pick?`, ${mdy(d2(ps[ps.length-1].date))} to ${mdy(d2(ps[0].date))}`:""}` : `No photos yet`;
+  return `<details class="seg${ps.length?"":" upcoming"}"${open}><summary>${pick?`<div class="pick"><img src="${pick.file}-thumb.jpg" alt="" loading="lazy"></div>`:`<div class="pick none">🚵</div>`}<div class="txt"><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div><div class="count">${count}</div></div><div class="caret">▸</div></summary><div class="body">${body}</div></details>`;
 }).join("");
 </script>
 <script>
