@@ -57,7 +57,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 5. Do not run `git status` from a sandboxed shell that cannot remove files in `.git` (it can leave a stale `index.lock`). From a normal Terminal it is fine.
 
 ### Layout notes
-- Status tiles (5): Miles ridden, Versus plan, Average per day, Needed pace, Projected finish.
+- Status tiles: two rows of five with a row label on the left. Row 1 "Trip": Miles ridden, Versus plan, Average per day, Needed pace (to the plan finish), Projected finish. Row 2 "Segment N" (red label): the same five scoped to the current segment (miles into it, versus the segment's own plan line, average over riding days in the segment, needed pace to its end date, projected arrival at its end town). Both rows use closed days only. Under 720px the row label becomes a full-width band.
 - The segments table uses the live position (today's open row included), so a segment finished mid-day shows "Done · day N" right away and the next one shows "Riding". The five tiles, route bar, and chart use closed days only (Shawn's call, Sept 10, 2026).
 - "Needed pace" = miles left in the current segment / riding days left to its planned end date; note shows trip pace to Nov 7 too.
 - Under 720px the daily log and segments tables render as cards via CSS; any new `<td>` in those row templates needs the matching class (`l-*` / `s-*`) and a `data-l` label.
