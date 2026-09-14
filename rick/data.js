@@ -105,7 +105,7 @@ const PHOTOS = [
   {file:"2026-09-06-selfie-fog", date:"2026-09-06", caption:"Day 1. Wet but smiling, fog hanging in the trees on the climb."},
   {file:"2026-09-06-handlebar-view-fog", date:"2026-09-06", caption:"Day 1. Handlebar view with 17 miles to go to Loon Lake, clouds lifting off the valley."},
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
-  {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
+  {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
 const LAST_UPDATED = "Sept 14, 2026, 1:39 pm MT";
 // ===== END DATA =====

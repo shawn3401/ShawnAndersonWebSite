@@ -63,9 +63,12 @@ const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || 
 const total = PHOTOS.length;
 document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, organized by segment. Tap a photo for full size.`;
 document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
-  const ps = (bySeg[s.n]||[]).slice().sort((a,b)=>a.date<b.date?1:-1);
+  // Newest first. Within a day, photos with a time sort by it; those without keep their PHOTOS order after the timed ones.
+  const key = p => p.date + " " + (p.time || "99:99");
+  const ps = (bySeg[s.n]||[]).map((p,i)=>({p,i})).sort((a,b)=> key(a.p)<key(b.p)?1: key(a.p)>key(b.p)?-1: a.i-b.i).map(x=>x.p);
+  const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
   const body = ps.length
-    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}</span>${p.caption}</figcaption></figure>`).join("")}</div>`
+    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}</span>${p.caption}</figcaption></figure>`).join("")}</div>`
     : `<div class="empty">Nothing from this stretch yet.</div>`;
   return `<section><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div>${body}</section>`;
 }).join("");

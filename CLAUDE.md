@@ -39,7 +39,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - `STATUS` one paragraph of intraday news shown under the position. Rewrite each update; `""` if nothing to say.
 - `PROGRESS_MAP = {file, asOf, caption}` the zoomed-out map of the whole West with his track, shown under the route bar. Shawn sends a new screenshot every few days; overwrite `rick/photos/wwr-progress-map.jpg` (max 1600px) and bump `asOf`.
 - `COVER` banner image file name (no extension) from rick/photos/.
-- `PHOTOS` newest first: `{file, date, caption}`. Each photo is `<file>.jpg` (max 1600px) plus `<file>-thumb.jpg` (640px) in rick/photos/. Resize with PIL, apply `exif_transpose`. Ride-map screenshots from onX are named `YYYY-MM-DD-dayN-ride-map`.
+- `PHOTOS` newest first: `{file, date, time?, caption}`. `time` is 24-hour "HH:MM" from the camera timestamp (Shawn sends Photos-app screenshots with the date and time in the header); the gallery sorts within a day by it and shows it. Photos without a time sort after the timed ones in array order. Each photo is `<file>.jpg` (max 1600px) plus `<file>-thumb.jpg` (640px) in rick/photos/. Resize with PIL, apply `exif_transpose`. Ride-map screenshots from onX are named `YYYY-MM-DD-dayN-ride-map`.
 - `LAST_UPDATED` page edit time as "Sept 9, 2026, 7:45 pm MT". Shawn is America/Boise; if your clock is UTC, convert. Shown in the blue "Last updated" band under the nav.
 
 ### Plan model (Shawn's decision, Sept 9, 2026; he is Rick's "race engineer")
