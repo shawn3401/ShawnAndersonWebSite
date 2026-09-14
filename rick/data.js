@@ -71,6 +71,13 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-13-petty-creek-view", date:"2026-09-13", time:"15:26", caption:"Day 8. Looking back across the Clark Fork country from the Petty Creek climb, clouds building over the ridges."},
+  {file:"2026-09-13-pavement-ends-selfie", date:"2026-09-13", time:"14:36", caption:"Day 8. Pavement ends at the start of the Petty Creek climb south of Alberton."},
+  {file:"2026-09-12-camp-south-of-superior", date:"2026-09-12", time:"18:59", caption:"Day 7, evening. The bike at camp in the hills south of Superior after the 69-mile double, the Clark Fork valley lit up below."},
+  {file:"2026-09-12-church-plaque-selfie", date:"2026-09-12", time:"13:55", caption:"Day 7. At the Church of Jesus Christ of Latter-day Saints in Superior, visitors welcome, where he spent the afternoon charging batteries and drying out."},
+  {file:"2026-09-12-laundry-on-the-church-fence", date:"2026-09-12", time:"13:51", caption:"Day 7. Laundry drying on the fence at the church in Superior while the power banks charge."},
+  {file:"2026-09-12-superior-exit-sign-selfie", date:"2026-09-12", time:"12:30", caption:"Day 7. One mile from Superior and the end of segment 1, seven days from Canada."},
+  {file:"2026-09-12-bikepackers-on-the-road", date:"2026-09-12", time:"10:14", caption:"Day 7. Two fellow bikepackers Rick met on the road on the way into Superior, loaded for the long haul."},
   {file:"2026-09-11-st-regis-river-dinner", date:"2026-09-11", time:"18:39", caption:"Day 6. Dinner on the bank of the St Regis River near DeBorgia: Mountain House Mexican rice and chicken on the MSR stove, with a tortilla on the side."},
   {file:"2026-09-11-st-regis-river-camp", date:"2026-09-11", time:"18:35", caption:"Day 6 camp on a gravel bar by the St Regis River, back in Montana. Tent up, bike parked, and the day's riding clothes drying on the handlebars."},
   {file:"2026-09-11-waterfall-selfie", date:"2026-09-11", time:"15:19", caption:"Day 6. Rick at a waterfall beside the trail, headlamp still on the helmet from the tunnels."},
@@ -88,9 +95,14 @@ const PHOTOS = [
   {file:"2026-09-11-tall-pines-valley-view", date:"2026-09-11", time:"10:47", caption:"Day 6. Tall pines on the climb out of Placer Creek, the valley opening up behind them."},
   {file:"2026-09-11-larch-forest-climb", date:"2026-09-11", time:"10:47", caption:"Day 6. Larch and fir along the road on the morning climb."},
   {file:"2026-09-11-placer-creek-camp-morning", date:"2026-09-11", time:"07:50", caption:"Day 6, 6:50 am. Placer Creek camp under the firs, tent still up and gear hanging to dry after the overnight rain."},
-  {file:"2026-09-10-wallace-burger", date:"2026-09-10", time:"15:02", caption:"Day 5. Lunch in Wallace, ID: bacon burger, sweet potato fries, and a berry shake."},
+  {file:"2026-09-10-great-fire-1910-sign", date:"2026-09-10", time:"17:38", caption:"Day 5, evening. The Great Fire of 1910 sign at Placer Creek, near camp. In August 1910 the fire swept this drainage; Ranger Ed Pulaski led his crew of 45 into an abandoned mine tunnel about two miles up the West Fork of Placer Creek and saved 40 of them."},
+  {file:"2026-09-10-wallace-berry-shake", date:"2026-09-10", time:"15:55", caption:"Day 5. Berry shake in Wallace, the reward after the bacon burger."},
+  {file:"2026-09-10-wallace-burger", date:"2026-09-10", time:"16:02", caption:"Day 5. Lunch in Wallace, ID: bacon burger, sweet potato fries, and a berry shake."},
+  {file:"2026-09-10-mossy-bank", date:"2026-09-10", time:"10:30", caption:"Day 5. A mossy bank and spring beside the road on the descent from Porcupine Pass, seen from the saddle."},
   {file:"2026-09-10-food-inventory", date:"2026-09-10", time:"08:24", caption:"Day 5. Food inventory laid out on the ground next to the pannier, counting what is left."},
   {file:"2026-09-10-mossy-spring", date:"2026-09-10", time:"10:30", caption:"Day 5. Mossy rock face with a spring trickling down it on the descent from Porcupine Pass toward Wallace."},
+  {file:"2026-09-09-porcupine-pass-night-camp", date:"2026-09-09", time:"22:07", caption:"Day 4, 10 pm. Camp on Porcupine Pass by headlamp: tent up, clothes on the line, first night in Idaho."},
+  {file:"2026-09-09-porcupine-pass-evening-view", date:"2026-09-09", time:"18:56", caption:"Day 4, evening. The view from the Porcupine Pass camp on the Idaho line, ridges fading into the haze at sunset."},
   {file:"2026-09-09-kootenai-sign-selfie", date:"2026-09-09", time:"12:47", caption:"Day 4, midday. Rick at the Kootenai National Forest sign, dried out and heading south for the Idaho line."},
   {file:"2026-09-09-troy-mine-camp", date:"2026-09-09", time:"07:42", caption:"Day 4, morning. Camp near Troy Mine: tent under the firs, bike leaned up, gear spread out on the tarp to dry, and food bags hung in the trees."},
   {file:"2026-09-09-porcupine-pass-sign-selfie", date:"2026-09-09", time:"16:21", caption:"Day 4, late afternoon. Rick at the Porcupine Pass 9 / State Line 9 sign on the Montana side, nine miles below the pass with the climb still ahead, loaded bike behind him."},
@@ -105,7 +117,8 @@ const PHOTOS = [
   {file:"2026-09-07-loon-lake-lily-pads", date:"2026-09-07", time:"19:31", caption:"Day 2, evening. Loon Lake under low clouds, lily pads on the water, the rain finally easing."},
   {file:"2026-09-07-loon-lake-camp", date:"2026-09-07", time:"19:30", caption:"Day 2, evening. Camp at Loon Lake Campground at the end of the rain day: tent up, helmet on the picnic table, rain gear hung on a tree to drip."},
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
+  {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 1:39 pm MT";
+const LAST_UPDATED = "Sept 14, 2026, 2:19 pm MT";
 // ===== END DATA =====
