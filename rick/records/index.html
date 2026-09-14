@@ -191,7 +191,7 @@ const everests = gain/29032;
 const states = []; DONE.forEach(e => { const m = /,\s*([A-Z]{2})\b/.exec(e.end||""); if (m && !states.includes(m[1])) states.push(m[1]); });
 const photosSoFar = (typeof PHOTOS!=="undefined") ? PHOTOS.length : 0;
 document.getElementById("tally").innerHTML = `
-  <div><div class="lab">Days on the road</div><div class="val num">${N}<small>of 63</small></div><div class="note">${RIDE.length} riding, ${ZERO.length} zero day${ZERO.length===1?"":"s"}</div></div>
+  <div><div class="lab">Days on the road</div><div class="val num">${N}<small>of ${PLAN_DAYS}</small></div><div class="note">${RIDE.length} riding, ${ZERO.length} zero day${ZERO.length===1?"":"s"}</div></div>
   <div><div class="lab">Miles pedaled</div><div class="val num">${fmt1(miles)}</div><div class="note">${RIDE.length?`${fmt1(miles/RIDE.length)} per riding day`:""}</div></div>
   <div><div class="lab">Climbing</div><div class="val num">${fmt(gain)}<small>ft</small></div><div class="note">${everests>=0.95?`${fmt1(everests)} Everests`:`${Math.round(everests*100)}% of an Everest`}</div></div>
   <div><div class="lab">Descent</div><div class="val num">${fmt(loss)}<small>ft</small></div><div class="note">Net ${gain-loss>=0?"up":"down"} ${fmt(Math.abs(gain-loss))} ft since Roosville</div></div>
@@ -246,7 +246,7 @@ const best = (arr, f, dir=1) => arr.reduce((b,e) => (b==null || dir*(f(e)-f(b))>
   out.push(worstVs ? card({label:"Roughest day against the plan", value:(worstVs.vs>=0?"+":"")+fmt1(worstVs.vs), unit:"mi", day:worstVs.day, medal:"🌧️", vals:bv, valFmt:bf, key:"vs plan", note:esc(worstVs.miles===0 ? `A zero day. ${worstVs.notes||""}` : (worstVs.notes||"")).slice(0,160)}) : emptyCard("Roughest day against the plan","No days yet"));
   // Longest streak of 40+ mile days
   let run=[], bestRun=[]; DONE.forEach(e => { if (e.miles>=40) { run.push(e.day); if (run.length>bestRun.length) bestRun=run.slice(); } else run=[]; });
-  out.push(bestRun.length ? card({label:"Longest run of 40+ mile days", value:bestRun.length, unit:bestRun.length===1?"day":"days", days:bestRun, medal:"🔥", vals:mv, valFmt:mf, key:"miles, streak in red", note:`Days ${bestRun[0]} to ${bestRun[bestRun.length-1]}${run.length===bestRun.length&&run.length?", and still going":""}. Plan pace is ${fmt1(TOTAL_PLAN/63)} a day.`}) : emptyCard("Longest run of 40+ mile days","No 40-mile day yet"));
+  out.push(bestRun.length ? card({label:"Longest run of 40+ mile days", value:bestRun.length, unit:bestRun.length===1?"day":"days", days:bestRun, medal:"🔥", vals:mv, valFmt:mf, key:"miles, streak in red", note:`Days ${bestRun[0]} to ${bestRun[bestRun.length-1]}${run.length===bestRun.length&&run.length?", and still going":""}. Plan pace is ${fmt1(TOTAL_PLAN/PLAN_DAYS)} a day.`}) : emptyCard("Longest run of 40+ mile days","No 40-mile day yet"));
   const rer = DONE.filter(e=>e.course);
   const bigRer = best(rer, e=>Math.abs(e.course));
   if (bigRer) out.push(card({label:"Biggest reroute", value:(bigRer.course<0?"−":"+")+fmt1(Math.abs(bigRer.course)), unit:"mi", day:bigRer.day, medal:"🧭", vals:DONE.map(e=>-(e.course||0)), valFmt:v=>`${v>=0?"+":""}${fmt1(v)} mi credit`, key:"miles credited", note:`${bigRer.course<0?"A shortcut that saved":"A detour that added"} ${fmt1(Math.abs(bigRer.course))} mi against his onX plan. The plan itself never changes.`}));

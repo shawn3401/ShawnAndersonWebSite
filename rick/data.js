@@ -5,16 +5,19 @@ const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
 // DO NOT edit miles when he reroutes; put the change on that day's LOG row as course:N instead (negative saved, positive added).
 const SEGMENTS = [
   {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:296.6, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass, Moon Pass"},
-  {n:2, from:"Superior",           to:"Darby, MT",      miles:123.4, gain:3975,  days:8, start:"2026-09-13", end:"2026-09-20", season:"Early Jul to late Sep", seasonState:"ok",    note:"Moose Mountain fire bypass: Alberton, Petty Creek, and down the Bitterroot valley", revised:{on:"2026-09-14", miles:320.5, gain:31000, why:"Fire closure. The original line looped west through the Clearwater and back over the Magruder Corridor (125 mi / 14,000 ft); the Moose Mountain Bypass replaces it"}},
-  {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-21", end:"2026-09-27", season:"Late Jun to late Sep",  seasonState:"tight", note:""},
-  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-28", end:"2026-10-04", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
-  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-10-05", end:"2026-10-10", season:"Mid May to late Sep", seasonState:"past", note:""},
-  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:334.1, gain:24000, days:8, start:"2026-10-11", end:"2026-10-18", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
-  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:202.6, gain:10000, days:5, start:"2026-10-19", end:"2026-10-23", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
-  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344.9, gain:22000, days:8, start:"2026-10-24", end:"2026-10-31", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
-  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:284.6, gain:21000, days:7, start:"2026-11-01", end:"2026-11-07", season:"Mid Sep to early May", seasonState:"ok", note:""},
+  {n:2, from:"Superior",           to:"Darby, MT",      miles:123.4, gain:3975,  days:3, start:"2026-09-13", end:"2026-09-15", season:"Early Jul to late Sep", seasonState:"ok",    note:"Moose Mountain fire bypass: Alberton, Petty Creek, and down the Bitterroot valley", revised:{on:"2026-09-14", miles:320.5, gain:31000, days:8, end:"2026-09-20", why:"Fire closure. The original line looped west through the Clearwater and back over the Magruder Corridor (125 mi / 14,000 ft); the Moose Mountain Bypass replaces it"}},
+  {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-16", end:"2026-09-22", season:"Late Jun to late Sep",  seasonState:"tight", note:""},
+  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-23", end:"2026-09-29", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
+  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-09-30", end:"2026-10-05", season:"Mid May to late Sep", seasonState:"past", note:""},
+  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:334.1, gain:24000, days:8, start:"2026-10-06", end:"2026-10-13", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
+  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:202.6, gain:10000, days:5, start:"2026-10-14", end:"2026-10-18", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
+  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344.9, gain:22000, days:8, start:"2026-10-19", end:"2026-10-26", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
+  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:284.6, gain:21000, days:7, start:"2026-10-27", end:"2026-11-02", season:"Mid Sep to early May", seasonState:"ok", note:""},
 ];
 const TOTAL_PLAN = Math.round(SEGMENTS.reduce((a,s)=>a+s.miles,0)*10)/10;
+// Plan calendar, derived from SEGMENTS so a revised segment moves everything after it. Originally 63 days to Nov 7; 58 days to Nov 2 after the Sept 14 segment 2 revision.
+const PLAN_DAYS = SEGMENTS.reduce((a,s)=>a+s.days,0);
+const PLAN_END = SEGMENTS[SEGMENTS.length-1].end;
 
 // One entry per calendar day. miles = that day's distance. gain/loss in ft. lat/lng = that night's camp (decimal degrees, from Rick's Garmin pin); shown as a Google Maps link in the daily log and the Last camp block.
 // Multiple updates in one day: add updates:[{time:"10:30 am", miles:17, gain:370, text:"..."}] (oldest first) and they show grouped under the day's notes.
