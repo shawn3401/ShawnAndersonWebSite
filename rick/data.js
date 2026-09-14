@@ -43,7 +43,7 @@ const LOG = [
     {time:"2:49 pm", miles:27.9, gain:4680, text:"Spent the better part of the afternoon on a rarely used stretch of the Hiawatha rail trail, working north toward Taft, MT before turning back south toward Mexico. Low point 3,021 ft. A big climbing day already at 4,680 ft. 8.3 more to hit today's share."},
     {time:"Evening", miles:46.3, gain:6051, text:"Camped on the St Regis River near DeBorgia, MT. 46.3 miles, +6,051 / -6,593 ft, high point 5,074 ft. Biggest climbing day yet. 27.2 miles to Superior to close out segment 1 tomorrow."},
   ]},
-  {day:7, date:"2026-09-12", end:"Hills south of Superior, MT (segment 2, day 1)", miles:69, gain:2767, loss:2661, high:3196, low:2632, lat:47.03492, lng:-114.76697, notes:"Two rides in one day. Morning: 33.5 miles down the St Regis River valley from DeBorgia into Superior, closing out segment 1 on the planned date. Afternoon at the church in town charging power banks and drying gear. Evening: rolled straight into segment 2, 35.5 more miles climbing south out of the Clark Fork valley from 2,718 ft to 3,196 ft, with a short backtrack at the end to find a place to camp. 69 miles total, the longest day of the trip so far.", updates:[
+  {day:7, date:"2026-09-12", end:"Hills south of Superior, MT (segment 2, day 1)", miles:69, gain:2767, loss:2661, high:3196, low:2632, lat:47.03492, lng:-114.76697, course:6.3, notes:"Two rides in one day. Morning: 33.5 miles down the St Regis River valley from DeBorgia into Superior, closing out segment 1 on the planned date. Afternoon at the church in town charging power banks and drying gear. Evening: rolled straight into segment 2, 35.5 more miles climbing south out of the Clark Fork valley from 2,718 ft to 3,196 ft, with a short backtrack at the end to find a place to camp. 69 miles total, the longest day of the trip so far. His Garmin logged 6.3 more miles through Superior than the segment 1 route measures (riding around town and GPS wander), booked as a 6.3-mile detour so his position stays honest.", updates:[
     {time:"2:07 pm", miles:33.5, gain:1193, text:"Segment 1 is done. Rolled down the St Regis River valley from the DeBorgia camp into Superior, MT, 33.5 miles with 1,193 ft up and 1,514 ft down. Canada to Superior in 7 days, right on the planned date and 6 miles ahead on distance."},
     {time:"Afternoon", text:"Taking a break at the Church of Jesus Christ of Latter-day Saints in Superior to charge every power bank and dry out the tent and clothes. Plan is to roll on this afternoon and put the first miles on segment 2."},
     {time:"Evening", miles:69, gain:2767, text:"Camped in the hills south of Superior after a second ride of 35.5 miles, +1,574 / -1,147 ft, starting segment 2 a day early. Backtracked a little at the end to find a camp spot. 69 miles on the day, a new longest."},
@@ -54,6 +54,7 @@ const LOG = [
   ]},
   {day:9, date:"2026-09-14", end:"", miles:32.4, gain:322, loss:773, done:false, notes:"", updates:[
     {time:"12:00 pm", miles:32.4, gain:322, text:"Cruising down the Bitterroot valley. 32.4 miles by midday with only 322 ft of climbing, checked in from Stevensville. Dry so far but chilly, with fresh snow on the hills. About 10 miles to Darby and the end of segment 2."},
+    {time:"1:33 pm", text:"Going for a single-day mileage record. Darby is 21 miles ahead and he means to get there tonight."},
   ]},
 ];
 
@@ -62,7 +63,7 @@ const LOG = [
 const LOCATION = {lat:46.52258, lng:-114.11475, town:"Stevensville", state:"MT", label:"Rolling down the Bitterroot valley, 32.4 miles into day 9 with Darby about 10 miles ahead", asOf:"Sept 14, 12:00 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 9 under way and he is cruising. Rick checked in from Stevensville at midday with 32.4 miles down the Bitterroot valley and only 322 ft of climbing, dry but chilly, with fresh snow on the hills above him. Darby and the end of segment 2 are about 10 miles ahead. Segment 2 became the Moose Mountain fire bypass on Sept 14, 123.4 miles instead of the 320.5-mile loop through the Clearwater and over the Magruder Corridor, so he will finish it days early and roll straight into segment 3."; 
+const STATUS = "Day 9 under way and he is cruising. Rick checked in from Stevensville at noon with 32.4 miles down the Bitterroot valley, dry but chilly with fresh snow on the hills, and at 1:33 pm said he is going for a single-day mileage record: Darby tonight, 21 miles ahead, which would beat the 69 he rode on day 7. Segment 2 became the Moose Mountain fire bypass on Sept 14, so the plan was re-timed: 58 days, finish Nov 2."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 13, 2026, end of day 8", caption:"Blue and green at the top is Rick's track so far, Roosville to Lolo Creek west of Missoula, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -106,5 +107,5 @@ const PHOTOS = [
   {file:"2026-09-06-day1-ride-map", date:"2026-09-06", caption:"Day 1 route on onX Offroad: Roosville to Loon Lake Campground, 60 mi, +3,761 / -2,838 ft, 4,266 ft high point."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", caption:"Day 0. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 12:00 pm MT";
+const LAST_UPDATED = "Sept 14, 2026, 1:34 pm MT";
 // ===== END DATA =====
