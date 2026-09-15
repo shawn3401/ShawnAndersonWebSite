@@ -60,15 +60,16 @@ const LOG = [
   ]},
   {day:10, date:"2026-09-15", end:"", miles:0, gain:0, loss:0, done:false, notes:"", updates:[
     {time:"9:50 am", text:"Rolled out from Hannon Memorial. Took extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and the day looks promising. Hoping for 55 miles."},
+    {time:"12:45 pm", text:"Checked in from West Fork Road just south of Painted Rocks Lake, about three miles north of Alta. Near the end of the pavement out of Darby, with the dirt climb into the Salmon River Range ahead."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:45.970576, lng:-114.13929, town:"Hannon Memorial Fishing Access, south of Darby", state:"MT", label:"Rolled out at 9:50 am on day 10, heading south up the West Fork of the Bitterroot toward Idaho", asOf:"Sept 15, 9:50 am MT", approx:true};
+const LOCATION = {lat:45.660639, lng:-114.302222, town:"West Fork Road, south of Painted Rocks Lake", state:"MT", label:"About 3 miles north of Alta on day 10, near the end of the pavement out of Darby", asOf:"Sept 15, 12:45 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 10 under way. Rick rolled out of the Hannon Memorial camp at 9:50 am after taking extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and he is hoping for 55 miles. Segment 3 to Hailey, ID runs 348.5 miles from Darby, the longest on the route, and he is starting it a day ahead of plan."; 
+const STATUS = "Day 10 under way. Rick rolled out of the Hannon Memorial camp at 9:50 am after taking extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and he is hoping for 55 miles. At 12:45 pm his Garmin put him on West Fork Road just south of Painted Rocks Lake, about three miles north of Alta, near the end of the 35 miles of pavement out of Darby. Segment 3 to Hailey, ID runs 348.5 miles, the longest on the route, and he is a day ahead of plan starting it.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 14, 2026, end of day 9", caption:"Blue and green at the top is Rick's track so far, Roosville to the Bitterroot River south of Darby, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -126,5 +127,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 15, 2026, 10:01 am MT";
+const LAST_UPDATED = "Sept 15, 2026, 12:45 pm MT";
 // ===== END DATA =====
