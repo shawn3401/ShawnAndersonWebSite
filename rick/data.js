@@ -58,14 +58,17 @@ const LOG = [
     {time:"4:44 pm", miles:68, gain:998, text:"Made it to Darby. 68 miles from Lolo Creek, +998 / -878 ft, which closes out segment 2 three days ahead of the re-timed plan. Stocking up at the grocery store on fresh strawberries and Wheat Thins, then off to find a camp for the night."},
     {time:"Evening", miles:73, gain:1094, text:"Rode on four miles past town to camp at Hannon Memorial Fishing Access on the Bitterroot River. 73 miles on the day, a new longest, with +1,094 / -899 ft. Segment 3 is under way."},
   ]},
+  {day:10, date:"2026-09-15", end:"", miles:0, gain:0, loss:0, done:false, notes:"", updates:[
+    {time:"9:50 am", text:"Rolled out from Hannon Memorial. Took extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and the day looks promising. Hoping for 55 miles."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:45.970576, lng:-114.13929, town:"Hannon Memorial Fishing Access, south of Darby", state:"MT", label:"Camped on the Bitterroot River four miles south of Darby after 73 miles on day 9, his longest yet. Segment 2 complete, segment 3 begun", asOf:"Sept 14, evening MT", approx:false};
+const LOCATION = {lat:45.970576, lng:-114.13929, town:"Hannon Memorial Fishing Access, south of Darby", state:"MT", label:"Rolled out at 9:50 am on day 10, heading south up the West Fork of the Bitterroot toward Idaho", asOf:"Sept 15, 9:50 am MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 9 is in the books and so is segment 2. Rick rode 73 miles from Lolo Creek down the Bitterroot valley, dry but chilly with fresh snow on the hills, stocked up on strawberries and Wheat Thins in Darby, and rolled on four miles to camp at Hannon Memorial Fishing Access on the river. That is a new longest day and it puts him three days ahead of the re-timed plan with segment 3 already started. Darby to Hailey, ID is 348.5 miles over the Salmon River country, the longest segment on the route, planned for seven days."; 
+const STATUS = "Day 10 under way. Rick rolled out of the Hannon Memorial camp at 9:50 am after taking extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and he is hoping for 55 miles. Segment 3 to Hailey, ID runs 348.5 miles from Darby, the longest on the route, and he is starting it a day ahead of plan."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 14, 2026, end of day 9", caption:"Blue and green at the top is Rick's track so far, Roosville to the Bitterroot River south of Darby, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -123,5 +126,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 9:41 pm MT";
+const LAST_UPDATED = "Sept 15, 2026, 10:01 am MT";
 // ===== END DATA =====
