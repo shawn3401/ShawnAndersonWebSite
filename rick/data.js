@@ -68,7 +68,7 @@ const LOCATION = {lat:45.970576, lng:-114.13929, town:"Hannon Memorial Fishing A
 const STATUS = "Day 9 is in the books and so is segment 2. Rick rode 73 miles from Lolo Creek down the Bitterroot valley, dry but chilly with fresh snow on the hills, stocked up on strawberries and Wheat Thins in Darby, and rolled on four miles to camp at Hannon Memorial Fishing Access on the river. That is a new longest day and it puts him three days ahead of the re-timed plan with segment 3 already started. Darby to Hailey, ID is 348.5 miles over the Salmon River country, the longest segment on the route, planned for seven days."; 
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 13, 2026, end of day 8", caption:"Blue and green at the top is Rick's track so far, Roosville to Lolo Creek west of Missoula, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 14, 2026, end of day 9", caption:"Blue and green at the top is Rick's track so far, Roosville to the Bitterroot River south of Darby, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -122,5 +122,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 9:31 pm MT";
+const LAST_UPDATED = "Sept 14, 2026, 9:33 pm MT";
 // ===== END DATA =====
