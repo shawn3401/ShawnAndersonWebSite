@@ -58,18 +58,19 @@ const LOG = [
     {time:"4:44 pm", miles:68, gain:998, text:"Made it to Darby. 68 miles from Lolo Creek, +998 / -878 ft, which closes out segment 2 three days ahead of the re-timed plan. Stocking up at the grocery store on fresh strawberries and Wheat Thins, then off to find a camp for the night."},
     {time:"Evening", miles:73, gain:1094, text:"Rode on four miles past town to camp at Hannon Memorial Fishing Access on the Bitterroot River. 73 miles on the day, a new longest, with +1,094 / -899 ft. Segment 3 is under way."},
   ]},
-  {day:10, date:"2026-09-15", end:"", miles:27.8, gain:1047, loss:173, high:4874, low:3965, done:false, notes:"", updates:[
+  {day:10, date:"2026-09-15", end:"", miles:39.1, gain:1878, loss:109, high:5682, low:3965, done:false, notes:"", updates:[
     {time:"9:50 am", text:"Rolled out from Hannon Memorial. Took extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and the day looks promising. Hoping for 55 miles."},
     {time:"12:45 pm", miles:27.8, gain:1047, text:"27.8 miles by 12:48 pm with +1,047 / -173 ft, a steady grind up the West Fork of the Bitterroot from 3,965 ft to 4,874 ft. Checked in from West Fork Road just south of Painted Rocks Lake, about three miles north of Alta, near the end of the pavement out of Darby with the dirt climb into the Salmon River Range ahead."},
+    {time:"3:40 pm", miles:39.1, gain:1878, text:"39.1 miles with +1,878 / -109 ft, now up to 5,682 ft. Checked in from about seven miles south of Alta, back in the mountains and off the beaten path. His words: having a great time today, new scenery."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:45.660639, lng:-114.302222, town:"West Fork Road, south of Painted Rocks Lake", state:"MT", label:"About 3 miles north of Alta on day 10, near the end of the pavement out of Darby", asOf:"Sept 15, 12:45 pm MT", approx:false};
+const LOCATION = {lat:45.522111, lng:-114.339722, town:"About 7 miles south of Alta", state:"MT", label:"Back in the mountains at about 5,700 ft on day 10, climbing out of the West Fork of the Bitterroot", asOf:"Sept 15, 3:40 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 10 under way. Rick rolled out of the Hannon Memorial camp at 9:50 am after taking extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and he is hoping for 55 miles. At 12:45 pm his Garmin put him on West Fork Road just south of Painted Rocks Lake, about three miles north of Alta, near the end of the 35 miles of pavement out of Darby. Segment 3 to Hailey, ID runs 348.5 miles, the longest on the route, and he is a day ahead of plan starting it.";
+const STATUS = "Day 10 under way and going well. Rick rolled out of the Hannon Memorial camp at 9:50 am on the coldest morning of the trip so far. By 3:40 pm he had 39.1 miles and 1,878 ft of climbing, checked in from about seven miles south of Alta at around 5,700 ft, off the pavement and back in the mountains. He says he is having a great time today with new scenery and nobody around. Segment 3 to Hailey, ID runs 348.5 miles, the longest on the route, and he is a day ahead of plan starting it.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 14, 2026, end of day 9", caption:"Blue and green at the top is Rick's track so far, Roosville to the Bitterroot River south of Darby, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -127,5 +128,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 15, 2026, 12:55 pm MT";
+const LAST_UPDATED = "Sept 15, 2026, 3:45 pm MT";
 // ===== END DATA =====
