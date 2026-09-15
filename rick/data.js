@@ -73,6 +73,7 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-14-light-of-the-valley-sign", date:"2026-09-14", time:"11:38", caption:"Day 9. Seemed extremely appropriate!!! (Light of the Valley Assembly of God, Bitterroot valley: If your life stinks we have a pew for you.)", by:"rick"},
   {file:"2026-09-13-petty-creek-view", date:"2026-09-13", time:"15:26", caption:"Day 8. Looking back down Petty Creek valley before descending to Lolo Creek.", by:"rick"},
   {file:"2026-09-13-pavement-ends-selfie", date:"2026-09-13", time:"14:36", caption:"Day 8. Headed up Petty Creek valley to the Lolo Creek valley.", by:"rick"},
   {file:"2026-09-12-camp-south-of-superior", date:"2026-09-12", time:"18:59", caption:"Day 7, evening. Boondocked here after finding out Quartz Flats campground was closed. Ended up being a beautiful spot. Coyotes yipped and howled all night.", by:"rick"},
@@ -122,5 +123,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 14, 2026, 9:33 pm MT";
+const LAST_UPDATED = "Sept 14, 2026, 9:41 pm MT";
 // ===== END DATA =====
