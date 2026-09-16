@@ -58,22 +58,24 @@ const LOG = [
     {time:"4:44 pm", miles:68, gain:998, text:"Made it to Darby. 68 miles from Lolo Creek, +998 / -878 ft, which closes out segment 2 three days ahead of the re-timed plan. Stocking up at the grocery store on fresh strawberries and Wheat Thins, then off to find a camp for the night."},
     {time:"Evening", miles:73, gain:1094, text:"Rode on four miles past town to camp at Hannon Memorial Fishing Access on the Bitterroot River. 73 miles on the day, a new longest, with +1,094 / -899 ft. Segment 3 is under way."},
   ]},
-  {day:10, date:"2026-09-15", end:"", miles:39.1, gain:1878, loss:109, high:5682, low:3965, done:false, notes:"", updates:[
+  {day:10, date:"2026-09-15", end:"Spring Creek Campground, ID (Salmon River)", miles:63.3, gain:4805, loss:5358, high:8459, low:3479, lat:45.390811, lng:-114.254899, notes:"Hannon Memorial to Spring Creek Campground on the Salmon River, back in Idaho. Up the West Fork of the Bitterroot past Painted Rocks and Alta on a steady grind, then a brutal summit over Horse Creek Pass at 8,459 ft, the high point of the trip so far by more than 3,000 ft, and two more climbs right after. It was freezing and the wind was ripping, and he did not want to camp on the summit, so he pushed hard to make the long downhill and reached the campground at dark. Squeezed in a plunge in the river at last light, then cheddar broccoli rice and pasta with roasted garlic potatoes. His words: hate going to bed dirty, very uncivilized.", updates:[
     {time:"9:50 am", text:"Rolled out from Hannon Memorial. Took extra time to sort yesterday's grocery haul into days. Coldest morning of the trip so far, but the sun is out and the day looks promising. Hoping for 55 miles."},
     {time:"12:45 pm", miles:27.8, gain:1047, text:"27.8 miles by 12:48 pm with +1,047 / -173 ft, a steady grind up the West Fork of the Bitterroot from 3,965 ft to 4,874 ft. Checked in from West Fork Road just south of Painted Rocks Lake, about three miles north of Alta, near the end of the pavement out of Darby with the dirt climb into the Salmon River Range ahead."},
     {time:"3:40 pm", miles:39.1, gain:1878, text:"39.1 miles with +1,878 / -109 ft, now up to 5,682 ft. Checked in from about seven miles south of Alta, back in the mountains and off the beaten path. His words: having a great time today, new scenery."},
+    {time:"5:08 pm", text:"Back in Idaho, over Horse Creek Pass on the Montana line."},
+    {time:"8:58 pm", miles:63.3, gain:4805, text:"Long day. A brutal summit over Horse Creek Pass at 8,459 ft and two more ascents right after. Freezing with the wind ripping, so he pushed on rather than camp on top and made the downhill to Spring Creek Campground on the Salmon River. Plunge in the river at last light, dinner on the stove, camp still to finish. 63.3 miles, +4,805 / -5,358 ft."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:45.522111, lng:-114.339722, town:"About 7 miles south of Alta", state:"MT", label:"Back in the mountains at about 5,700 ft on day 10, climbing out of the West Fork of the Bitterroot", asOf:"Sept 15, 3:40 pm MT", approx:false};
+const LOCATION = {lat:45.390811, lng:-114.254899, town:"Spring Creek Campground, Salmon River", state:"ID", label:"Camped on the Salmon River after 63.3 miles and Horse Creek Pass on day 10, back in Idaho", asOf:"Sept 15, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 10 under way and going well. Rick rolled out of the Hannon Memorial camp at 9:50 am on the coldest morning of the trip so far. By 3:40 pm he had 39.1 miles and 1,878 ft of climbing, checked in from about seven miles south of Alta at around 5,700 ft, off the pavement and back in the mountains. He says he is having a great time today with new scenery and nobody around. Segment 3 to Hailey, ID runs 348.5 miles, the longest on the route, and he is a day ahead of plan starting it.";
+const STATUS = "Day 10 was the big one. Rick left Hannon Memorial at 9:50 am, ground up the West Fork of the Bitterroot past Alta, and went over Horse Creek Pass at 8,459 ft into Idaho, the high point of the trip so far by more than 3,000 ft, with two more climbs right behind it. Freezing and windy on top, so he pushed on down to Spring Creek Campground on the Salmon River and got in at dark: 63.3 miles, 4,805 ft of climbing. A plunge in the river, dinner on the stove, and a clean sleep. He is four days ahead of the re-timed plan.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 14, 2026, end of day 9", caption:"Blue and green at the top is Rick's track so far, Roosville to the Bitterroot River south of Darby, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 15, 2026, end of day 10", caption:"Blue and green at the top is Rick's track so far, Roosville to the Salmon River in Idaho, with today's ride over Horse Creek Pass in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -128,5 +130,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 15, 2026, 3:45 pm MT";
+const LAST_UPDATED = "Sept 15, 2026, 11:02 pm MT";
 // ===== END DATA =====
