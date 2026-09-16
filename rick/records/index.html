@@ -137,7 +137,7 @@ h2 .ic{margin-right:6px}
 
   <section>
     <h2><span class="ic">🌦️</span>Weather at camp</h2>
-    <div class="segsub" id="wxsub">Looked up from Open-Meteo at each night's camp pin when this page loads. Daytime numbers are for the camp he rode to that day; the night is the low at that camp before he rolled out.</div>
+    <div class="segsub" id="wxsub">Looked up from Open-Meteo's weather archive at each night's camp pin when this page loads (the last few days use the forecast model until the archive catches up). Daytime numbers are for the camp he rode to that day; the night is the low at that camp before he rolled out.</div>
     <div class="grid" id="g-wx"></div>
   </section>
 
@@ -295,18 +295,28 @@ if (!PINS.length) {
   const first = DONE[0].date, lastD = iso(addDays(d2(last.date), 1));
   const today = iso(new Date());
   const endDate = lastD <= today ? lastD : today;
-  const wxUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lngs}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_gusts_10m_max&start_date=${first}&end_date=${endDate}&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FBoise`;
+  // Past days come from Open-Meteo's reanalysis archive (built from observations after the fact); the forecast model only fills days the archive does not have yet.
+  // The forecast archive badly undercounted the Sept 7 rain day at Loon Lake (0.13 in vs 1.05 in), which is why the archive is primary.
+  const wxQ = `latitude=${lats}&longitude=${lngs}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_gusts_10m_max&start_date=${first}&end_date=${endDate}&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FBoise`;
+  const wxUrl = `https://archive-api.open-meteo.com/v1/archive?${wxQ}`;
+  const wxFallbackUrl = `https://api.open-meteo.com/v1/forecast?${wxQ}`;
   const elUrl = `https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`;
 
-  fetch(wxUrl).then(r=>r.json()).then(j => {
+  const applyWx = j => {
     const arr = Array.isArray(j) ? j : [j];
     PINS.forEach((e,i) => {
       const d = arr[i] && arr[i].daily; if (!d) return;
       const k = d.time.indexOf(e.date), k2 = d.time.indexOf(iso(addDays(d2(e.date),1)));
       e.wx = e.wx || {};
-      if (k>=0) { if (e.wx.hi==null) e.wx.hi = d.temperature_2m_max[k]; if (e.wx.rain==null) e.wx.rain = d.precipitation_sum[k]; if (e.wx.gust==null) e.wx.gust = d.wind_gusts_10m_max[k]; }
-      if (k2>=0 && e.wx.lo==null) e.wx.lo = d.temperature_2m_min[k2];
+      const set = (f, v) => { if (e.wx[f]==null && v!=null) e.wx[f] = v; };
+      if (k>=0) { set("hi", d.temperature_2m_max[k]); set("rain", d.precipitation_sum[k]); set("gust", d.wind_gusts_10m_max[k]); }
+      if (k2>=0) set("lo", d.temperature_2m_min[k2]);
     });
+  };
+  const fetchJson = u => fetch(u).then(r=>r.json());
+  fetchJson(wxUrl).catch(()=>null).then(j => { if (j) applyWx(j); })
+    .then(() => { const missing = PINS.some(e => !e.wx || e.wx.hi==null || e.wx.lo==null || e.wx.rain==null || e.wx.gust==null); return missing ? fetchJson(wxFallbackUrl).then(applyWx).catch(()=>{}) : null; })
+    .then(() => {
     const has = f => DONE.filter(e => e.wx && e.wx[f]!=null);
     const vals = f => DONE.map(e => e.wx && e.wx[f]!=null ? e.wx[f] : null);
     const out = [];
@@ -315,7 +325,7 @@ if (!PINS.length) {
     const cold = best(has("lo"), e=>e.wx.lo, -1);
     out.push(cold ? card({label:"Coldest night", value:Math.round(cold.wx.lo)+"°", unit:"F", day:cold.day, medal:"🥶", cls:"rain", vals:vals("lo"), valFmt:v=>`${Math.round(v)}°F low`, key:"overnight low at camp", note:`Low at the ${esc(place(cold))} camp the morning after day ${cold.day}.`}) : emptyCard("Coldest night","Weather lookup came back empty"));
     const wet = best(has("rain"), e=>e.wx.rain);
-    out.push(wet ? card({label:"Wettest day", value:wet.wx.rain>=0.1?fmt1(wet.wx.rain):wet.wx.rain.toFixed(2), unit:"in", day:wet.day, medal:"☔", cls:"rain", vals:vals("rain"), valFmt:v=>`${v.toFixed(2)} in`, key:"rain at camp", note:wet.wx.rain>0?`Rain measured near ${esc(place(wet))} that day. ${has("rain").filter(e=>e.wx.rain>=0.05).length} of ${N} days have had measurable rain.`:"Bone dry so far. Not one wet day on the board."}) : emptyCard("Wettest day","Weather lookup came back empty"));
+    out.push(wet ? card({label:"Wettest day", value:wet.wx.rain>=0.1?fmt1(wet.wx.rain):wet.wx.rain.toFixed(2), unit:"in", day:wet.day, medal:"☔", cls:"rain", vals:vals("rain"), valFmt:v=>`${v.toFixed(2)} in`, key:"rain at camp", note:wet.wx.rain>0?`Rain near ${esc(place(wet))} that day, from the weather archive. ${has("rain").filter(e=>e.wx.rain>=0.05).length} of ${N} days have had measurable rain.`:"Bone dry so far. Not one wet day on the board."}) : emptyCard("Wettest day","Weather lookup came back empty"));
     const wind = best(has("gust"), e=>e.wx.gust);
     out.push(wind ? card({label:"Windiest day", value:Math.round(wind.wx.gust), unit:"mph gusts", day:wind.day, medal:"💨", vals:vals("gust"), valFmt:v=>`${Math.round(v)} mph gusts`, key:"peak gust at camp", note:`Peak gust near ${esc(place(wind))}. Headwind or tailwind, the model does not say.`}) : emptyCard("Windiest day","Weather lookup came back empty"));
     gw.innerHTML = out.join("");
