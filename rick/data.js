@@ -65,17 +65,18 @@ const LOG = [
     {time:"5:08 pm", text:"Back in Idaho, over Horse Creek Pass on the Montana line."},
     {time:"8:58 pm", miles:63.3, gain:4805, text:"Long day. A brutal summit over Horse Creek Pass at 8,459 ft and two more ascents right after. Freezing with the wind ripping, so he pushed on rather than camp on top and made the downhill to Spring Creek Campground on the Salmon River. Plunge in the river at last light, dinner on the stove, camp still to finish. 63.3 miles, +4,805 / -5,358 ft."},
   ]},
-  {day:11, date:"2026-09-16", end:"", miles:48.1, gain:3437, loss:373, done:false, notes:"", updates:[
+  {day:11, date:"2026-09-16", end:"Upper Panther Creek, ID (below the Morgan Creek divide)", miles:49, gain:3506, loss:373, high:6529, low:3210, lat:44.90452, lng:-114.32666, notes:"Spring Creek Campground to a camp high on Panther Creek. Down the Salmon River from Shoup to the Panther Creek turnoff, then a long steady climb up the creek from 3,210 ft to 6,529 ft, 49 miles with 3,506 ft of gain and almost no descent. Camped a few miles short of the divide over to Morgan Creek, which sets up the drop toward Challis tomorrow.", updates:[
     {time:"5:16 pm", miles:48.1, gain:3437, text:"Late check-in and still rolling. 48.1 miles from Spring Creek, down the Salmon River and up Panther Creek, climbing from 3,209 ft to 6,453 ft with +3,437 / -373 ft so far. Already past today's share of 40."},
+    {time:"Evening", miles:49, gain:3506, text:"Camped high on Panther Creek at about 6,500 ft, a few miles below the divide to Morgan Creek. 49 miles, +3,506 / -373 ft."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:44.934329, lng:-114.338193, town:"Panther Creek, south of the Salmon River", state:"ID", label:"Still riding late on day 11, 48.1 miles in and climbing Panther Creek toward the divide", asOf:"Sept 16, 5:16 pm MT", approx:false};
+const LOCATION = {lat:44.90452, lng:-114.32666, town:"Upper Panther Creek", state:"ID", label:"Camped at about 6,500 ft on Panther Creek after 49 miles on day 11, just below the divide to Morgan Creek", asOf:"Sept 16, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 11 under way and running late. Rick checked in at 5:16 pm with 48.1 miles from Spring Creek Campground: down the Salmon River, then up Panther Creek on a long climb from 3,209 ft to 6,453 ft with 3,437 ft of gain so far, and still going. That is already past his share of 40 for the day. He is four days ahead of the re-timed plan on segment 3 to Hailey.";
+const STATUS = "Day 11 is done: 49 miles from Spring Creek Campground, down the Salmon River and then a long steady climb up Panther Creek from 3,210 ft to 6,529 ft, 3,506 ft of gain with almost no descent. Camped high on the creek a few miles below the divide to Morgan Creek, which sets up the drop toward Challis tomorrow. Four days ahead of the re-timed plan on segment 3 to Hailey.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 15, 2026, end of day 10", caption:"Blue and green at the top is Rick's track so far, Roosville to the Salmon River in Idaho, with today's ride over Horse Creek Pass in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -133,5 +134,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 16, 2026, 5:16 pm MT";
+const LAST_UPDATED = "Sept 16, 2026, 9:52 pm MT";
 // ===== END DATA =====
