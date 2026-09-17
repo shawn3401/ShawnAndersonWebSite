@@ -79,7 +79,7 @@ const LOCATION = {lat:44.90452, lng:-114.32666, town:"Upper Panther Creek", stat
 const STATUS = "Day 11 is done: 49 miles from Spring Creek Campground, down the Salmon River and then a long steady climb up Panther Creek from 3,210 ft to 6,529 ft, 3,506 ft of gain with almost no descent. Camped high on the creek a few miles below the divide to Morgan Creek, which sets up the drop toward Challis tomorrow. Four days ahead of the re-timed plan on segment 3 to Hailey.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 15, 2026, end of day 10", caption:"Blue and green at the top is Rick's track so far, Roosville to the Salmon River in Idaho, with today's ride over Horse Creek Pass in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 16, 2026, end of day 11", caption:"Blue and green at the top is Rick's track so far, Roosville to upper Panther Creek in central Idaho, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -134,5 +134,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 16, 2026, 9:52 pm MT";
+const LAST_UPDATED = "Sept 16, 2026, 9:56 pm MT";
 // ===== END DATA =====
