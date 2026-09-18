@@ -6,13 +6,13 @@ const START = new Date(2026, 8, 6); // Sep 6 2026 (local)
 const SEGMENTS = [
   {n:1, from:"Canada (Roosville)", to:"Superior, MT",   miles:296.6, gain:25000, days:7, start:"2026-09-06", end:"2026-09-12", season:"Early Jul to late Sep", seasonState:"ok",    note:"Porcupine Pass, Moon Pass"},
   {n:2, from:"Superior",           to:"Darby, MT",      miles:123.4, gain:3975,  days:3, start:"2026-09-13", end:"2026-09-15", season:"Early Jul to late Sep", seasonState:"ok",    note:"Moose Mountain fire bypass: Alberton, Petty Creek, and down the Bitterroot valley", revised:{on:"2026-09-14", miles:320.5, gain:31000, days:8, end:"2026-09-20", why:"Fire closure. The original line looped west through the Clearwater and back over the Magruder Corridor (125 mi / 14,000 ft); the Moose Mountain Bypass replaces it"}},
-  {n:3, from:"Darby",              to:"Hailey, ID",     miles:348.5, gain:23000, days:7, start:"2026-09-16", end:"2026-09-22", season:"Late Jun to late Sep",  seasonState:"tight", note:"35 mi of pavement out of Darby, then dirt high into the Salmon River Range and a 5,000 ft plunge into the Salmon River canyon. Longest segment"},
-  {n:4, from:"Hailey",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-23", end:"2026-09-29", season:"Mid May to late Sep", seasonState:"past", note:"Galena Pass. Carry 6 L water from here south"},
-  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-09-30", end:"2026-10-05", season:"Mid May to late Sep", seasonState:"past", note:""},
-  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:334.1, gain:24000, days:8, start:"2026-10-06", end:"2026-10-13", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
-  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:202.6, gain:10000, days:5, start:"2026-10-14", end:"2026-10-18", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
-  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344.9, gain:22000, days:8, start:"2026-10-19", end:"2026-10-26", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
-  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:284.6, gain:21000, days:7, start:"2026-10-27", end:"2026-11-02", season:"Mid Sep to early May", seasonState:"ok", note:""},
+  {n:3, from:"Darby",              to:"Mackay, ID",     miles:202.7, gain:12349, days:4, start:"2026-09-16", end:"2026-09-19", season:"Late Jun to late Sep",  seasonState:"tight", note:"Up the West Fork of the Bitterroot, over Horse Creek Pass to the Salmon River, up Panther Creek, then Challis and down US 93 to Mackay", revised:{on:"2026-09-18", miles:348.5, gain:23000, days:7, end:"2026-09-22", why:"Rick's change of plan. Instead of the loop west through Stanley, the Sawtooths, Ketchum and Hailey, he rode from Challis down US 93 to Mackay so he can go home to Idaho Falls for the weekend"}},
+  {n:4, from:"Mackay",             to:"Bear Lake (UT line)", miles:341.6, gain:15000, days:7, start:"2026-09-20", end:"2026-09-26", season:"Mid May to late Sep", seasonState:"past", note:"Being redrawn from Mackay by way of Idaho Falls. Miles and dates here are the old Hailey plan until then"},
+  {n:5, from:"Bear Lake",          to:"Soldier Summit, UT", miles:250.6, gain:14500, days:6, start:"2026-09-27", end:"2026-10-02", season:"Mid May to late Sep", seasonState:"past", note:""},
+  {n:6, from:"Soldier Summit",     to:"Kanab, UT",      miles:334.1, gain:24000, days:8, start:"2026-10-03", end:"2026-10-10", season:"Late Jun to mid Oct",   seasonState:"tight", note:""},
+  {n:7, from:"Kanab",              to:"Grand Canyon, AZ", miles:202.6, gain:10000, days:5, start:"2026-10-11", end:"2026-10-15", season:"Mid Apr to late Nov", seasonState:"ok",  note:"Vermilion Cliffs, Kaibab Plateau. Navajo Nation + Babbitt Ranch permits"},
+  {n:8, from:"Grand Canyon",       to:"Globe, AZ",      miles:344.9, gain:22000, days:8, start:"2026-10-16", end:"2026-10-23", season:"Early May to late Nov", seasonState:"ok",  note:"AZ State Land recreation permit"},
+  {n:9, from:"Globe",              to:"Sierra Vista (MX border)", miles:284.6, gain:21000, days:7, start:"2026-10-24", end:"2026-10-30", season:"Mid Sep to early May", seasonState:"ok", note:""},
 ];
 const TOTAL_PLAN = Math.round(SEGMENTS.reduce((a,s)=>a+s.miles,0)*10)/10;
 // Plan calendar, derived from SEGMENTS so a revised segment moves everything after it. Originally 63 days to Nov 7; 58 days to Nov 2 after the Sept 14 segment 2 revision.
@@ -69,17 +69,17 @@ const LOG = [
     {time:"5:16 pm", miles:48.1, gain:3437, text:"Late check-in and still rolling. 48.1 miles from Spring Creek, down the Salmon River and up Panther Creek, climbing from 3,209 ft to 6,453 ft with +3,437 / -373 ft so far. Already past today's share of 40."},
     {time:"Evening", miles:49, gain:3506, text:"Camped high on Panther Creek at about 6,500 ft, a few miles below the divide to Morgan Creek. 49 miles, +3,506 / -373 ft."},
   ]},
-  {day:12, date:"2026-09-17", end:"Mackay, ID", miles:88, gain:4316, loss:4957, high:7502, low:4813, notes:"Upper Panther Creek to Mackay, 88 miles, the longest day of the trip by 15 miles. Over the top at 7,502 ft first thing, down Morgan Creek to the valley floor at 4,813 ft near Challis, then back up and over into the Big Lost River valley and down to Mackay. +4,316 / -4,957 ft.", updates:[
-    {time:"Evening", miles:88, gain:4316, text:"Made it to Mackay. 88 miles from Panther Creek, a new longest day by 15 miles, +4,316 / -4,957 ft with a 7,502 ft high point first thing in the morning."},
+  {day:12, date:"2026-09-17", end:"Wagon Wheel Motel, Mackay, ID", miles:88, gain:4316, loss:4957, high:7502, low:4813, lat:43.91756, lng:-113.61678, course:2.6, notes:"Upper Panther Creek to Mackay, 88 miles, the longest day of the trip by 15 miles. Over the top at 7,502 ft first thing, down Morgan Creek to the valley floor at 4,813 ft near Challis, then back up and over into the Big Lost River valley and down to Mackay. +4,316 / -4,957 ft. That finishes segment 3 as revised on Sept 18: Rick skipped the loop through Stanley, the Sawtooths and Hailey to head home to Idaho Falls for the weekend. Spent the night at the Wagon Wheel Motel, his first motel of the trip. His Garmin logged 205.3 miles for the segment against the 202.7-mile route, so the extra 2.6 are booked as a detour.", updates:[
+    {time:"Evening", miles:88, gain:4316, text:"Made it to Mackay. 88 miles from Panther Creek, a new longest day by 15 miles, +4,316 / -4,957 ft with a 7,502 ft high point first thing in the morning. First motel night of the trip, at the Wagon Wheel."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:43.9110, lng:-113.6128, town:"Mackay", state:"ID", label:"In Mackay after 88 miles on day 12, his longest day yet (town center, camp pin pending)", asOf:"Sept 17, evening MT", approx:true};
+const LOCATION = {lat:43.91756, lng:-113.61678, town:"Mackay", state:"ID", label:"At the Wagon Wheel Motel in Mackay after 88 miles on day 12, his first motel night of the trip (pin from the motel address)", asOf:"Sept 17, evening MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 12 was a monster: 88 miles from upper Panther Creek over a 7,502 ft top, down Morgan Creek toward Challis, and over into the Big Lost River valley to Mackay. That beats his longest day by 15 miles. Segment 3 to Hailey is well past halfway, and he is running about five days ahead of the re-timed plan.";
+const STATUS = "Plan change, Sept 18: Rick is going home to Idaho Falls for the weekend to sleep in his own bed and go to church on Sunday, heading back out Monday. Segment 3 now ends in Mackay instead of Hailey, 202.7 miles over the West Fork of the Bitterroot, Horse Creek Pass, Panther Creek and down US 93, and he finished it on day 12 with an 88-mile day, his longest yet, then took his first motel night of the trip at the Wagon Wheel in Mackay. Segment 4 from Mackay is being redrawn.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 16, 2026, end of day 11", caption:"Blue and green at the top is Rick's track so far, Roosville to upper Panther Creek in central Idaho, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -137,5 +137,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 18, 2026, 7:13 am MT";
+const LAST_UPDATED = "Sept 18, 2026, 7:30 am MT";
 // ===== END DATA =====
