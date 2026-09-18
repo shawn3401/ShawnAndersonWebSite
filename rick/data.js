@@ -87,7 +87,18 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
-  {file:"2026-09-14-light-of-the-valley-sign", date:"2026-09-14", time:"11:38", caption:"Day 9. Seemed extremely appropriate!!! (Light of the Valley Assembly of God, Bitterroot valley: If your life stinks we have a pew for you.)", by:"rick"},
+  {file:"2026-09-17-lost-river-range", date:"2026-09-17", time:"17:17", caption:"Day 12. The bike on US 93 with fresh snow on the Lost River Range, on the way down the Big Lost River valley to Mackay."},
+  {file:"2026-09-17-canyon-road-to-challis", date:"2026-09-17", time:"11:03", caption:"Day 12. A gravel road through a rocky canyon on the way down toward Challis."},
+  {file:"2026-09-17-panther-creek-breakfast", date:"2026-09-17", time:"07:55", caption:"Day 12. Breakfast at the Panther Creek camp, headlamp still on, with a fellow camper at the stove behind."},
+  {file:"2026-09-17-panther-creek-camp-morning", date:"2026-09-17", time:"07:39", caption:"Day 12, morning. Packing up the camp high on Panther Creek before the 88-mile day to Mackay."},
+  {file:"2026-09-16-salmon-river-bridge", date:"2026-09-16", time:"09:55", caption:"Day 11. The bike on a bridge over the Salmon River near Shoup, the canyon walls lit up behind."},
+  {file:"2026-09-16-shoup-store-selfie", date:"2026-09-16", time:"09:46", caption:"Day 11. At the old Shoup Store on the Salmon River, bundled up for a cold morning."},
+  {file:"2026-09-16-spring-creek-camp", date:"2026-09-16", time:"07:38", caption:"Day 11, morning. Camp at Spring Creek Campground on the Salmon River after the Horse Creek Pass day."},
+  {file:"2026-09-15-ridge-after-horse-creek-pass", date:"2026-09-15", time:"17:41", caption:"Day 10. The loaded bike on a ridgetop after Horse Creek Pass, back in Idaho with two more climbs to go before the Salmon River."},
+  {file:"2026-09-15-horse-creek-pass-climb", date:"2026-09-15", time:"16:58", caption:"Day 10. High on the Horse Creek Pass climb, old burn scars on the slopes and the Idaho line just ahead."},
+  {file:"2026-09-15-painted-rocks-fire-station", date:"2026-09-15", time:"12:56", caption:"Day 10. At the Painted Rocks Fire and Rescue station on the West Fork of the Bitterroot, about 28 miles into the day."},
+  {file:"2026-09-15-grocery-haul-sorted", date:"2026-09-15", time:"07:02", caption:"Day 10, morning. The Darby grocery haul laid out on the picnic table at Hannon Memorial and sorted into days before rolling out."},
+  {file:"2026-09-14-light-of-the-valley-sign", date:"2026-09-14", time:"11:36", caption:"Day 9. Seemed extremely appropriate!!! (Light of the Valley Assembly of God, Bitterroot valley: If your life stinks we have a pew for you.)", by:"rick"},
   {file:"2026-09-13-petty-creek-view", date:"2026-09-13", time:"15:26", caption:"Day 8. Looking back down Petty Creek valley before descending to Lolo Creek.", by:"rick"},
   {file:"2026-09-13-pavement-ends-selfie", date:"2026-09-13", time:"14:36", caption:"Day 8. Headed up Petty Creek valley to the Lolo Creek valley.", by:"rick"},
   {file:"2026-09-12-camp-south-of-superior", date:"2026-09-12", time:"18:59", caption:"Day 7, evening. Boondocked here after finding out Quartz Flats campground was closed. Ended up being a beautiful spot. Coyotes yipped and howled all night.", by:"rick"},
@@ -137,5 +148,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 18, 2026, 7:30 am MT";
+const LAST_UPDATED = "Sept 18, 2026, 7:46 am MT";
 // ===== END DATA =====
