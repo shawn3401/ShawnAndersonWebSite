@@ -69,14 +69,17 @@ const LOG = [
     {time:"5:16 pm", miles:48.1, gain:3437, text:"Late check-in and still rolling. 48.1 miles from Spring Creek, down the Salmon River and up Panther Creek, climbing from 3,209 ft to 6,453 ft with +3,437 / -373 ft so far. Already past today's share of 40."},
     {time:"Evening", miles:49, gain:3506, text:"Camped high on Panther Creek at about 6,500 ft, a few miles below the divide to Morgan Creek. 49 miles, +3,506 / -373 ft."},
   ]},
+  {day:12, date:"2026-09-17", end:"Mackay, ID", miles:88, gain:4316, loss:4957, high:7502, low:4813, notes:"Upper Panther Creek to Mackay, 88 miles, the longest day of the trip by 15 miles. Over the top at 7,502 ft first thing, down Morgan Creek to the valley floor at 4,813 ft near Challis, then back up and over into the Big Lost River valley and down to Mackay. +4,316 / -4,957 ft.", updates:[
+    {time:"Evening", miles:88, gain:4316, text:"Made it to Mackay. 88 miles from Panther Creek, a new longest day by 15 miles, +4,316 / -4,957 ft with a 7,502 ft high point first thing in the morning."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:44.90452, lng:-114.32666, town:"Upper Panther Creek", state:"ID", label:"Camped at about 6,500 ft on Panther Creek after 49 miles on day 11, just below the divide to Morgan Creek", asOf:"Sept 16, evening MT", approx:false};
+const LOCATION = {lat:43.9110, lng:-113.6128, town:"Mackay", state:"ID", label:"In Mackay after 88 miles on day 12, his longest day yet (town center, camp pin pending)", asOf:"Sept 17, evening MT", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 11 is done: 49 miles from Spring Creek Campground, down the Salmon River and then a long steady climb up Panther Creek from 3,210 ft to 6,529 ft, 3,506 ft of gain with almost no descent. Camped high on the creek a few miles below the divide to Morgan Creek, which sets up the drop toward Challis tomorrow. Four days ahead of the re-timed plan on segment 3 to Hailey.";
+const STATUS = "Day 12 was a monster: 88 miles from upper Panther Creek over a 7,502 ft top, down Morgan Creek toward Challis, and over into the Big Lost River valley to Mackay. That beats his longest day by 15 miles. Segment 3 to Hailey is well past halfway, and he is running about five days ahead of the re-timed plan.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 16, 2026, end of day 11", caption:"Blue and green at the top is Rick's track so far, Roosville to upper Panther Creek in central Idaho, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -134,5 +137,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 16, 2026, 9:56 pm MT";
+const LAST_UPDATED = "Sept 18, 2026, 7:13 am MT";
 // ===== END DATA =====
