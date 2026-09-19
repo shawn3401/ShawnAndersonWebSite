@@ -72,14 +72,18 @@ const LOG = [
   {day:12, date:"2026-09-17", end:"Wagon Wheel Motel, Mackay, ID", miles:88, gain:4316, loss:4957, high:7502, low:4813, lat:43.91756, lng:-113.61678, course:2.6, notes:"Upper Panther Creek to Mackay, 88 miles, the longest day of the trip by 15 miles. Over the top at 7,502 ft first thing, down Morgan Creek to the valley floor at 4,813 ft near Challis, then back up and over into the Big Lost River valley and down to Mackay. +4,316 / -4,957 ft. That finishes segment 3 as revised on Sept 18: Rick skipped the loop through Stanley, the Sawtooths and Hailey to head home to Idaho Falls for the weekend. Spent the night at the Wagon Wheel Motel, his first motel of the trip. His Garmin logged 205.3 miles for the segment against the 202.7-mile route, so the extra 2.6 are booked as a detour.", updates:[
     {time:"Evening", miles:88, gain:4316, text:"Made it to Mackay. 88 miles from Panther Creek, a new longest day by 15 miles, +4,316 / -4,957 ft with a 7,502 ft high point first thing in the morning. First motel night of the trip, at the Wagon Wheel."},
   ]},
+  {day:13, date:"2026-09-18", end:"Twenty Mile Lava Trail, ID (US 20)", miles:74.2, gain:739, loss:1528, high:5895, low:4917, lat:43.55378, lng:-112.44194, notes:"Mackay to the Twenty Mile Lava Trail on US 20, the first day of segment 4. Down the Big Lost River valley from Mackay to Arco, a stop at the Submarine in the Desert, then east across the lava fields and sagebrush on US 20. 74.2 miles with only 739 ft of climbing, mostly downhill from 5,895 ft to a 4,917 ft low. Camped out on the desert about 20 miles short of Idaho Falls.", updates:[
+    {time:"9:56 am", text:"Rolling through Arco, past the sail of the USS Hawkbill, the Submarine in the Desert."},
+    {time:"Evening", miles:74.2, gain:739, text:"Camped at the Twenty Mile Lava Trail on US 20, about 20 miles west of Idaho Falls. 74.2 miles, +739 / -1,528 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:43.55378, lng:-112.44194, town:"US 20, west of Idaho Falls", state:"ID", label:"Crossing the desert on US 20 toward Idaho Falls on day 14, about 20 miles from town", asOf:"Sept 19, 7:12 am MT", approx:false};
+const LOCATION = {lat:43.55378, lng:-112.44194, town:"Twenty Mile Lava Trail, US 20", state:"ID", label:"Camped on the desert at the Twenty Mile Lava Trail after 74.2 miles on day 13, about 20 miles west of Idaho Falls", asOf:"Sept 18, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 14, and Rick is almost home. He rolled out of Mackay on day 13 through Arco, the town with a submarine in the desert, and is now crossing the sagebrush on US 20 about 20 miles west of Idaho Falls. He plans to spend the weekend in his own bed and at church on Sunday, then head back out Monday. Segment 3 was revised to end in Mackay, and segment 4 from Mackay by way of Idaho Falls is being redrawn, so a few numbers on this page will shift once it is.";
+const STATUS = "Day 14, and Rick is almost home. Day 13 was 74.2 miles from Mackay through Arco, past the Submarine in the Desert, and east across the lava fields on US 20 to a camp at the Twenty Mile Lava Trail, about 20 miles west of Idaho Falls. This morning he rolls into town to spend the weekend in his own bed and at church on Sunday, then heads back out Monday. Segment 4 from Mackay by way of Idaho Falls is being redrawn, so a few numbers on this page will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 16, 2026, end of day 11", caption:"Blue and green at the top is Rick's track so far, Roosville to upper Panther Creek in central Idaho, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -149,5 +153,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 19, 2026, 7:12 am MT";
+const LAST_UPDATED = "Sept 19, 2026, 7:19 am MT";
 // ===== END DATA =====
