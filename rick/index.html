@@ -231,7 +231,7 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
 <div class="route">
   <div class="eyebrow" style="color:var(--ink-3)">Route progress</div>
   <div class="bar" id="bar"></div>
-  <div class="legend"><span class="a">Rick's position on the route (miles ridden, adjusted for reroutes)</span><span class="p">Where the plan says he should be today</span></div>
+  <div class="legend"><span class="a">Rick's position on his current route</span><span class="p">Where the plan says he should be today</span></div>
 </div>
 <div class="bigmap" id="bigmap" hidden><div class="hd"><div class="eyebrow" style="color:var(--ink-3)">The whole route, zoomed out</div><div class="asof" id="bigmap-asof"></div></div><img id="bigmap-img" alt="Rick's track so far on a map of the western United States"><div class="cap" id="bigmap-cap"></div></div>
 
@@ -312,46 +312,58 @@ const tripDaysLeft = dayDiff(lastDate, planFinish);
 const tripNeed = tripDaysLeft > 0 ? remaining / tripDaysLeft : null;
 
 // Plan-total copy
-document.getElementById("subline").textContent = `${fmt(TOTAL_PLAN)} miles of dirt in ${PLAN_DAYS} days. Rolled out Sept 6, 2026, aiming for ${mdy(planFinish)}.`;
+document.getElementById("subline").textContent = `${fmt(Math.round(TOTAL_PLAN))} miles of dirt, Canada to Mexico. Rolled out Sept 6, 2026, aiming for ${mdy((typeof TARGET_FINISH!=="undefined" && TARGET_FINISH) ? d2(TARGET_FINISH) : planFinish)}.`;
 
 // Cover photo
 if (typeof COVER === "string" && COVER) { const ci = document.getElementById("coverimg"); if (ci && !ci.src.startsWith("data:")) ci.src = "photos/" + COVER + ".jpg"; }
 
 // Status tiles
 document.getElementById("up-when").textContent = LAST_UPDATED;
-document.getElementById("up-day").textContent = OPEN ? `Day ${OPEN.day} of ${PLAN_DAYS} in progress` : `After day ${daysRidden} of ${PLAN_DAYS}`;
-const dcls = delta>=0 ? "delta-good" : "delta-bad";
+document.getElementById("up-day").textContent = OPEN ? `Day ${OPEN.day} in progress` : `After day ${daysRidden}`;
 const fmt1 = n => n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
-const dtxt = (delta>=0?"+":"") + fmt1(delta);
-// Current segment actuals (closed days only, same basis as the trip tiles)
+// ---- Follower-first numbers (Sept 19, 2026 rework) ----
+// Target finish: TARGET_FINISH in data.js if set, else the plan's last segment end.
+const target = (typeof TARGET_FINISH!=="undefined" && TARGET_FINISH) ? d2(TARGET_FINISH) : planFinish;
+const tgtDaysLeft = dayDiff(lastDate, target);
+const tgtNeed = tgtDaysLeft > 0 ? remaining / tgtDaysLeft : null;
+// Pace per calendar day since the start, zero days included, so the finish estimate already allows for rest days at his usual rate.
+const calDays = last ? dayDiff(addDays(START,-1), d2(last.date)) : 0;
+const calPace = calDays ? credited / calDays : 0;
+const estFinish = calPace>0 ? addDays(lastDate, Math.ceil(remaining / calPace)) : null;
+const daysVsTarget = estFinish ? dayDiff(estFinish, target) : null;   // positive = early
+// Ahead or behind the plan, in days: where on the plan's calendar his current position falls.
+function planDayAt(miles){ let prev=0; for(let i=0;i<planCum.length;i++){ if(miles<=planCum[i]+1e-9){ const f=(miles-prev)/(planCum[i]-prev||1); return i+f; } prev=planCum[i]; } return planCum.length; }
+const daysAhead = last ? planDayAt(credited) - daysRidden : 0;
+const aheadTxt = d => { const a=Math.abs(d); if (a<0.5) return "On plan"; const n = a<10 ? a.toFixed(1) : Math.round(a); return `${n} day${n==1?"":"s"} ${d>0?"ahead":"behind"}`; };
+// Climbing left: the rest of the current segment (pro rata) plus every later segment.
+const segFracLeft = Math.max(0, Math.min(1, segLeft / curSeg.miles));
+const segClimbLeft = curSeg.gain * segFracLeft;
+const tripClimbLeft = segClimbLeft + SEGMENTS.filter(x=>x.n>curSeg.n).reduce((a,x)=>a+x.gain,0);
+const ftK = n => n>=10000 ? `${Math.round(n/1000)}k` : fmt(Math.round(n/100)*100);
+// Segment row
 const segStartCum = segCum[curSeg.n-2]||0;
-const segIdx = curSeg.n-1;
 const segRidden = Math.max(0, credited - segStartCum);
-const segPlanStart = d2(curSeg.start);
-// Days he has ridden in this segment: closed days whose credited position was past the segment start at day's end.
-const segDaysRidden = DONE.filter(e => e.cred > segStartCum).length;
+const segDaysRidden = DONE.filter(e => e.cred > segStartCum + EPS).length;
 const segAvg = segDaysRidden ? segRidden/segDaysRidden : 0;
-const segPlanMpd = curSeg.miles/curSeg.days;
-// Where the plan says he should be inside this segment as of the last closed day
-const segPlanCum = Math.min(curSeg.miles, Math.max(0, (last?last.planCum:0) - segStartCum));
-const segDelta = segRidden - segPlanCum;
 const segProj = segAvg>0 ? addDays(lastDate, Math.ceil(segLeft/segAvg)) : null;
-const segDcls = segDelta>=0 ? "delta-good" : "delta-bad";
-const segDtxt = (segDelta>=0?"+":"") + fmt1(segDelta);
+const segPlanDayStart = SEGMENTS.filter(x=>x.n<curSeg.n).reduce((a,x)=>a+x.days,0);
+const segAhead = last ? planDayAt(credited) - daysRidden : 0;
 const segTo = curSeg.to.split(/[,(]/)[0].trim();
+const dcls = daysAhead>=0 ? "delta-good" : "delta-bad";
+const segDcls = segProj && segProj<=d2(curSeg.end) ? "delta-good" : "delta-bad";
 document.getElementById("status").innerHTML = `
   <div class="rowlab">Trip</div>
-  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(actualCum)}<small>of ${fmt(TOTAL_PLAN)}</small></div><div class="note">${(100*credited/TOTAL_PLAN).toFixed(1)}% of the route${savedTotal>0?`, counting ${fmt(savedTotal)} mi saved by rerouting`:savedTotal<0?`, less ${fmt(-savedTotal)} mi added by rerouting`:""}${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
-  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${dtxt}<small>mi</small></div><div class="note">Plan had him at ${fmt1(last?last.planCum:0)} mi after day ${daysRidden}${savedTotal>0?`. He is credited ${fmt1(credited)}: ${fmt(actualCum)} ridden plus ${fmt(savedTotal)} saved by rerouting`:savedTotal<0?`. He is credited ${fmt1(credited)}: ${fmt(actualCum)} ridden less ${fmt(-savedTotal)} added by rerouting`:""}</div></div>
-  <div class="tile"><div class="lab">Average per day</div><div class="val num">${avg.toFixed(1)}<small>mi</small></div><div class="note">Plan pace is ${(TOTAL_PLAN/PLAN_DAYS).toFixed(1)} mi/day over ${PLAN_DAYS} days</div></div>
-  <div class="tile"><div class="lab">Needed pace</div><div class="val num">${tripNeed!=null?tripNeed.toFixed(1):"n/a"}<small>mi</small></div><div class="note">${tripNeed!=null?`${fmt(remaining)} mi to Sierra Vista in ${tripDaysLeft} day${tripDaysLeft===1?"":"s"} (by ${mdy(planFinish)})`:`Past the planned finish date. ${fmt(remaining)} mi to go`}</div></div>
-  <div class="tile"><div class="lab">Projected finish</div><div class="val num">${projFinish?mdy(projFinish):"TBD"}</div><div class="note">At current pace. Plan says ${mdy(planFinish)}.</div></div>
+  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(Math.round(actualCum))}<small>since Roosville, Sept 6</small></div><div class="note">${daysRidden} days on the road${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
+  <div class="tile"><div class="lab">To Mexico</div><div class="val num">${fmt(Math.round(remaining))}<small>mi</small></div><div class="note">About ${ftK(tripClimbLeft)} ft of climbing left. ${(100*credited/TOTAL_PLAN).toFixed(0)}% of the way to Sierra Vista</div></div>
+  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${aheadTxt(daysAhead)}</div><div class="note">Rick's current plan had him at ${fmt(Math.round(last?last.planCum:0))} mi after day ${daysRidden}. He is at ${fmt(Math.round(credited))}</div></div>
+  <div class="tile"><div class="lab">Needed pace</div><div class="val num">${tgtNeed!=null?Math.round(tgtNeed):"n/a"}<small>mi a day</small></div><div class="note">${tgtNeed!=null?`To finish by ${mdy(target)}, ${tgtDaysLeft} days out, rest days included`:`Past the ${mdy(target)} target`}</div></div>
+  <div class="tile"><div class="lab">Estimated finish</div><div class="val num">${estFinish?mdy(estFinish):"TBD"}</div><div class="note">${estFinish?`At his ${Math.round(calPace)} mi a day so far, rest days included. ${daysVsTarget>0?`${daysVsTarget} days before`:daysVsTarget<0?`${-daysVsTarget} days after`:"Right on"} the ${mdy(target)} target`:""}</div></div>
   <div class="rowlab seg">Segment ${curSeg.n}</div>
-  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt1(segRidden)}<small>of ${fmt(curSeg.miles)}</small></div><div class="note">${(100*Math.min(1,segRidden/curSeg.miles)).toFixed(0)}% of ${curSeg.from} to ${segTo}${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
-  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${segDcls}">${segDtxt}<small>mi</small></div><div class="note">Plan had him ${fmt1(segPlanCum)} mi into the segment after day ${daysRidden}. Planned ${mdy(segPlanStart)} to ${mdy(d2(curSeg.end))}</div></div>
-  <div class="tile"><div class="lab">Average per day</div><div class="val num">${segAvg.toFixed(1)}<small>mi</small></div><div class="note">${segDaysRidden} riding day${segDaysRidden===1?"":"s"} in this segment. Plan pace is ${segPlanMpd.toFixed(1)} mi/day over ${curSeg.days}</div></div>
-  <div class="tile"><div class="lab">Needed pace</div><div class="val num">${segNeed!=null?segNeed.toFixed(1):"n/a"}<small>mi</small></div><div class="note">${segNeed!=null?`${fmt1(segLeft)} mi to ${segTo} in ${segDaysLeft} day${segDaysLeft===1?"":"s"} (by ${mdy(d2(curSeg.end))})`:`Segment ${curSeg.n} is past its planned end date. ${fmt1(segLeft)} mi to ${segTo}`}</div></div>
-  <div class="tile"><div class="lab">Projected arrival</div><div class="val num">${segProj?mdy(segProj):"TBD"}</div><div class="note">${segTo} at his segment pace. Plan says ${mdy(d2(curSeg.end))}.</div></div>`;
+  <div class="tile hero"><div class="lab">This segment</div><div class="val num">${fmt(Math.round(segRidden))}<small>of ${fmt(curSeg.miles)} mi</small></div><div class="note">${curSeg.from} to ${segTo}${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
+  <div class="tile"><div class="lab">To ${segTo}</div><div class="val num">${fmt(Math.round(segLeft))}<small>mi</small></div><div class="note">About ${ftK(segClimbLeft)} ft of climbing left in the segment</div></div>
+  <div class="tile"><div class="lab">Average per day</div><div class="val num">${segDaysRidden?Math.round(segAvg):"n/a"}<small>${segDaysRidden?"mi":""}</small></div><div class="note">${segDaysRidden} riding day${segDaysRidden===1?"":"s"} in this segment. Plan pace is ${Math.round(curSeg.miles/curSeg.days)} a day</div></div>
+  <div class="tile"><div class="lab">Needed pace</div><div class="val num">${segNeed!=null?Math.round(segNeed):"n/a"}<small>${segNeed!=null?"mi a day":""}</small></div><div class="note">${segNeed!=null?`To reach ${segTo} by ${mdy(d2(curSeg.end))}, ${segDaysLeft} day${segDaysLeft===1?"":"s"} out`:`Past the planned ${mdy(d2(curSeg.end))} arrival`}</div></div>
+  <div class="tile"><div class="lab">Estimated arrival</div><div class="val num ${segProj?segDcls:""}">${segProj?mdy(segProj):"TBD"}</div><div class="note">${segProj?`${segTo} at his segment pace. Plan says ${mdy(d2(curSeg.end))}`:`Plan says ${mdy(d2(curSeg.end))}`}</div></div>`;
 
 // Zoomed-out progress map (PROGRESS_MAP in data.js: file, asOf, caption)
 if (typeof PROGRESS_MAP !== "undefined" && PROGRESS_MAP && PROGRESS_MAP.file) {
@@ -387,14 +399,15 @@ w.innerHTML = last ? `
 (function(){
   const W=1000,H=360,L=56,R=16,T=18,B=44;
   const x = d => L + (d/PLAN_DAYS)*(W-L-R);
-  const y = m => T + (1 - m/2800)*(H-T-B);
+  const YMAX = Math.ceil(TOTAL_PLAN/400)*400;
+  const y = m => T + (1 - m/YMAX)*(H-T-B);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative miles, plan versus actual">`;
-  for(let m=0;m<=2800;m+=400){ s += `<line x1="${L}" x2="${W-R}" y1="${y(m)}" y2="${y(m)}" stroke="var(--contour)" stroke-width="1"/><text x="${L-8}" y="${y(m)+4}" text-anchor="end">${fmt(m)}</text>`; }
+  for(let m=0;m<=YMAX;m+=400){ s += `<line x1="${L}" x2="${W-R}" y1="${y(m)}" y2="${y(m)}" stroke="var(--contour)" stroke-width="1"/><text x="${L-8}" y="${y(m)+4}" text-anchor="end">${fmt(m)}</text>`; }
   // segment boundaries
   let dayAcc=0; SEGMENTS.forEach((sg,i)=>{ dayAcc+=sg.days; if(i<SEGMENTS.length-1) s+=`<line x1="${x(dayAcc)}" x2="${x(dayAcc)}" y1="${T}" y2="${H-B}" stroke="var(--line)" stroke-dasharray="2 4"/>`; });
   // x labels every 7 days
   for(let d=0; d<=PLAN_DAYS; d+=7){ s += `<text x="${x(d)}" y="${H-B+16}" text-anchor="middle">${d===0?"Start":mdy(addDays(START,d-1))}</text>`; }
-  s += `<text x="${x(PLAN_DAYS/2)}" y="${H-6}" text-anchor="middle">Day ${daysRidden} of ${PLAN_DAYS} logged</text>`;
+  s += `<text x="${x(PLAN_DAYS/2)}" y="${H-6}" text-anchor="middle">Day ${daysRidden} logged</text>`;
   // plan line
   let p = `M${x(0)},${y(0)}`; planCum.forEach((m,i)=>{ p+=` L${x(i+1)},${y(m)}`; });
   s += `<path d="${p}" fill="none" stroke="var(--plan)" stroke-width="2" stroke-dasharray="6 4"/>`;
