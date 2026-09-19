@@ -87,6 +87,7 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-18-arco-submarine", date:"2026-09-18", time:"09:56", caption:"Day 13. Arco, Idaho, the Submarine in the Desert: the sail of the USS Hawkbill, SSN-666, on display in town, a long way from any ocean. Arco was also the first town in the world lit by nuclear power, in 1955."},
   {file:"2026-09-17-lost-river-range", date:"2026-09-17", time:"17:17", caption:"Day 12. The bike on US 93 with fresh snow on the Lost River Range, on the way down the Big Lost River valley to Mackay."},
   {file:"2026-09-17-canyon-road-to-challis", date:"2026-09-17", time:"11:03", caption:"Day 12. A gravel road through a rocky canyon on the way down toward Challis."},
   {file:"2026-09-17-panther-creek-breakfast", date:"2026-09-17", time:"07:55", caption:"Day 12. Breakfast at the Panther Creek camp, headlamp still on, with a fellow camper at the stove behind."},
@@ -148,5 +149,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 18, 2026, 7:46 am MT";
+const LAST_UPDATED = "Sept 19, 2026, 7:10 am MT";
 // ===== END DATA =====
