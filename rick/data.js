@@ -76,10 +76,10 @@ const LOG = [
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:43.91756, lng:-113.61678, town:"Mackay", state:"ID", label:"At the Wagon Wheel Motel in Mackay after 88 miles on day 12, his first motel night of the trip (pin from the motel address)", asOf:"Sept 17, evening MT", approx:true};
+const LOCATION = {lat:43.55378, lng:-112.44194, town:"US 20, west of Idaho Falls", state:"ID", label:"Crossing the desert on US 20 toward Idaho Falls on day 14, about 20 miles from town", asOf:"Sept 19, 7:12 am MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Plan change, Sept 18: Rick is going home to Idaho Falls for the weekend to sleep in his own bed and go to church on Sunday, heading back out Monday. Segment 3 now ends in Mackay instead of Hailey, 202.7 miles over the West Fork of the Bitterroot, Horse Creek Pass, Panther Creek and down US 93, and he finished it on day 12 with an 88-mile day, his longest yet, then took his first motel night of the trip at the Wagon Wheel in Mackay. Segment 4 from Mackay is being redrawn.";
+const STATUS = "Day 14, and Rick is almost home. He rolled out of Mackay on day 13 through Arco, the town with a submarine in the desert, and is now crossing the sagebrush on US 20 about 20 miles west of Idaho Falls. He plans to spend the weekend in his own bed and at church on Sunday, then head back out Monday. Segment 3 was revised to end in Mackay, and segment 4 from Mackay by way of Idaho Falls is being redrawn, so a few numbers on this page will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 16, 2026, end of day 11", caption:"Blue and green at the top is Rick's track so far, Roosville to upper Panther Creek in central Idaho, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -149,5 +149,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 19, 2026, 7:10 am MT";
+const LAST_UPDATED = "Sept 19, 2026, 7:12 am MT";
 // ===== END DATA =====
