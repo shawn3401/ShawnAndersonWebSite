@@ -86,7 +86,7 @@ const LOCATION = {lat:43.55378, lng:-112.44194, town:"Twenty Mile Lava Trail, US
 const STATUS = "Day 14, and Rick is almost home. Day 13 was 74.2 miles from Mackay through Arco, past the Submarine in the Desert, and east across the lava fields on US 20 to a camp at the Twenty Mile Lava Trail, about 20 miles west of Idaho Falls. This morning he rolls into town to spend the weekend in his own bed and at church on Sunday, then heads back out Monday. Segment 4 from Mackay by way of Idaho Falls is being redrawn, so a few numbers on this page will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 16, 2026, end of day 11", caption:"Blue and green at the top is Rick's track so far, Roosville to upper Panther Creek in central Idaho, with today's ride in green. The route runs south through Idaho, Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 18, 2026, end of day 13", caption:"Blue and green in the northwest is Rick's track so far, Roosville to the desert west of Idaho Falls, with day 13 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -153,5 +153,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 19, 2026, 7:19 am MT";
+const LAST_UPDATED = "Sept 19, 2026, 7:22 am MT";
 // ===== END DATA =====
