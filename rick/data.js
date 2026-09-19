@@ -76,6 +76,9 @@ const LOG = [
     {time:"9:56 am", text:"Rolling through Arco, past the sail of the USS Hawkbill, the Submarine in the Desert."},
     {time:"Evening", miles:74.2, gain:739, text:"Camped at the Twenty Mile Lava Trail on US 20, about 20 miles west of Idaho Falls. 74.2 miles, +739 / -1,528 ft."},
   ]},
+  {day:14, date:"2026-09-19", end:"", miles:0, gain:0, loss:0, done:false, notes:"", updates:[
+    {time:"Morning", text:"A short ride today, the last 20 miles from the lava trail camp into Idaho Falls. Home for the weekend: a zero day in his own bed and church on Sunday, then back on the trail Monday heading south."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
@@ -83,7 +86,7 @@ const LOG = [
 const LOCATION = {lat:43.55378, lng:-112.44194, town:"Twenty Mile Lava Trail, US 20", state:"ID", label:"Camped on the desert at the Twenty Mile Lava Trail after 74.2 miles on day 13, about 20 miles west of Idaho Falls", asOf:"Sept 18, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 14, and Rick is almost home. Day 13 was 74.2 miles from Mackay through Arco, past the Submarine in the Desert, and east across the lava fields on US 20 to a camp at the Twenty Mile Lava Trail, about 20 miles west of Idaho Falls. This morning he rolls into town to spend the weekend in his own bed and at church on Sunday, then heads back out Monday. Segment 4 from Mackay by way of Idaho Falls is being redrawn, so a few numbers on this page will shift once it is.";
+const STATUS = "Day 14, and Rick is almost home. Day 13 was 74.2 miles from Mackay through Arco, past the Submarine in the Desert, and east across the lava fields on US 20 to a camp about 20 miles west of Idaho Falls. Today is a short ride into town. Sunday is a zero day at home, his own bed and church, and Monday, day 16, he heads back out, this time riding away from home. Segment 4 from Mackay by way of Idaho Falls is being redrawn, so a few numbers on this page will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 18, 2026, end of day 13", caption:"Blue and green in the northwest is Rick's track so far, Roosville to the desert west of Idaho Falls, with day 13 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -153,5 +156,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 19, 2026, 7:22 am MT";
+const LAST_UPDATED = "Sept 19, 2026, 7:23 am MT";
 // ===== END DATA =====
