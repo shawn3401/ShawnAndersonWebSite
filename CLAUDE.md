@@ -54,6 +54,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - Rick's onX plan is the target he committed to; a shortcut is a gain against it and a detour a cost.
 
 ### Daily update routine
+0. EVERY update, midday or close-out, check the iCloud album for new photos first (see "Photos source" above) and post anything new along with the day's numbers. Shawn's standing request, Sept 20, 2026.
 1. Shawn sends: onX ride card (distance, gain, loss, high/low point), the wide onX map screenshot (green = ridden, purple = plan), his coordinates (DMS like 47°50'48.5"N 115°53'23.4"W; convert to decimal), optional photos (ASK which day they are from; batches often arrive a day late), and whether he rerouted (`course`).
 2. Midday: add or update today's row with `done:false`, current miles/gain, and an `updates` entry. Update LOCATION (approx:true if no Garmin pin), STATUS, LAST_UPDATED.
 3. End of day: close the row (remove `done:false`, fill end/miles/gain/loss/notes, add the final check-in to `updates`), add the ride map and any photos to PHOTOS, LOCATION with Garmin pin, STATUS, LAST_UPDATED.
