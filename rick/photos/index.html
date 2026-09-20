@@ -89,7 +89,7 @@ const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || 
 const total = PHOTOS.length;
 document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, in order from the border south. Tap a segment to open it and a photo for full size. Captions tagged Rick are his own words from the trail; the rest are Shawn's.`;
 // Segment picks: the cover photo on each collapsed segment strip (file name from PHOTOS). Falls back to that segment's newest photo.
-const PICKS = {1:"2026-09-11-bike-on-trestle", 2:"2026-09-12-superior-exit-sign-selfie", 3:"2026-09-16-salmon-river-bridge"};
+const PICKS = {1:"2026-09-11-bike-on-trestle", 2:"2026-09-12-superior-exit-sign-selfie", 3:"2026-09-16-salmon-river-bridge", 4:"2026-09-18-arco-submarine"};
 const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
 const key = p => p.date + " " + (p.time || "99:99");
 // Chronological: oldest first inside a segment; within a day, timed photos sort by time and untimed ones (ride maps) go last.
