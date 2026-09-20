@@ -84,7 +84,19 @@ details.seg summary:hover .count b,details.seg summary:focus-visible .count b{te
 const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
 const mdy = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
 const esc = s => s.replace(/"/g,'&quot;');
-const segFor = p => p.seg || (SEGMENTS.find(s => d2(p.date) <= d2(s.end)) || SEGMENTS[SEGMENTS.length-1]).n;
+// Which segment a photo belongs to: the segment Rick was actually riding that day, worked out from the
+// daily log rather than the plan's dates (the plan keeps being revised, the log is what happened).
+const segCum = []; SEGMENTS.reduce((a,s,i)=>(segCum[i]=a+s.miles),0);
+const segByDate = {};
+(function(){ let pos = 0;
+  LOG.forEach(e => { const atStart = pos; pos += (e.miles||0) - (e.course||0);
+    segByDate[e.date] = (SEGMENTS.find(s => atStart < segCum[s.n-1] - 0.05) || SEGMENTS[SEGMENTS.length-1]).n; });
+})();
+const lastLogged = LOG.length ? LOG[LOG.length-1] : null;
+// Actual dates Rick rode each segment, from the log. Upcoming segments fall back to the planned dates.
+const segDates = {};
+Object.entries(segByDate).forEach(([date,n]) => { const r = segDates[n] = segDates[n] || {first:date,last:date}; if (date<r.first) r.first=date; if (date>r.last) r.last=date; });
+const segFor = p => p.seg || segByDate[p.date] || (lastLogged && p.date > lastLogged.date ? segByDate[lastLogged.date] : 1);
 const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || []).push(p); });
 const total = PHOTOS.length;
 document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, in order from the border south. Tap a segment to open it and a photo for full size. Captions tagged Rick are his own words from the trail; the rest are Shawn's.`;
@@ -102,8 +114,8 @@ document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
   const body = ps.length
     ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}<span class="who ${p.by==="rick"?"rick":"home"}">${p.by==="rick"?"Rick":"Shawn"}</span></span>${p.caption}</figcaption></figure>`).join("")}</div>`
     : `<div class="empty">Nothing from this stretch yet.</div>`;
-  const count = ps.length ? `<b>${ps.length} photo${ps.length===1?"":"s"}</b> over ${days} day${days===1?"":"s"}${pick?`, ${mdy(d2(ps[0].date))} to ${mdy(d2(ps[ps.length-1].date))}`:""}` : `No photos yet`;
-  return `<details class="seg${ps.length?"":" upcoming"}"${open}><summary>${pick?`<div class="pick"><img src="${pick.file}-thumb.jpg" alt="" loading="lazy"></div>`:`<div class="pick none">🚵</div>`}<div class="txt"><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${mdy(d2(s.start))} to ${mdy(d2(s.end))} · ${s.miles.toLocaleString()} mi</div><div class="count">${count}</div></div><div class="caret">▸</div></summary><div class="body">${body}</div></details>`;
+  const count = ps.length ? `<b>${ps.length} photo${ps.length===1?"":"s"}</b> over ${days} day${days===1?"":"s"}` : `No photos yet`;
+  return `<details class="seg${ps.length?"":" upcoming"}"${open}><summary>${pick?`<div class="pick"><img src="${pick.file}-thumb.jpg" alt="" loading="lazy"></div>`:`<div class="pick none">🚵</div>`}<div class="txt"><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${segDates[s.n] ? `Rode ${mdy(d2(segDates[s.n].first))}${segDates[s.n].last!==segDates[s.n].first?` to ${mdy(d2(segDates[s.n].last))}`:""}${s.n===segByDate[lastLogged.date]?", still going":""}` : `Planned ${mdy(d2(s.start))} to ${mdy(d2(s.end))}`} · ${s.miles.toLocaleString()} mi</div><div class="count">${count}</div></div><div class="caret">▸</div></summary><div class="body">${body}</div></details>`;
 }).join("");
 </script>
 <script>
