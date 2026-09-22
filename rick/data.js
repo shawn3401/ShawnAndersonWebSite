@@ -82,17 +82,23 @@ const LOG = [
     {time:"Morning", text:"A short ride today, the last 20 miles from the lava trail camp into Idaho Falls. Home for the weekend: a zero day in his own bed and church on Sunday, then back on the trail Monday heading south."},
     {time:"Midday", miles:26.2, gain:108, text:"Home in Idaho Falls. 26.2 easy miles across the desert, +108 / -524 ft. Fourteen days and 746 miles from the Canadian border."},
   ]},
+  {day:15, date:"2026-09-20", end:"Home, Idaho Falls, ID", miles:0, gain:0, loss:0, lat:43.44976, lng:-112.02972, notes:"Zero day at home in Idaho Falls. His own bed, church on Sunday, family, and a resupply before heading back out.", updates:[
+    {time:"All day", text:"Rest day at home. The first zero day since the rain day at Loon Lake on day 2."},
+  ]},
+  {day:16, date:"2026-09-21", end:"Sage Hen Flats, ID", miles:49.6, gain:3026, loss:1749, high:6034, low:4605, lat:43.01972, lng:-111.82536, notes:"Back on the road. Out of Idaho Falls across the Snake River plain, then up into the hills to Sage Hen Flats, climbing from 4,605 ft to 6,034 ft. 49.6 miles with 3,026 ft of climbing, the first day riding away from home instead of toward it.", updates:[
+    {time:"Evening", miles:49.6, gain:3026, text:"Camped at Sage Hen Flats after 49.6 miles, +3,026 / -1,749 ft. Back in the hills east of Idaho Falls, headed for Bear Lake and the Utah line."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:43.44976, lng:-112.02972, town:"Idaho Falls", state:"ID", label:"Home for the weekend after 746 miles from the Canadian border", asOf:"Sept 19, evening MT", approx:false};
+const LOCATION = {lat:43.01972, lng:-111.82536, town:"Sage Hen Flats", state:"ID", label:"Camped at Sage Hen Flats after 49.6 miles on day 16, the first day back out after the weekend at home", asOf:"Sept 21, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is home. He rolled the last 26 miles into Idaho Falls on Saturday, day 14, finishing two weeks and 746 miles from the Canadian border. Today, day 15, is a zero day: his own bed and church. Monday he heads back out, this time riding away from home toward Bear Lake and the Utah line. Segment 4 from Mackay is being redrawn, so a few numbers on this page will shift once it is.";
+const STATUS = "Rick is back on the road. After a zero day at home in Idaho Falls on Sunday, he rode out Monday, day 16, and climbed from the Snake River plain up to Sage Hen Flats at about 6,000 ft: 49.6 miles with 3,026 ft of climbing. From here it is south and east toward Bear Lake and the Utah line. Segment 4 from Mackay is still being redrawn, so a few numbers on this page will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 19, 2026, end of day 14", caption:"Blue and green in the northwest is Rick's track so far, Roosville to the desert west of Idaho Falls, with day 13 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 21, 2026, end of day 16", caption:"Blue and green in the northwest is Rick's track so far, Roosville to the desert west of Idaho Falls, with day 13 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -160,5 +166,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 20, 2026, 7:58 am MT";
+const LAST_UPDATED = "Sept 21, 2026, 9:29 pm MT";
 // ===== END DATA =====
