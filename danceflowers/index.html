@@ -6,7 +6,7 @@
 <meta name="description" content="Handmade corsages, boutonnières, and bouquets for homecoming, prom, and weddings in Idaho Falls. Corsages $25, boutonnières $15, bouquets $35.">
 <meta property="og:title" content="Dance Flowers">
 <meta property="og:description" content="Handmade corsages, boutonnières, and bouquets for homecoming, prom, and weddings. Idaho Falls.">
-<meta property="og:image" content="https://images.pexels.com/photos/9787655/pexels-photo-9787655.jpeg?auto=compress&cs=tinysrgb&w=1200">
+<meta property="og:image" content="https://shawnandersonapps.com/danceflowers/photos/og-white-roses.jpg">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💐</text></svg>">
 <title>Dance Flowers</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
@@ -56,8 +56,9 @@ section+section{border-top:1px solid var(--line)}
 
 /* hero */
 .cover{position:relative;min-height:560px;background:#2B2320;overflow:hidden}
-.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 85%}
 .cover .fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.35) 0%,rgba(0,0,0,.05) 28%,rgba(0,0,0,.05) 40%,var(--bg) 70%)}
+@media (min-width:721px){.cover .eyebrow,.cover h1,.cover .lead,.cover .acts{margin-left:auto;width:600px;max-width:100%}.cover h1{font-size:54px;white-space:nowrap}}
 .cover .in{position:relative;max-width:1000px;margin:0 auto;padding:360px 20px 0;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end}
 .cover h1{color:var(--ink)}
 .cover .lead{margin-top:10px}
@@ -72,7 +73,7 @@ section+section{border-top:1px solid var(--line)}
 .pricebar div:last-child{border-right:0}
 .pricebar .lab{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3)}
 .pricebar .val{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:34px;line-height:1.05;margin-top:2px}
-@media (max-width:720px){h1{font-size:46px}h2{font-size:32px}.cover{min-height:480px}.cover img{object-position:90% 40%}.cover .in{padding-top:280px;min-height:480px}.pricebar .val{font-size:28px}}
+@media (max-width:720px){h1{font-size:46px}h2{font-size:32px}.cover{min-height:540px}.cover img{object-position:35% 0}.cover .in{padding-top:340px;min-height:540px}.pricebar .val{font-size:28px}}
 
 /* types */
 .types{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:26px}
@@ -193,7 +194,7 @@ textarea{min-height:96px;resize:vertical}
 <body>
 
 <div class="cover">
-  <img src="https://images.pexels.com/photos/9787655/pexels-photo-9787655.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="White orchid wrist corsage on a hand" fetchpriority="high">
+  <picture><source media="(max-width:720px)" srcset="photos/hero-white-roses-m.jpg"><img src="photos/hero-white-roses.jpg" alt="White rose wrist corsage and matching boutonnière, made by Leah" fetchpriority="high"></picture>
   <div class="fade"></div>
   <nav class="topnav"><div class="navin">
     <a class="brand" href="/danceflowers/">Dance Flowers</a>
@@ -220,7 +221,7 @@ textarea{min-height:96px;resize:vertical}
   <p class="lead">Every piece is made to order for your event. Tell me the dress color, the suit, or the vibe, and I'll build the flowers to match.</p>
   <div class="types">
     <article class="card">
-      <div class="ph"><img src="https://images.unsplash.com/photo-1625321643295-733f6448709f?w=900&q=75" alt="Three wrist corsages on friends in formal dresses" loading="lazy"><span class="tag">Placeholder photo</span></div>
+      <div class="ph"><img src="photos/card-corsage.jpg" alt="White rose wrist corsage with lavender and sheer ribbon" loading="lazy"></div>
       <div class="bd">
         <div class="row"><h3>Corsage</h3><div class="price num">$25</div></div>
         <p>Wrist corsage on a comfortable elastic or ribbon band. The classic for homecoming and prom.</p>
@@ -229,7 +230,7 @@ textarea{min-height:96px;resize:vertical}
       </div>
     </article>
     <article class="card">
-      <div class="ph"><img src="https://images.pexels.com/photos/1171714/pexels-photo-1171714.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Pink rose boutonnière on a navy suit lapel" loading="lazy"><span class="tag">Placeholder photo</span></div>
+      <div class="ph"><img src="photos/card-boutonniere.jpg" alt="White rose boutonnière with greenery on a black lapel" loading="lazy"></div>
       <div class="bd">
         <div class="row"><h3>Boutonnière</h3><div class="price num">$15</div></div>
         <p>Lapel flower for the date, the groomsmen, or dad. Comes with a pin, ready to wear.</p>
@@ -368,7 +369,7 @@ textarea{min-height:96px;resize:vertical}
 
 <div class="foot">
   <span>Dance Flowers · Idaho Falls, Idaho</span>
-  <span>Photos are temporary stock placeholders. <a href="/">shawnandersonapps.com</a> · <a href="/danceflowers/admin/">Leah's orders</a></span>
+  <span>Bouquet photo is a temporary stock placeholder. <a href="/">shawnandersonapps.com</a> · <a href="/danceflowers/admin/">Leah's orders</a></span>
 </div>
 
 </div>
