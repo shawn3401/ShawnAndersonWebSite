@@ -88,21 +88,26 @@ const LOG = [
   {day:16, date:"2026-09-21", end:"Sage Hen Flats, ID", miles:49.6, gain:3026, loss:1749, high:6034, low:4605, lat:43.01972, lng:-111.82536, notes:"Back on the road. Out of Idaho Falls across the Snake River plain, then up into the hills to Sage Hen Flats, climbing from 4,605 ft to 6,034 ft. 49.6 miles with 3,026 ft of climbing, the first day riding away from home instead of toward it.", updates:[
     {time:"Evening", miles:49.6, gain:3026, text:"Camped at Sage Hen Flats after 49.6 miles, +3,026 / -1,749 ft. Back in the hills east of Idaho Falls, headed for Bear Lake and the Utah line."},
   ]},
+  {day:17, date:"2026-09-22", end:"Georgetown, ID (LDS church shelter)", miles:54.1, gain:1940, loss:1843, high:6461, low:5773, lat:42.47803, lng:-111.37044, notes:"Sage Hen Flats to Georgetown. Up over a 6,461 ft high point early, then down to Soda Springs, where he caught the town's geyser going off at 1 pm, and on to Georgetown, low point 5,773 ft. Camped under the shelter at the LDS church. 54.1 miles with 1,940 ft of climbing.", updates:[
+    {time:"1:04 pm", text:"Stopped in Soda Springs for the geyser, which erupts on the hour."},
+    {time:"8:17 pm", miles:54.1, gain:1940, text:"Camped under the shelter at the Georgetown LDS church after 54.1 miles, +1,940 / -1,843 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:43.01972, lng:-111.82536, town:"Sage Hen Flats", state:"ID", label:"Camped at Sage Hen Flats after 49.6 miles on day 16, the first day back out after the weekend at home", asOf:"Sept 21, evening MT", approx:false};
+const LOCATION = {lat:42.47803, lng:-111.37044, town:"Georgetown", state:"ID", label:"Camped under the shelter at the Georgetown LDS church after 54.1 miles on day 17", asOf:"Sept 22, 8:17 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is back on the road. After a zero day at home in Idaho Falls on Sunday, he rode out Monday, day 16, and climbed from the Snake River plain up to Sage Hen Flats at about 6,000 ft: 49.6 miles with 3,026 ft of climbing. From here it is south and east toward Bear Lake and the Utah line. Segment 4 from Mackay is still being redrawn, so a few numbers on this page will shift once it is.";
+const STATUS = "Day 17 took Rick from Sage Hen Flats over a 6,461 ft high point and down to Soda Springs, where he stopped for the geyser, then on to Georgetown: 54.1 miles with 1,940 ft of climbing. He is camped under the shelter at the LDS church in Georgetown tonight, closing in on Bear Lake and the Utah line. Segment 4 from Mackay is still being redrawn, so a few numbers on this page will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 21, 2026, end of day 16", caption:"Blue and green in the northwest is Rick's track so far, Roosville to the desert west of Idaho Falls, with day 13 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 22, 2026, end of day 17", caption:"Blue and green in the northwest is Rick's track so far, Roosville to Georgetown in southeast Idaho, with day 17 in green near the Wyoming and Utah corner. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-22-soda-springs-geyser", date:"2026-09-22", time:"13:04", caption:"Day 17. The bike in front of the Soda Springs geyser, erupting on the hour, with the orange travertine terrace behind."},
   {file:"2026-09-19-lava-trail-camp-sunrise", date:"2026-09-19", time:"06:50", caption:"Day 14, sunrise. The tent pitched under the shelter at the Twenty Mile Lava Trail camp on US 20, sun coming up over the desert with 26 easy miles to home."},
   {file:"2026-09-18-arco-submarine", date:"2026-09-18", time:"09:56", caption:"Day 13. Arco, Idaho, the Submarine in the Desert: the sail of the USS Hawkbill, SSN-666, on display in town, a long way from any ocean. Arco was also the first town in the world lit by nuclear power, in 1955."},
   {file:"2026-09-17-lost-river-range", date:"2026-09-17", time:"17:17", caption:"Day 12. The bike on US 93 with fresh snow on the Lost River Range, on the way down the Big Lost River valley to Mackay."},
@@ -166,5 +171,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 21, 2026, 9:29 pm MT";
+const LAST_UPDATED = "Sept 22, 2026, 8:35 pm MT";
 // ===== END DATA =====
