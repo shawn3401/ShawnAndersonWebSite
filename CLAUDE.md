@@ -83,7 +83,7 @@ A one-page storefront at shawnandersonapps.com/danceflowers/ for Leah's flowers.
 - No GoatCounter script on this page. Add the same `<script data-goatcounter=...>` tag the rick/ pages use if Shawn wants visit counts.
 
 ### Page sections (top to bottom, nav anchors in parentheses)
-- Hero with cover photo, eyebrow, headline, two buttons, and a three-up price bar.
+- Hero with cover photo, eyebrow, headline, two buttons, and a three-up price bar. Nav: What I make, Gallery, How it works, Order.
 - What I make (`#types`): three cards, one per product, each with a photo, price, blurb, three bullets, and an "Add a ... to my order" link that bumps that item's quantity in the form.
 - How it works (`#how`): three steps (send the order, Leah confirms, pick up and pay).
 - Order (`#order`): the form on the left, a sticky "Your order" summary with running total on the right. Stacks on mobile.
@@ -105,7 +105,9 @@ Same structure as the tracker (color tokens on `:root`, dark palette under `pref
   - `hero-corsages.jpg` (1800x1200, from Z72_2024, five corsages held in a circle, Shawn's pick) is the desktop hero. `hero-corsages-m.jpg` (1000x750, the cluster) is the phone version via `<picture>` under 720px. `og-corsages.jpg` is the share image.
   - `card-corsage.jpg` (red and white corsage, from Z72_2024), `card-boutonniere.jpg` (red rose on a grey lapel, from Z72_2046), `card-bouquet.jpg` (the small red and white hand-tied posy, from Z72_2046; Shawn has not confirmed it is Leah's work), all 900x675. No placeholders remain; the "Placeholder photo" tags and footer note are gone.
 - Hero layout: desktop hero is 680px tall, image top-aligned (`object-position:50% 0`), fade runs clear until 52% then to the page background by 80%, text block full width at the bottom left. Under 720px the photo is a 330px band across the top (`.cover img{height:330px}` with a fade that ends at 330px) and the eyebrow, headline, lead, and buttons sit below it on the cream background. The eyebrow is `--rose` on both.
-- Z72_2168 (the pinning-on shot) is the only other camera file worth keeping; it has faces, so it is unused. Shawn accidentally copied 100 camera files into the folder on Sept 22; they were moved to originals/ and never committed.
+- Gallery (Sept 22, 2026): `danceflowers/gallery/index.html` plus `danceflowers/gallery/gallery.js`. The JS file holds `SECTIONS` (corsages, boutonnieres, pairs = a matched corsage and boutonnière, bouquets) and `PHOTOS`, one line per photo: `{file, section, w, h, caption}`. Files are `danceflowers/photos/gallery/<file>.jpg` (max 1600px) and `<file>-thumb.jpg` (max 800px), JPEG quality 84/82. Masonry via CSS `columns` (3, 2 under 900px), hover captions, a `<dialog>` lightbox with prev/next, arrow keys, and swipe. Linked from the public page's nav ("Gallery") and from the What I make intro; the gallery's nav links back to the page anchors.
+  - Adding photos: Shawn drops camera files into `danceflowers/photos/` (they get moved to `originals/`). Crop face-free with PIL, write the two sizes into `photos/gallery/`, add a line to `PHOTOS` with the real pixel size, and check a contact sheet for faces before pushing. Captions were written by Claude from what is visible (flower names are best guesses); Leah may correct them.
+  - Source frames used so far: Z72_2024, 2046, 2049, 2052, 2053, 2057, 2061, 2065, 2075, 2116, 2120, 2168 and IMG_0591 (Leah's phone shot of a corsage on a table). The other camera files in originals/ are unused; Shawn copied 100 of them by accident on Sept 22 and has not said whether to delete them.
 
 ### Order form and where orders go (Supabase, live since Sept 10, 2026)
 - Supabase project `DanceFlowers` in the "Shawn Anderson Apps" org, US East, free plan. URL and publishable key are the two constants at the top of the page script. Never put the secret/service_role key in the page.
