@@ -92,14 +92,19 @@ const LOG = [
     {time:"1:04 pm", text:"Stopped in Soda Springs for the geyser, which erupts on the hour."},
     {time:"8:17 pm", miles:54.1, gain:1940, text:"Camped under the shelter at the Georgetown LDS church after 54.1 miles, +1,940 / -1,843 ft."},
   ]},
+  {day:18, date:"2026-09-23", end:"Rendezvous Beach, Bear Lake, UT", miles:51.5, gain:778, loss:846, high:6070, low:5931, lat:41.84633, lng:-111.33994, course:-21.1, notes:"Georgetown to Rendezvous Beach. An easy rolling day south through Dingle, Idaho, and into Utah at Bear Lake State Park's North Eden entrance, then down the east shore of Bear Lake to camp at Rendezvous Beach on the south end. 51.5 miles with only 778 ft of climbing. Segment 4 done and state number four, Utah, begins.", updates:[
+    {time:"10:44 am", text:"Rolling through Dingle, Idaho."},
+    {time:"12:34 pm", text:"Into Utah at the North Eden entrance to Bear Lake State Park. Segment 4 is done."},
+    {time:"9:20 pm", miles:51.5, gain:778, text:"Camped at Rendezvous Beach on the south end of Bear Lake after 51.5 miles, +778 / -846 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:42.47803, lng:-111.37044, town:"Georgetown", state:"ID", label:"Camped under the shelter at the Georgetown LDS church after 54.1 miles on day 17", asOf:"Sept 22, 8:17 pm MT", approx:false};
+const LOCATION = {lat:41.84633, lng:-111.33994, town:"Rendezvous Beach", state:"UT", label:"Camped at Rendezvous Beach on the south end of Bear Lake after 51.5 miles on day 18", asOf:"Sept 23, 9:20 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 17 took Rick from Sage Hen Flats over a 6,461 ft high point and down to Soda Springs, where he stopped for the geyser, then on to Georgetown: 54.1 miles with 1,940 ft of climbing. He is camped under the shelter at the LDS church in Georgetown tonight, closing in on Bear Lake and the Utah line. Segment 4 is now redrawn to match the way he went, through Idaho Falls: 276.7 miles from Mackay to Bear Lake over 6 days, with 72.6 miles left.";
+const STATUS = "Rick is in Utah. Day 18 took him from Georgetown through Dingle, Idaho, and across the state line at the North Eden entrance to Bear Lake State Park, then down the east shore to camp at Rendezvous Beach on the south end of the lake: 51.5 miles with only 778 ft of climbing. That closes out segment 4, two days ahead of its Sept 25 plan date, and starts segment 5 toward Soldier Summit.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 22, 2026, end of day 17", caption:"Blue and green in the northwest is Rick's track so far, Roosville to Georgetown in southeast Idaho, with day 17 in green near the Wyoming and Utah corner. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -107,6 +112,14 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-23-bear-lake-shade-tree", date:"2026-09-23", time:"14:08", caption:"Day 18. The bike parked in the shade of a tree on the Bear Lake shore."},
+  {file:"2026-09-23-bear-lake-selfie", date:"2026-09-23", time:"12:35", caption:"Day 18. Rick at Bear Lake State Park, the lake behind him."},
+  {file:"2026-09-23-bear-lake-state-park-north-eden", date:"2026-09-23", time:"12:34", caption:"Day 18. Utah! The bike at the North Eden entrance sign for Bear Lake State Park, state number four and the end of segment 4."},
+  {file:"2026-09-23-monster-truck", date:"2026-09-23", time:"11:59", caption:"Day 18. The bike parked in front of a lifted Ford pickup on monster tires."},
+  {file:"2026-09-23-dingle-fire-station", date:"2026-09-23", time:"11:01", caption:"Day 18. Rick in his sun hat at the Dingle Fire Station."},
+  {file:"2026-09-23-welcome-to-dingle", date:"2026-09-23", time:"10:44", caption:"Day 18. Welcome to Dingle, Idaho, founded 1871."},
+  {file:"2026-09-23-dingle-road", date:"2026-09-23", time:"10:37", caption:"Day 18. Rick at the Dingle Road sign, with Bear Lake valley behind."},
+  {file:"2026-09-23-georgetown-church-pavilion", date:"2026-09-23", time:"08:17", caption:"Day 18, morning. The pavilion at the Georgetown LDS church where he spent the night."},
   {file:"2026-09-22-soda-springs-geyser", date:"2026-09-22", time:"13:04", caption:"Day 17. The bike in front of the Soda Springs geyser, erupting on the hour, with the orange travertine terrace behind."},
   {file:"2026-09-19-lava-trail-camp-sunrise", date:"2026-09-19", time:"06:50", caption:"Day 14, sunrise. The tent pitched under the shelter at the Twenty Mile Lava Trail camp on US 20, sun coming up over the desert with 26 easy miles to home."},
   {file:"2026-09-18-arco-submarine", date:"2026-09-18", time:"09:56", caption:"Day 13. Arco, Idaho, the Submarine in the Desert: the sail of the USS Hawkbill, SSN-666, on display in town, a long way from any ocean. Arco was also the first town in the world lit by nuclear power, in 1955."},
@@ -171,5 +184,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 22, 2026, 9:10 pm MT";
+const LAST_UPDATED = "Sept 23, 2026, 9:45 pm MT";
 // ===== END DATA =====
