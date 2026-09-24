@@ -107,7 +107,7 @@ const LOCATION = {lat:41.84633, lng:-111.33994, town:"Rendezvous Beach", state:"
 const STATUS = "Rick is in Utah. Day 18 took him from Georgetown through Dingle, Idaho, and across the state line at the North Eden entrance to Bear Lake State Park, then down the east shore to camp at Rendezvous Beach on the south end of the lake: 51.5 miles with only 778 ft of climbing. That closes out segment 4, two days ahead of its Sept 25 plan date, and starts segment 5 toward Soldier Summit.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 22, 2026, end of day 17", caption:"Blue and green in the northwest is Rick's track so far, Roosville to Georgetown in southeast Idaho, with day 17 in green near the Wyoming and Utah corner. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 23, 2026, end of day 18", caption:"Blue and green in the northwest is Rick's track so far, Roosville to Bear Lake on the Idaho and Utah line, with day 18 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
