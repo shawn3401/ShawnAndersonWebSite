@@ -92,19 +92,23 @@ const LOG = [
     {time:"1:04 pm", text:"Stopped in Soda Springs for the geyser, which erupts on the hour."},
     {time:"8:17 pm", miles:54.1, gain:2455, text:"Camped under the shelter at the Georgetown LDS church after 54.1 miles, +2,455 / -1,843 ft."},
   ]},
-  {day:18, date:"2026-09-23", end:"Rendezvous Beach, Bear Lake, UT", miles:51.5, gain:938, loss:846, high:6070, low:5931, lat:41.84633, lng:-111.33994, course:1.8, notes:"Georgetown to Rendezvous Beach. An easy rolling day south through Dingle, Idaho, and into Utah at Bear Lake State Park's North Eden entrance, then down the east shore of Bear Lake to camp at Rendezvous Beach on the south end. 51.5 miles with only 938 ft of climbing. Segment 4 ended at the state line after 35.3 miles (+438 ft), and the last 16.2 were the first miles of segment 5. State number four, Utah, begins. His Garmin logged 1.8 more miles through segment 4 than the route measures, booked as a detour so his position lands on the segment end.", updates:[
+  {day:18, date:"2026-09-23", end:"Rendezvous Beach, Bear Lake, UT", miles:51.5, gain:938, loss:846, high:6070, low:5931, lat:41.84633, lng:-111.33994, course:1.8, notes:"Georgetown to Rendezvous Beach. An easy rolling day south through Dingle, Idaho, and into Utah at Bear Lake State Park's North Eden entrance, then down the east shore of Bear Lake to camp at Rendezvous Beach on the south end. 51.5 miles with only 938 ft of climbing. Segment 4 ended at the state line after 35.3 miles (+438 ft), and the last 16.2 were the first miles of segment 5. Utah is his third state. His Garmin logged 1.8 more miles through segment 4 than the route measures, booked as a detour so his position lands on the segment end.", updates:[
     {time:"10:44 am", text:"Rolling through Dingle, Idaho."},
     {time:"12:34 pm", miles:35.3, gain:438, text:"Into Utah at the North Eden entrance to Bear Lake State Park. Segment 4 is done."},
     {time:"9:20 pm", miles:51.5, gain:938, text:"Camped at Rendezvous Beach on the south end of Bear Lake after 51.5 miles, +938 / -846 ft."},
+  ]},
+  {day:19, date:"2026-09-24", end:"Days Inn, Evanston, WY", miles:58.3, gain:2287, loss:1083, high:7100, low:5939, lat:41.263554, lng:-110.983176, notes:"Rendezvous Beach to Evanston. Up from Bear Lake at 5,939 ft to a 7,100 ft high point early in the day, then a long easy run east into Wyoming, his fourth state, and a night indoors at the Days Inn in Evanston. 58.3 miles with 2,287 ft of climbing.", updates:[
+    {time:"6:46 am", text:"First light over Bear Lake from the Rendezvous Beach camp."},
+    {time:"6:25 pm", miles:58.3, gain:2287, text:"In Evanston, Wyoming, for the night at the Days Inn after 58.3 miles, +2,287 / -1,083 ft."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:41.84633, lng:-111.33994, town:"Rendezvous Beach", state:"UT", label:"Camped at Rendezvous Beach on the south end of Bear Lake after 51.5 miles on day 18", asOf:"Sept 23, 9:20 pm MT", approx:false};
+const LOCATION = {lat:41.263554, lng:-110.983176, town:"Evanston", state:"WY", label:"A night indoors at the Days Inn after 58.3 miles on day 19", asOf:"Sept 24, 6:25 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is in Utah. Day 18 took him from Georgetown through Dingle, Idaho, and across the state line at the North Eden entrance to Bear Lake State Park, then down the east shore to camp at Rendezvous Beach on the south end of the lake: 51.5 miles with only 938 ft of climbing. That closes out segment 4 a day ahead of its Sept 24 plan date, with the first 16 miles of segment 5 toward Soldier Summit already done.";
+const STATUS = "Rick is in Wyoming, his fourth state. Day 19 took him up from Bear Lake over a 7,100 ft high point and east to Evanston: 58.3 miles with 2,287 ft of climbing. He has a bed and a shower at the Days Inn tonight.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 23, 2026, end of day 18", caption:"Blue and green in the northwest is Rick's track so far, Roosville to Bear Lake on the Idaho and Utah line, with day 18 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -112,9 +116,10 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-24-bear-lake-first-light", date:"2026-09-24", time:"06:46", caption:"Day 19, first light. Bear Lake from the Rendezvous Beach camp, the sky just starting to glow over the far shore."},
   {file:"2026-09-23-bear-lake-shade-tree", date:"2026-09-23", time:"14:08", caption:"Day 18. The bike parked in the shade of a tree on the Bear Lake shore."},
   {file:"2026-09-23-bear-lake-selfie", date:"2026-09-23", time:"12:35", caption:"Day 18. Rick at Bear Lake State Park, the lake behind him."},
-  {file:"2026-09-23-bear-lake-state-park-north-eden", date:"2026-09-23", time:"12:34", caption:"Day 18. Utah! The bike at the North Eden entrance sign for Bear Lake State Park, state number four and the end of segment 4."},
+  {file:"2026-09-23-bear-lake-state-park-north-eden", date:"2026-09-23", time:"12:34", caption:"Day 18. Utah! The bike at the North Eden entrance sign for Bear Lake State Park, his third state and the end of segment 4."},
   {file:"2026-09-23-monster-truck", date:"2026-09-23", time:"11:59", caption:"Day 18. The bike parked in front of a lifted Ford pickup on monster tires."},
   {file:"2026-09-23-dingle-fire-station", date:"2026-09-23", time:"11:01", caption:"Day 18. Rick in his sun hat at the Dingle Fire Station."},
   {file:"2026-09-23-welcome-to-dingle", date:"2026-09-23", time:"10:44", caption:"Day 18. Welcome to Dingle, Idaho, founded 1871."},
@@ -184,5 +189,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 23, 2026, 11:20 pm MT";
+const LAST_UPDATED = "Sept 24, 2026, 6:35 pm MT";
 // ===== END DATA =====
