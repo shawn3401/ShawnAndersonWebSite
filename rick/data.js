@@ -120,7 +120,7 @@ const LOCATION = {lat:40.17286, lng:-111.16958, town:"Strawberry Reservoir", sta
 const STATUS = "Two big mountain days. Day 20 took Rick from Evanston back into Utah and over a 10,759 ft summit in the Uintas, a new high for the trip, to camp at Lily Lake. Day 21 was 57.4 miles of gravel south through the aspens, which are turning gold, down to Strawberry Reservoir. Segment 5 is now redrawn to the way he went, 218.8 miles from Bear Lake to Soldier Summit, and he has about 34 miles of it left.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 24, 2026, end of day 19", caption:"Blue and green is Rick's track so far, Roosville to Evanston, Wyoming, with day 19 in green along the Utah and Wyoming line. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 26, 2026, end of day 21", caption:"Blue and green is Rick's track so far, Roosville to Strawberry Reservoir in central Utah, with day 21 in green south of the Uintas. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
