@@ -106,14 +106,18 @@ const LOG = [
     {time:"4:03 pm", text:"Over the top at the summit sign, 10,759 ft."},
     {time:"Evening", miles:52.7, gain:4370, text:"Camped at Lily Lake Campground after 52.7 miles, +4,370 / -1,319 ft."},
   ]},
+  {day:21, date:"2026-09-26", end:"Strawberry Reservoir, UT", miles:57.4, gain:4789, loss:7099, high:9957, low:7612, lat:40.17286, lng:-111.16958, notes:"Lily Lake to Strawberry Reservoir. Out of the high Uintas on a long gravel day, up and down over ridges to a 9,957 ft high point through hills of yellow aspens, then down to camp above Strawberry Reservoir at about 7,600 ft. 57.4 miles with 4,789 ft of climbing and 7,099 ft of descent.", updates:[
+    {time:"6:34 am", text:"Moon going down over Lily Lake as he packed up."},
+    {time:"8:47 pm", miles:57.4, gain:4789, text:"Camped above Strawberry Reservoir after 57.4 miles, +4,789 / -7,099 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:40.680824, lng:-110.939167, town:"Lily Lake Campground", state:"UT", label:"Camped by Lily Lake after 52.7 miles on day 20, over a 10,759 ft summit", asOf:"Sept 25, evening MT", approx:false};
+const LOCATION = {lat:40.17286, lng:-111.16958, town:"Strawberry Reservoir", state:"UT", label:"Camped above the reservoir after 57.4 miles on day 21", asOf:"Sept 26, 8:47 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Catching up. Day 20 took Rick from Evanston back into Utah and up one long climb into the high country, over a summit at 10,759 ft (a new high for the trip) to camp at Lily Lake: 52.7 miles with 4,370 ft of climbing. Day 21 is coming soon.";
+const STATUS = "Two big mountain days. Day 20 took Rick from Evanston back into Utah and over a 10,759 ft summit in the Uintas, a new high for the trip, to camp at Lily Lake. Day 21 was 57.4 miles of gravel south through the aspens, which are turning gold, down to Strawberry Reservoir. His route through the Uintas left the planned line, so segment 5 is being redrawn and a few numbers here will shift once it is.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 24, 2026, end of day 19", caption:"Blue and green is Rick's track so far, Roosville to Evanston, Wyoming, with day 19 in green along the Utah and Wyoming line. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -121,6 +125,11 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-26-strawberry-moonrise", date:"2026-09-26", time:"20:28", caption:"Day 21, night. The moon over Strawberry Reservoir from camp, campers lit up along the shore."},
+  {file:"2026-09-26-road-to-strawberry", date:"2026-09-26", time:"16:17", caption:"Day 21. Gravel road down through the aspens with Strawberry Reservoir coming into view."},
+  {file:"2026-09-26-fall-colors", date:"2026-09-26", time:"14:31", caption:"Day 21. Open sage and hills of turning aspens, one ridge after another."},
+  {file:"2026-09-26-aspen-gravel", date:"2026-09-26", time:"13:20", caption:"Day 21. The bike on a gravel road through yellow aspens, peaks far off on the horizon."},
+  {file:"2026-09-26-lily-lake-moonset", date:"2026-09-26", time:"06:34", caption:"Day 21, dawn. The moon going down over Lily Lake, the water still as glass."},
   {file:"2026-09-25-lily-lake-tent", date:"2026-09-25", time:"19:05", caption:"Day 20, evening. The tent pitched by Lily Lake as the sun goes down."},
   {file:"2026-09-25-lily-lake-camp", date:"2026-09-25", time:"16:32", caption:"Day 20. Camp for the night at Lily Lake Campground, the bike leaning by the picnic table and the lake behind."},
   {file:"2026-09-25-over-the-top", date:"2026-09-25", time:"16:05", caption:"Day 20. Bare rock and snags on top of the pass, the next range out on the horizon."},
@@ -204,5 +213,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 26, 2026, 9:10 pm MT";
+const LAST_UPDATED = "Sept 26, 2026, 9:40 pm MT";
 // ===== END DATA =====
