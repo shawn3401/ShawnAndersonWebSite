@@ -99,7 +99,7 @@ Object.entries(segByDate).forEach(([date,n]) => { const r = segDates[n] = segDat
 const segFor = p => p.seg || segByDate[p.date] || (lastLogged && p.date > lastLogged.date ? segByDate[lastLogged.date] : 1);
 const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || []).push(p); });
 const total = PHOTOS.length;
-document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, in order from the border south. Tap a segment to open it and a photo for full size. Captions tagged Rick are his own words from the trail; the rest are Shawn's.`;
+document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, in order from the border south. Tap a segment to open it and a photo for full size. Captions tagged Rick are his own words from the trail.`;
 // Segment picks: the cover photo on each collapsed segment strip (file name from PHOTOS). Falls back to that segment's newest photo.
 const PICKS = {1:"2026-09-11-bike-on-trestle", 2:"2026-09-12-superior-exit-sign-selfie", 3:"2026-09-16-salmon-river-bridge", 4:"2026-09-18-arco-submarine"};
 const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
@@ -112,7 +112,7 @@ document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
   const open = "";
   const days = new Set(ps.map(p=>p.date)).size;
   const body = ps.length
-    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}<span class="who ${p.by==="rick"?"rick":"home"}">${p.by==="rick"?"Rick":"Shawn"}</span></span>${p.caption}</figcaption></figure>`).join("")}</div>`
+    ? `<div class="photos">${ps.map(p=>`<figure><a href="${p.file}.jpg" target="_blank" rel="noopener"><img src="${p.file}-thumb.jpg" alt="${esc(p.caption)}" loading="lazy"></a><figcaption><span class="d">${mdy(d2(p.date))}${tfmt(p.time)}${p.by==="rick"?`<span class="who rick">Rick</span>`:""}</span>${p.caption}</figcaption></figure>`).join("")}</div>`
     : `<div class="empty">Nothing from this stretch yet.</div>`;
   const count = ps.length ? `<b>${ps.length} photo${ps.length===1?"":"s"}</b> over ${days} day${days===1?"":"s"}` : `No photos yet`;
   return `<details class="seg${ps.length?"":" upcoming"}"${open}><summary>${pick?`<div class="pick"><img src="${pick.file}-thumb.jpg" alt="" loading="lazy"></div>`:`<div class="pick none">🚵</div>`}<div class="txt"><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${segDates[s.n] ? `Rode ${mdy(d2(segDates[s.n].first))}${segDates[s.n].last!==segDates[s.n].first?` to ${mdy(d2(segDates[s.n].last))}`:""}${s.n===segByDate[lastLogged.date]?", still going":""}` : `Planned ${mdy(d2(s.start))} to ${mdy(d2(s.end))}`} · ${s.miles.toLocaleString()} mi</div><div class="count">${count}</div></div><div class="caret">▸</div></summary><div class="body">${body}</div></details>`;
