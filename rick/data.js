@@ -111,11 +111,13 @@ const LOCATION = {lat:41.263554, lng:-110.983176, town:"Evanston", state:"WY", l
 const STATUS = "Rick is in Wyoming, his fourth state. Day 19 took him up from Bear Lake over a 7,100 ft high point and east to Evanston: 58.3 miles with 2,287 ft of climbing. He has a bed and a shower at the Days Inn tonight.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 23, 2026, end of day 18", caption:"Blue and green in the northwest is Rick's track so far, Roosville to Bear Lake on the Idaho and Utah line, with day 18 in green. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 24, 2026, end of day 19", caption:"Blue and green is Rick's track so far, Roosville to Evanston, Wyoming, with day 19 in green along the Utah and Wyoming line. The route runs south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-24-evanston-lunch", date:"2026-09-24", time:"15:02", caption:"Day 19. Lunch in Evanston: a smothered burrito, chips, queso, and a big horchata."},
+  {file:"2026-09-24-wyoming-line", date:"2026-09-24", time:"13:33", caption:"Day 19. Rick at the Welcome to Wyoming sign, state number four."},
   {file:"2026-09-24-bear-lake-first-light", date:"2026-09-24", time:"06:46", caption:"Day 19, first light. Bear Lake from the Rendezvous Beach camp, the sky just starting to glow over the far shore."},
   {file:"2026-09-23-bear-lake-shade-tree", date:"2026-09-23", time:"14:08", caption:"Day 18. The bike parked in the shade of a tree on the Bear Lake shore."},
   {file:"2026-09-23-bear-lake-selfie", date:"2026-09-23", time:"12:35", caption:"Day 18. Rick at Bear Lake State Park, the lake behind him."},
