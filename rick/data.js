@@ -106,9 +106,9 @@ const LOG = [
     {time:"4:03 pm", text:"Over the top at the summit sign, 10,759 ft."},
     {time:"Evening", miles:52.7, gain:4370, text:"Camped at Lily Lake Campground after 52.7 miles, +4,370 / -1,319 ft."},
   ]},
-  {day:21, date:"2026-09-26", end:"Strawberry Reservoir, UT", miles:57.4, gain:4789, loss:7099, high:9957, low:7612, lat:40.17286, lng:-111.16958, notes:"Lily Lake to Strawberry Reservoir. Out of the high Uintas on a long gravel day, up and down over ridges to a 9,957 ft high point through hills of yellow aspens, then down to camp above Strawberry Reservoir at about 7,600 ft. 57.4 miles with 4,789 ft of climbing and 7,099 ft of descent.", updates:[
+  {day:21, date:"2026-09-26", end:"Strawberry Reservoir, UT", miles:57.4, gain:5052, loss:7099, high:9957, low:7612, lat:40.17286, lng:-111.16958, notes:"Lily Lake to Strawberry Reservoir. Out of the high Uintas on a long gravel day, up and down over ridges to a 9,957 ft high point through hills of yellow aspens, then down to camp above Strawberry Reservoir at about 7,600 ft. 57.4 miles with 5,052 ft of climbing and 7,099 ft of descent.", updates:[
     {time:"6:34 am", text:"Moon going down over Lily Lake as he packed up."},
-    {time:"8:47 pm", miles:57.4, gain:4789, text:"Camped above Strawberry Reservoir after 57.4 miles, +4,789 / -7,099 ft."},
+    {time:"8:47 pm", miles:57.4, gain:5052, text:"Camped above Strawberry Reservoir after 57.4 miles, +5,052 / -7,099 ft."},
   ]},
 ];
 
@@ -213,5 +213,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 26, 2026, 10:30 pm MT";
+const LAST_UPDATED = "Sept 26, 2026, 10:50 pm MT";
 // ===== END DATA =====
