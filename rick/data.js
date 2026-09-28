@@ -110,14 +110,14 @@ const LOG = [
     {time:"6:34 am", text:"Moon going down over Lily Lake as he packed up."},
     {time:"8:47 pm", miles:57.4, gain:5052, text:"Camped above Strawberry Reservoir after 57.4 miles, +5,052 / -7,099 ft."},
   ]},
-  {day:22, date:"2026-09-27", end:"Spanish Fork River Park, UT (Spanish Fork Canyon)", miles:61.1, gain:3464, loss:5670, high:8960, low:5095, notes:"Strawberry Reservoir to Spanish Fork River Park. Rolling climbs out of the reservoir basin to an 8,960 ft high point, then one long drop, 5,670 ft of descent in all, down to 5,095 ft in Spanish Fork Canyon to camp at the river park on Highway 6 near Castilla. 61.1 miles with 3,464 ft of climbing by his bike computer, which read the descent at 5,990 ft. Third-biggest descent of the trip after days 21 and 6.", updates:[
+  {day:22, date:"2026-09-27", end:"Spanish Fork River Park, UT (Spanish Fork Canyon)", miles:61.1, gain:3464, loss:5670, high:8960, low:5095, lat:40.02186, lng:-111.502623, notes:"Strawberry Reservoir to Spanish Fork River Park. Rolling climbs out of the reservoir basin to an 8,960 ft high point, then one long drop, 5,670 ft of descent in all, down to 5,095 ft in Spanish Fork Canyon to camp at the river park on Highway 6 near Castilla. 61.1 miles with 3,464 ft of climbing by his bike computer, which read the descent at 5,990 ft. Third-biggest descent of the trip after days 21 and 6.", updates:[
     {time:"Evening", miles:61.1, gain:3464, text:"Camped at Spanish Fork River Park in Spanish Fork Canyon after 61.1 miles, +3,464 / -5,670 ft, high point 8,960 ft. Rick's take: 60 miles, 3,464 ft up and 5,990 ft down, which has to be a top-three day for elevation change."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:40.0223, lng:-111.5027, town:"Spanish Fork River Park, Spanish Fork Canyon", state:"UT", label:"Camped at the river park on Highway 6 near Castilla after 61.1 miles on day 22", asOf:"Sept 27, evening", approx:true};
+const LOCATION = {lat:40.02186, lng:-111.502623, town:"Spanish Fork River Park, Spanish Fork Canyon", state:"UT", label:"Camped at the river park on Highway 6 near Castilla after 61.1 miles on day 22", asOf:"Sept 27, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
 const STATUS = "Day 22 took Rick out of the mountains. From Strawberry Reservoir he climbed to an 8,960 ft high point and then dropped 5,670 ft into Spanish Fork Canyon, camping at Spanish Fork River Park on Highway 6 near Castilla at 5,095 ft, his lowest camp since Idaho. 61.1 miles on the day. That puts him about 25 miles west of Soldier Summit, where segment 5 was drawn to end; details of the line he took are on the way and the segment math will be squared up once they arrive.";
@@ -130,7 +130,10 @@ const COVER = "2026-09-06-roosville-start-cover";
 const PHOTOS = [
   {file:"2026-09-27-spanish-fork-camp", date:"2026-09-27", time:"19:03", caption:"Day 22. Camp under the cottonwoods at Spanish Fork River Park in Spanish Fork Canyon."},
   {file:"2026-09-27-soldier-summit", date:"2026-09-27", time:"15:12", caption:"Day 22. Rick at the summit sign on Highway 6, elevation 7,477 ft: Soldier Summit, the end of segment 5."},
+  {file:"2026-09-27-crumbl-delivery", date:"2026-09-27", time:"14:40", caption:"Day 22. Trail magic: Rick and a friend with a box of Crumbl cookies."},
   {file:"2026-09-27-aspen-overlook", date:"2026-09-27", time:"13:05", caption:"Day 22. Gold aspens on the ridge and the valleys falling away below."},
+  {file:"2026-09-27-fellow-rider", date:"2026-09-27", time:"13:05", caption:"Day 22. A fellow rider with a big blue pack on the ridge, gold aspens behind."},
+  {file:"2026-09-27-strawberry-friends", date:"2026-09-27", time:"08:20", caption:"Day 22, morning. Rick with a family of new friends at the Strawberry Reservoir campground before rolling out."},
   {file:"2026-09-27-strawberry-sunrise", date:"2026-09-27", time:"07:06", caption:"Day 22. Sunrise over Strawberry Reservoir, campers lined up along the shore."},
   {file:"2026-09-27-strawberry-dawn-tents", date:"2026-09-27", time:"06:44", caption:"Day 22, dawn. Two tents in the sage above Strawberry Reservoir under a red sky."},
   {file:"2026-09-26-strawberry-moonrise", date:"2026-09-26", time:"20:28", caption:"Day 21, night. The moon over Strawberry Reservoir from camp, campers lit up along the shore."},
@@ -221,5 +224,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 28, 2026, 9:10 am MT";
+const LAST_UPDATED = "Sept 28, 2026, 9:25 am MT";
 // ===== END DATA =====
