@@ -110,14 +110,17 @@ const LOG = [
     {time:"6:34 am", text:"Moon going down over Lily Lake as he packed up."},
     {time:"8:47 pm", miles:57.4, gain:5052, text:"Camped above Strawberry Reservoir after 57.4 miles, +5,052 / -7,099 ft."},
   ]},
+  {day:22, date:"2026-09-27", end:"Spanish Fork River Park, UT (Spanish Fork Canyon)", miles:61.1, gain:3019, loss:5670, high:8960, low:5095, notes:"Strawberry Reservoir to Spanish Fork River Park. Rolling climbs out of the reservoir basin to an 8,960 ft high point, then one long drop, 5,670 ft of descent in all, down to 5,095 ft in Spanish Fork Canyon to camp at the river park on Highway 6 near Castilla. 61.1 miles with 3,019 ft of climbing.", updates:[
+    {time:"Evening", miles:61.1, gain:3019, text:"Camped at Spanish Fork River Park in Spanish Fork Canyon after 61.1 miles, +3,019 / -5,670 ft, high point 8,960 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:40.17286, lng:-111.16958, town:"Strawberry Reservoir", state:"UT", label:"Camped above the reservoir after 57.4 miles on day 21", asOf:"Sept 26, 8:47 pm MT", approx:false};
+const LOCATION = {lat:40.0223, lng:-111.5027, town:"Spanish Fork River Park, Spanish Fork Canyon", state:"UT", label:"Camped at the river park on Highway 6 near Castilla after 61.1 miles on day 22", asOf:"Sept 27, evening", approx:true};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Two big mountain days. Day 20 took Rick from Evanston back into Utah and over a 10,759 ft summit in the Uintas, a new high for the trip, to camp at Lily Lake. Day 21 was 57.4 miles of gravel south through the aspens, which are turning gold, down to Strawberry Reservoir. Segment 5 is now redrawn to the way he went, 218.8 miles from Bear Lake to Soldier Summit, and he has about 34 miles of it left.";
+const STATUS = "Day 22 took Rick out of the mountains. From Strawberry Reservoir he climbed to an 8,960 ft high point and then dropped 5,670 ft into Spanish Fork Canyon, camping at Spanish Fork River Park on Highway 6 near Castilla at 5,095 ft, his lowest camp since Idaho. 61.1 miles on the day. That puts him about 25 miles west of Soldier Summit, where segment 5 was drawn to end; details of the line he took are on the way and the segment math will be squared up once they arrive.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 26, 2026, end of day 21", caption:"Blue and green is Rick's track so far, Roosville to Strawberry Reservoir in central Utah, with day 21 in green south of the Uintas. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -213,5 +216,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 26, 2026, 10:50 pm MT";
+const LAST_UPDATED = "Sept 28, 2026, 8:40 am MT";
 // ===== END DATA =====
