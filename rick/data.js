@@ -123,11 +123,16 @@ const LOCATION = {lat:40.0223, lng:-111.5027, town:"Spanish Fork River Park, Spa
 const STATUS = "Day 22 took Rick out of the mountains. From Strawberry Reservoir he climbed to an 8,960 ft high point and then dropped 5,670 ft into Spanish Fork Canyon, camping at Spanish Fork River Park on Highway 6 near Castilla at 5,095 ft, his lowest camp since Idaho. 61.1 miles on the day. That puts him about 25 miles west of Soldier Summit, where segment 5 was drawn to end; details of the line he took are on the way and the segment math will be squared up once they arrive.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 26, 2026, end of day 21", caption:"Blue and green is Rick's track so far, Roosville to Strawberry Reservoir in central Utah, with day 21 in green south of the Uintas. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 27, 2026, end of day 22", caption:"Blue and green is Rick's track so far, Roosville to Spanish Fork Canyon in central Utah, with day 22 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-27-spanish-fork-camp", date:"2026-09-27", time:"19:03", caption:"Day 22. Camp under the cottonwoods at Spanish Fork River Park in Spanish Fork Canyon."},
+  {file:"2026-09-27-soldier-summit", date:"2026-09-27", time:"15:12", caption:"Day 22. Rick at the summit sign on Highway 6, elevation 7,477 ft: Soldier Summit, the end of segment 5."},
+  {file:"2026-09-27-aspen-overlook", date:"2026-09-27", time:"13:05", caption:"Day 22. Gold aspens on the ridge and the valleys falling away below."},
+  {file:"2026-09-27-strawberry-sunrise", date:"2026-09-27", time:"07:06", caption:"Day 22. Sunrise over Strawberry Reservoir, campers lined up along the shore."},
+  {file:"2026-09-27-strawberry-dawn-tents", date:"2026-09-27", time:"06:44", caption:"Day 22, dawn. Two tents in the sage above Strawberry Reservoir under a red sky."},
   {file:"2026-09-26-strawberry-moonrise", date:"2026-09-26", time:"20:28", caption:"Day 21, night. The moon over Strawberry Reservoir from camp, campers lit up along the shore."},
   {file:"2026-09-26-road-to-strawberry", date:"2026-09-26", time:"16:17", caption:"Day 21. Gravel road down through the aspens with Strawberry Reservoir coming into view."},
   {file:"2026-09-26-fall-colors", date:"2026-09-26", time:"14:31", caption:"Day 21. Open sage and hills of turning aspens, one ridge after another."},
@@ -216,5 +221,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 28, 2026, 8:55 am MT";
+const LAST_UPDATED = "Sept 28, 2026, 9:10 am MT";
 // ===== END DATA =====
