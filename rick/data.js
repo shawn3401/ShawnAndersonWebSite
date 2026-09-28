@@ -110,8 +110,8 @@ const LOG = [
     {time:"6:34 am", text:"Moon going down over Lily Lake as he packed up."},
     {time:"8:47 pm", miles:57.4, gain:5052, text:"Camped above Strawberry Reservoir after 57.4 miles, +5,052 / -7,099 ft."},
   ]},
-  {day:22, date:"2026-09-27", end:"Spanish Fork River Park, UT (Spanish Fork Canyon)", miles:61.1, gain:3019, loss:5670, high:8960, low:5095, notes:"Strawberry Reservoir to Spanish Fork River Park. Rolling climbs out of the reservoir basin to an 8,960 ft high point, then one long drop, 5,670 ft of descent in all, down to 5,095 ft in Spanish Fork Canyon to camp at the river park on Highway 6 near Castilla. 61.1 miles with 3,019 ft of climbing.", updates:[
-    {time:"Evening", miles:61.1, gain:3019, text:"Camped at Spanish Fork River Park in Spanish Fork Canyon after 61.1 miles, +3,019 / -5,670 ft, high point 8,960 ft."},
+  {day:22, date:"2026-09-27", end:"Spanish Fork River Park, UT (Spanish Fork Canyon)", miles:61.1, gain:3464, loss:5670, high:8960, low:5095, notes:"Strawberry Reservoir to Spanish Fork River Park. Rolling climbs out of the reservoir basin to an 8,960 ft high point, then one long drop, 5,670 ft of descent in all, down to 5,095 ft in Spanish Fork Canyon to camp at the river park on Highway 6 near Castilla. 61.1 miles with 3,464 ft of climbing by his bike computer, which read the descent at 5,990 ft. Third-biggest descent of the trip after days 21 and 6.", updates:[
+    {time:"Evening", miles:61.1, gain:3464, text:"Camped at Spanish Fork River Park in Spanish Fork Canyon after 61.1 miles, +3,464 / -5,670 ft, high point 8,960 ft. Rick's take: 60 miles, 3,464 ft up and 5,990 ft down, which has to be a top-three day for elevation change."},
   ]},
 ];
 
@@ -216,5 +216,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 28, 2026, 8:40 am MT";
+const LAST_UPDATED = "Sept 28, 2026, 8:55 am MT";
 // ===== END DATA =====
