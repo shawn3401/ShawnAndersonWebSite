@@ -114,21 +114,26 @@ const LOG = [
     {time:"3:12 pm", miles:34.4, text:"Made Soldier Summit, 7,477 ft on the sign. Segment 5 is done. Turning down Highway 6 into Spanish Fork Canyon to start the bypass around Skyline Drive."},
     {time:"Evening", miles:61.1, gain:3464, text:"Camped at Spanish Fork River Park in Spanish Fork Canyon after 61.1 miles, +3,464 / -5,670 ft, high point 8,960 ft. Rick's take: 60 miles, 3,464 ft up and 5,990 ft down, which has to be a top-three day for elevation change."},
   ]},
+  {day:23, date:"2026-09-28", end:"National 9 Inn, Nephi, UT", miles:44.6, gain:1278, loss:1129, high:5146, low:4655, lat:39.677451, lng:-111.841346, notes:"Spanish Fork River Park to Nephi. Out of Spanish Fork Canyon at the start of his bypass around Skyline Drive, dipping to 4,655 ft on the valley floor, then south on rolling roads to Nephi at about 5,100 ft for a night indoors at the National 9 Inn. 44.6 miles with 1,278 ft of climbing.", updates:[
+    {time:"10:11 am", text:"Fuel stop on the way south. Regular was $4.95 and the Monster energy drinks were buy one, get one for a dollar."},
+    {time:"Evening", miles:44.6, gain:1278, text:"In Nephi for the night at the National 9 Inn after 44.6 miles, +1,278 / -1,129 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:40.02186, lng:-111.502623, town:"Spanish Fork River Park, Spanish Fork Canyon", state:"UT", label:"Camped at the river park on Highway 6 near Castilla after 61.1 miles on day 22", asOf:"Sept 27, evening MT", approx:false};
+const LOCATION = {lat:39.677451, lng:-111.841346, town:"Nephi", state:"UT", label:"A night indoors at the National 9 Inn after 44.6 miles on day 23", asOf:"Sept 28, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Segment 5 is done. Day 22 took Rick from Strawberry Reservoir over an 8,960 ft high point to Soldier Summit, the end of segment 5, by mid-afternoon, then 26.8 miles down Highway 6 through Spanish Fork Canyon to camp at Spanish Fork River Park, 61.1 miles in all. Rather than ride Skyline Drive along the 10,000 ft ridge in this week's wet weather, he is taking Highway 6 and US 89 south to Salina and picking the route back up there. Segment 6 will be redrawn to match.";
+const STATUS = "Rick is working south around Skyline Drive. Rather than ride the 10,000 ft ridge in this week's wet weather, he came down Spanish Fork Canyon and on day 23 rode 44.6 miles south through the valleys to Nephi, where he spent the night at the National 9 Inn. He will pick the route back up around Salina. Segment 6 will be redrawn to match the line he takes, so its numbers here are rough until then.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 27, 2026, end of day 22", caption:"Blue and green is Rick's track so far, Roosville to Spanish Fork Canyon in central Utah, with day 22 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 28, 2026, end of day 23", caption:"Blue and green is Rick's track so far, Roosville to Nephi in central Utah, with day 23 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-28-gas-station-sign", date:"2026-09-28", time:"10:11", caption:"Day 23. Fuel stop on the way south: regular at $4.95, diesel at $6.45, and 16 oz Monsters buy one, get one for a dollar."},
   {file:"2026-09-27-spanish-fork-camp", date:"2026-09-27", time:"19:03", caption:"Day 22. Camp under the cottonwoods at Spanish Fork River Park in Spanish Fork Canyon."},
   {file:"2026-09-27-soldier-summit", date:"2026-09-27", time:"15:12", caption:"Day 22. Rick at the summit sign on Highway 6, elevation 7,477 ft: Soldier Summit, the end of segment 5."},
   {file:"2026-09-27-crumbl-delivery", date:"2026-09-27", time:"14:40", caption:"Day 22. Trail magic: Rick and a friend with a box of Crumbl cookies."},
@@ -225,5 +230,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 28, 2026, 11:50 am MT";
+const LAST_UPDATED = "Sept 29, 2026, 11:45 am MT";
 // ===== END DATA =====
