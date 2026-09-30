@@ -114,13 +114,13 @@ const LOG = [
     {time:"3:12 pm", miles:34.4, text:"Made Soldier Summit, 7,477 ft on the sign. Segment 5 is done. Turning down Highway 6 into Spanish Fork Canyon to start the bypass around Skyline Drive."},
     {time:"Evening", miles:61.1, gain:3464, text:"Camped at Spanish Fork River Park in Spanish Fork Canyon after 61.1 miles, +3,464 / -5,670 ft, high point 8,960 ft. Rick's take: 60 miles, 3,464 ft up and 5,990 ft down, which has to be a top-three day for elevation change."},
   ]},
-  {day:23, date:"2026-09-28", end:"National 9 Inn, Nephi, UT", miles:44.6, gain:1278, loss:1129, high:5146, low:4655, lat:39.677451, lng:-111.841346, notes:"Spanish Fork River Park to Nephi. Out of Spanish Fork Canyon at the start of his bypass around Skyline Drive, dipping to 4,655 ft on the valley floor, then south on rolling roads to Nephi at about 5,100 ft for a night indoors at the National 9 Inn. 44.6 miles with 1,278 ft of climbing.", updates:[
+  {day:23, date:"2026-09-28", end:"National 9 Inn, Nephi, UT", miles:44.6, gain:1411, loss:1129, high:5146, low:4655, lat:39.677451, lng:-111.841346, notes:"Spanish Fork River Park to Nephi. Out of Spanish Fork Canyon at the start of his bypass around Skyline Drive, dipping to 4,655 ft on the valley floor, then south on rolling roads to Nephi at about 5,100 ft for a night indoors at the National 9 Inn. 44.6 miles with 1,411 ft of climbing.", updates:[
     {time:"10:11 am", text:"Fuel stop on the way south. Regular was $4.95 and the Monster energy drinks were buy one, get one for a dollar."},
-    {time:"Evening", miles:44.6, gain:1278, text:"In Nephi for the night at the National 9 Inn after 44.6 miles, +1,278 / -1,129 ft."},
+    {time:"Evening", miles:44.6, gain:1411, text:"In Nephi for the night at the National 9 Inn after 44.6 miles, +1,411 / -1,129 ft."},
   ]},
-  {day:24, date:"2026-09-29", end:"Butch Cassidy Campground, Salina, UT", miles:54, gain:1327, loss:1279, high:5384, low:5070, lat:38.943351, lng:-111.855344, notes:"Nephi to Salina. A social day: two riders joined Rick on the highway in the afternoon, and the night at Butch Cassidy Campground in Salina turned into a group camp with ribs, pasta, and a campfire. Salina is where he planned to rejoin the route after going around Skyline Drive. 54 miles with 1,327 ft of climbing on easy, rolling valley roads between 5,070 and 5,384 ft.", updates:[
+  {day:24, date:"2026-09-29", end:"Butch Cassidy Campground, Salina, UT", miles:54, gain:1316, loss:1279, high:5384, low:5070, lat:38.943351, lng:-111.855344, notes:"Nephi to Salina. A social day: two riders joined Rick on the highway in the afternoon, and the night at Butch Cassidy Campground in Salina turned into a group camp with ribs, pasta, and a campfire. Salina is where he planned to rejoin the route after going around Skyline Drive. 54 miles with 1,316 ft of climbing on easy, rolling valley roads between 5,070 and 5,384 ft.", updates:[
     {time:"1:56 pm", text:"Riding with company: two more riders joined him on the highway."},
-    {time:"Evening", miles:54, gain:1327, text:"Camped at Butch Cassidy Campground in Salina after 54 miles, +1,327 / -1,279 ft. Barbecue and a campfire with friends."},
+    {time:"Evening", miles:54, gain:1316, text:"Camped at Butch Cassidy Campground in Salina after 54 miles, +1,316 / -1,279 ft. Barbecue and a campfire with friends. Rick: \"Nice easy day!\""},
   ]},
 ];
 
@@ -145,7 +145,7 @@ const PHOTOS = [
   {file:"2026-09-29-three-riders", date:"2026-09-29", caption:"Day 24. Rick and two riding friends with their bikes in the park."},
   {file:"2026-09-29-camp-dinner-spread", date:"2026-09-29", caption:"Day 24. The camp dinner spread: ribs, pasta, and all the fixings."},
   {file:"2026-09-29-campfire-dessert", date:"2026-09-29", caption:"Day 24. Dessert by the fire as the light goes."},
-  {file:"2026-09-28-nephi-storm", date:"2026-09-28", time:"15:00", caption:"Day 23. Storm clouds building over the motel lot in Nephi in the afternoon."},
+  {file:"2026-09-28-nephi-storm", date:"2026-09-28", time:"15:00", caption:"Day 23. Storm clouds rolling in over his $61 motel in Nephi."},
   {file:"2026-09-28-gas-station-sign", date:"2026-09-28", time:"10:11", caption:"Day 23. Fuel stop on the way south: regular at $4.95, diesel at $6.45, and 16 oz Monsters buy one, get one for a dollar."},
   {file:"2026-09-27-spanish-fork-camp", date:"2026-09-27", time:"19:03", caption:"Day 22. Camp under the cottonwoods at Spanish Fork River Park in Spanish Fork Canyon."},
   {file:"2026-09-27-soldier-summit", date:"2026-09-27", time:"15:12", caption:"Day 22. Rick at the summit sign on Highway 6, elevation 7,477 ft: Soldier Summit, the end of segment 5."},
@@ -243,5 +243,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 30, 2026, 9:40 am MT";
+const LAST_UPDATED = "Sept 30, 2026, 10:05 am MT";
 // ===== END DATA =====
