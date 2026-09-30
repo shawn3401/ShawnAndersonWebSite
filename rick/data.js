@@ -132,7 +132,7 @@ const LOCATION = {lat:38.943351, lng:-111.855344, town:"Salina", state:"UT", lab
 const STATUS = "Rick made Salina. Day 24 was 54 easy miles down the valley from Nephi with two riding friends for company, ending in a group camp at Butch Cassidy Campground with ribs and a campfire. Salina is where he planned to pick the route back up after going around Skyline Drive, so from here he heads south on the Western Wildlands line toward Kanab. Segment 6 will be redrawn to match his bypass, so its numbers here are rough until then.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 28, 2026, end of day 23", caption:"Blue and green is Rick's track so far, Roosville to Nephi in central Utah, with day 23 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 29, 2026, end of day 24", caption:"Blue and green is Rick's track so far, Roosville to Salina in central Utah, with day 24 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -243,5 +243,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 30, 2026, 9:20 am MT";
+const LAST_UPDATED = "Sept 30, 2026, 9:40 am MT";
 // ===== END DATA =====
