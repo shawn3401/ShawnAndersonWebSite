@@ -118,14 +118,18 @@ const LOG = [
     {time:"10:11 am", text:"Fuel stop on the way south. Regular was $4.95 and the Monster energy drinks were buy one, get one for a dollar."},
     {time:"Evening", miles:44.6, gain:1278, text:"In Nephi for the night at the National 9 Inn after 44.6 miles, +1,278 / -1,129 ft."},
   ]},
+  {day:24, date:"2026-09-29", end:"Butch Cassidy Campground, Salina, UT", miles:54, gain:1327, loss:1279, high:5384, low:5070, lat:38.943351, lng:-111.855344, notes:"Nephi to Salina. A social day: two riders joined Rick on the highway in the afternoon, and the night at Butch Cassidy Campground in Salina turned into a group camp with ribs, pasta, and a campfire. Salina is where he planned to rejoin the route after going around Skyline Drive. 54 miles with 1,327 ft of climbing on easy, rolling valley roads between 5,070 and 5,384 ft.", updates:[
+    {time:"1:56 pm", text:"Riding with company: two more riders joined him on the highway."},
+    {time:"Evening", miles:54, gain:1327, text:"Camped at Butch Cassidy Campground in Salina after 54 miles, +1,327 / -1,279 ft. Barbecue and a campfire with friends."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:39.677451, lng:-111.841346, town:"Nephi", state:"UT", label:"A night indoors at the National 9 Inn after 44.6 miles on day 23", asOf:"Sept 28, evening MT", approx:false};
+const LOCATION = {lat:38.943351, lng:-111.855344, town:"Salina", state:"UT", label:"Camped at Butch Cassidy Campground after 54 miles on day 24", asOf:"Sept 29, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is working south around Skyline Drive. Rather than ride the 10,000 ft ridge in this week's wet weather, he came down Spanish Fork Canyon and on day 23 rode 44.6 miles south through the valleys to Nephi, where he spent the night at the National 9 Inn. He will pick the route back up around Salina. Segment 6 will be redrawn to match the line he takes, so its numbers here are rough until then.";
+const STATUS = "Rick made Salina. Day 24 was 54 easy miles down the valley from Nephi with two riding friends for company, ending in a group camp at Butch Cassidy Campground with ribs and a campfire. Salina is where he planned to pick the route back up after going around Skyline Drive, so from here he heads south on the Western Wildlands line toward Kanab. Segment 6 will be redrawn to match his bypass, so its numbers here are rough until then.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 28, 2026, end of day 23", caption:"Blue and green is Rick's track so far, Roosville to Nephi in central Utah, with day 23 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -133,6 +137,15 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-09-29-campfire-circle", date:"2026-09-29", time:"19:38", caption:"Day 24, evening. Around the campfire in Salina."},
+  {file:"2026-09-29-group-camp", date:"2026-09-29", time:"17:40", caption:"Day 24. The group camp under the cottonwoods at Butch Cassidy Campground."},
+  {file:"2026-09-29-barbecue", date:"2026-09-29", time:"15:39", caption:"Day 24. Barbecue at camp in Salina: ribs coming off the grill."},
+  {file:"2026-09-29-highway-shoulder", date:"2026-09-29", time:"13:56", caption:"Day 24. Rolling south on the highway shoulder under a big sky."},
+  {file:"2026-09-29-riding-with-friends", date:"2026-09-29", time:"13:56", caption:"Day 24. Company on the road: two riders pull up alongside Rick on the highway shoulder."},
+  {file:"2026-09-29-three-riders", date:"2026-09-29", caption:"Day 24. Rick and two riding friends with their bikes in the park."},
+  {file:"2026-09-29-camp-dinner-spread", date:"2026-09-29", caption:"Day 24. The camp dinner spread: ribs, pasta, and all the fixings."},
+  {file:"2026-09-29-campfire-dessert", date:"2026-09-29", caption:"Day 24. Dessert by the fire as the light goes."},
+  {file:"2026-09-28-nephi-storm", date:"2026-09-28", time:"15:00", caption:"Day 23. Storm clouds building over the motel lot in Nephi in the afternoon."},
   {file:"2026-09-28-gas-station-sign", date:"2026-09-28", time:"10:11", caption:"Day 23. Fuel stop on the way south: regular at $4.95, diesel at $6.45, and 16 oz Monsters buy one, get one for a dollar."},
   {file:"2026-09-27-spanish-fork-camp", date:"2026-09-27", time:"19:03", caption:"Day 22. Camp under the cottonwoods at Spanish Fork River Park in Spanish Fork Canyon."},
   {file:"2026-09-27-soldier-summit", date:"2026-09-27", time:"15:12", caption:"Day 22. Rick at the summit sign on Highway 6, elevation 7,477 ft: Soldier Summit, the end of segment 5."},
@@ -230,5 +243,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 29, 2026, 11:45 am MT";
+const LAST_UPDATED = "Sept 30, 2026, 9:20 am MT";
 // ===== END DATA =====
