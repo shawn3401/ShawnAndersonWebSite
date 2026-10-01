@@ -122,17 +122,20 @@ const LOG = [
     {time:"1:56 pm", text:"Riding with company: two more riders joined him on the highway."},
     {time:"Evening", miles:54, gain:1316, text:"Camped at Butch Cassidy Campground in Salina after 54 miles, +1,316 / -1,279 ft. Barbecue and a campfire with friends. Rick: \"Nice easy day!\""},
   ]},
+  {day:25, date:"2026-09-30", end:"Otter Creek Reservoir, UT", miles:61.4, gain:2756, loss:1359, high:7371, low:5139, lat:38.196272, lng:-111.999746, notes:"Salina to Otter Creek Reservoir. Back on the Western Wildlands route after the Skyline Drive bypass. One long climb out of the Sevier valley from 5,139 ft to a 7,371 ft high point, then a gentle run south, mostly downhill, to camp at Otter Creek Reservoir. 61.4 miles with 2,756 ft of climbing.", updates:[
+    {time:"Evening", miles:61.4, gain:2756, text:"Camped at Otter Creek Reservoir after 61.4 miles, +2,756 / -1,359 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:38.943351, lng:-111.855344, town:"Salina", state:"UT", label:"Camped at Butch Cassidy Campground after 54 miles on day 24", asOf:"Sept 29, evening MT", approx:false};
+const LOCATION = {lat:38.196272, lng:-111.999746, town:"Otter Creek Reservoir", state:"UT", label:"Camped at the reservoir after 61.4 miles on day 25", asOf:"Sept 30, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick made Salina. Day 24 was 54 easy miles down the valley from Nephi with two riding friends for company, ending in a group camp at Butch Cassidy Campground with ribs and a campfire. Salina is where he planned to pick the route back up after going around Skyline Drive, so from here he heads south on the Western Wildlands line toward Kanab. Segment 6 is now redrawn to match his bypass: 335 miles from Soldier Summit to Kanab, still 8 days.";
+const STATUS = "Rick is back on the route. Day 25 took him out of Salina, where he rejoined the Western Wildlands line after going around Skyline Drive, up one long climb to 7,371 ft and then gently downhill to camp at Otter Creek Reservoir: 61.4 miles with 2,756 ft of climbing. Kanab and the end of segment 6 are about 150 miles south.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 29, 2026, end of day 24", caption:"Blue and green is Rick's track so far, Roosville to Salina in central Utah, with day 24 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 30, 2026, end of day 25", caption:"Blue and green is Rick's track so far, Roosville to Otter Creek Reservoir in southern Utah, with day 25 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -243,5 +246,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Sept 30, 2026, 10:20 am MT";
+const LAST_UPDATED = "Oct 1, 2026, 7:00 am MT";
 // ===== END DATA =====
