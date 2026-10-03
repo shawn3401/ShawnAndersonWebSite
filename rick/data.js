@@ -129,14 +129,19 @@ const LOG = [
     {time:"2:15 pm", text:"Into Bryce Canyon country, red rock all around."},
     {time:"Evening", miles:57.6, gain:3025, text:"Camped in the pines at Kings Ranch after 57.6 miles, +3,025 / -1,698 ft."},
   ]},
+  {day:27, date:"2026-10-02", end:"Country Rose RV Park, Fredonia, AZ", miles:66.6, gain:1995, loss:4580, high:8468, low:4679, lat:36.942163, lng:-112.524443, course:-24.1, notes:"Kings Ranch to Fredonia. Arizona! Up to an 8,468 ft high point early, then a long descent off the plateau, 4,580 ft down in all, on rough, washed-out forest roads and then pavement past white sandstone cliffs, through Kanab and across the state line to Fredonia at 4,679 ft. Kanab closed out segment 6, five days ahead of its Oct 7 plan date, and Arizona is his fifth state. 66.6 miles with 1,995 ft of climbing. The line he rode into Kanab was shorter than the planned one, so his position is set to the segment end.", updates:[
+    {time:"11:18 am", text:"Picking his way down a washed-out forest road, more rock than road."},
+    {time:"5:16 pm", text:"Arizona state line. State number five."},
+    {time:"5:50 pm", miles:66.6, gain:1995, text:"Done for the day at the Country Rose RV Park in Fredonia after 66.6 miles, +1,995 / -4,580 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:37.608897, lng:-112.256602, town:"Kings Ranch", state:"UT", label:"Camped in the pines in Bryce Canyon country after 57.6 miles on day 26", asOf:"Oct 1, evening MT", approx:false};
+const LOCATION = {lat:36.942163, lng:-112.524443, town:"Fredonia", state:"AZ", label:"At the Country Rose RV Park after 66.6 miles on day 27, just over the Arizona line", asOf:"Oct 2, 5:50 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Catching up. Day 26 took Rick from Otter Creek Reservoir up into Bryce Canyon country: a steady all-day climb to 8,100 ft and a camp in the ponderosa pines at Kings Ranch, 57.6 miles with 3,025 ft of climbing. Day 27, which took him on to Arizona, is coming next.";
+const STATUS = "Rick is in Arizona, his fifth state. Day 26 was a steady climb from Otter Creek Reservoir into Bryce Canyon country, and day 27 was the payoff: 66.6 miles, most of it downhill, off the plateau through Kanab and across the state line to Fredonia. That closes out segment 6 five days ahead of plan. Next up is segment 7, the Kaibab Plateau and the Grand Canyon.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 30, 2026, end of day 25", caption:"Blue and green is Rick's track so far, Roosville to Otter Creek Reservoir in southern Utah, with day 25 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -264,5 +269,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 3, 2026, 8:30 am MT";
+const LAST_UPDATED = "Oct 3, 2026, 8:45 am MT";
 // ===== END DATA =====
