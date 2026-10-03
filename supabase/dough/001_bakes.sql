@@ -1,5 +1,5 @@
 -- Dough app, shawnandersonapps.com/dough/
--- Lives in the shared "Shawnz Apps" Supabase project (hobby apps that need logins).
+-- Lives in the shared "ShawnZapps" Supabase project (hobby apps that need logins).
 -- Every table for this app is prefixed dough_ so it can be lifted out later.
 -- Safe to re-run.
 

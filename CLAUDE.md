@@ -149,7 +149,7 @@ shawnandersonapps.com/dough/. Shawn is learning dough (pizza now; bread and cinn
 - `supabase/dough/*.sql` database setup, numbered, safe to re-run.
 
 ### Shared Supabase project
-- Project `Shawnz Apps` (ref `yjurglvfzlboblestfdz`, us-west-1, $10/month) in the "Shawn Anderson Apps" org. Shawn's decision, Oct 3, 2026: ONE shared project for every hobby app on the site that needs logins, so one account works across them. Real products and Dance Flowers keep their own projects.
+- Project `ShawnZapps` (ref `yjurglvfzlboblestfdz`, us-west-1, $10/month) in the "Shawn Anderson Apps" org. Shawn's decision, Oct 3, 2026: ONE shared project for every hobby app on the site that needs logins, so one account works across them. Real products and Dance Flowers keep their own projects.
 - Every app prefixes its tables (`dough_`), with RLS by `user_id = auth.uid()`, so an app that takes off can be moved to its own project later.
 - Sign-in standard for Shawn's projects: email and password, or Google. The page has a Google button behind `GOOGLE_ENABLED` (false until the Google provider is configured in Supabase Auth, which needs an OAuth client from Google Cloud).
 - Auth URL configuration must list the site (Site URL plus Redirect URLs `https://shawnandersonapps.com/**`), or confirmation and reset emails link to localhost.
