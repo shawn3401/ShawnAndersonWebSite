@@ -90,9 +90,10 @@ input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:30px}
 .chips button{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:999px;padding:3px 11px;cursor:pointer}
 .chips button.on{border-color:var(--accent);color:var(--accent)}
 label.f{display:block;font-size:14px;font-weight:600;color:var(--ink-2);margin:12px 0 4px}
-input[type=text],input[type=email],input[type=password],input[type=date],textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
 textarea{min-height:70px;resize:vertical}
-input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+select + input[type=text]{margin-top:8px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 /* output */
@@ -233,7 +234,8 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 
         <div class="card">
           <h2>Lock it in</h2>
-          <label class="f" for="flourName">Flour</label>
+          <label class="f" for="flourName" id="flourLab">Flour</label>
+          <select id="flourPick" aria-label="Flour" hidden></select>
           <input type="text" id="flourName" maxlength="80" placeholder="King Arthur Bread Flour, 12.7%">
           <div class="two">
             <div><label class="f" for="madeOn">Made on</label><input type="date" id="madeOn"></div>
@@ -492,6 +494,28 @@ function showTab(t){
 let wake = null;
 async function keepAwake(){ try { if (!wake && navigator.wakeLock) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } } catch (_) {} }
 
+// ---- flour picker ------------------------------------------------------------
+// The list is every flour this person has locked in before, newest first. Typing is only for a new one.
+let addingFlour = false;
+function renderFlours(){
+  const pick = $("#flourPick"), inp = $("#flourName");
+  const list = [...new Set(bakes.map(b => (b.flour_name || "").trim()).filter(Boolean))];
+  if (!list.length){ pick.hidden = true; inp.hidden = false; inp.placeholder = "King Arthur Bread Flour, 12.7%"; $("#flourLab").htmlFor = "flourName"; render(); return; }
+  if (!addingFlour && !list.includes(inp.value.trim())) inp.value = list[0];
+  pick.innerHTML = list.map(f => `<option value="${esc(f)}">${esc(f)}</option>`).join("") + `<option value="__new">Add a new flour…</option>`;
+  pick.value = addingFlour ? "__new" : inp.value.trim();
+  pick.hidden = false; inp.hidden = !addingFlour; inp.placeholder = "Brand, type, and protein %"; $("#flourLab").htmlFor = "flourPick";
+  render();
+}
+$("#flourPick").addEventListener("change", e => {
+  const inp = $("#flourName");
+  addingFlour = e.target.value === "__new";
+  inp.value = addingFlour ? "" : e.target.value;
+  try { localStorage.setItem("dough.flour", inp.value); } catch (_) {}
+  renderFlours();
+  if (addingFlour) inp.focus();
+});
+
 // ---- lock in -----------------------------------------------------------------
 async function lockIn(){
   $("#lockErr").hidden = $("#lockOk").hidden = true;
@@ -510,13 +534,13 @@ async function lockIn(){
   b.disabled = false;
   if (error){ $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
   $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report."; $("#lockOk").hidden = false;
-  $("#planNotes").value = ""; checked.clear();
+  $("#planNotes").value = ""; checked.clear(); addingFlour = false;
   await load(); render();
 }
 
 // ---- history -----------------------------------------------------------------
 async function load(){
-  if (!session){ bakes = []; renderBakes(); return; }
+  if (!session){ bakes = []; addingFlour = false; renderBakes(); return; }
   const { data, error } = await sb.from("dough_bakes").select("*").order("made_on", { ascending: false }).order("created_at", { ascending: false });
   if (error){ $("#bakes").innerHTML = `<div class="err">Couldn't load your bakes: ${esc(error.message)}</div>`; return; }
   bakes = data || [];
@@ -526,6 +550,7 @@ function bakeTitle(b){ return `${b.count} × ${+b.size_in}″ ${thickText(+b.thi
 const stars = (n) => "★".repeat(n) + "☆".repeat(5 - n);
 function renderBakes(){
   $("#tabHist").textContent = bakes.length ? `My bakes (${bakes.length})` : "My bakes";
+  renderFlours();
   // "last time" banner: the newest bake, plus the newest "next time" note if there is one
   const lastEl = $("#last"), newest = bakes[0], noted = bakes.find(b => b.next_time);
   if (newest){
@@ -567,8 +592,8 @@ document.addEventListener("click", async e => {
   const b = bakes.find(x => x.id === (t.dataset.again || t.dataset.report || t.dataset.del)); if (!b) return;
   if (t.dataset.again){
     s = { count: b.count, size: +b.size_in, thickness: +b.thickness, pct: { ...PRESET, ...b.pct }, yeast_type: b.yeast_type, ferment: b.ferment };
-    $("#flourName").value = b.flour_name || $("#flourName").value;
-    checked.clear(); $("#lockOk").hidden = true; render(); showTab("calc");
+    $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
+    checked.clear(); $("#lockOk").hidden = true; renderFlours(); showTab("calc");
   } else if (t.dataset.report){
     reporting = b; rating = b.rating || 0;
     $("#repSub").textContent = bakeTitle(b) + ", made " + fmtDate(b.made_on);

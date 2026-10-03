@@ -161,6 +161,7 @@ shawnandersonapps.com/dough/. Shawn is learning dough (pizza now; bread and cinn
 - Unlike his, every ratio has a slider, thickness is a slider, and there are two more inputs: when the dough is needed (`FERMENT`: tonight, today, tomorrow, 2 to 4 days) and yeast type (`YEAST`: active dry, instant x0.75, fresh x2.5). Picking a ferment plan sets a starting yeast percent and changes the steps. The yeast numbers for the shorter plans are Claude's rule-of-thumb starting points, not tested by Shawn; adjust them from his reports.
 - Active dry yeast in cold water (Shawn's question, Oct 3, 2026): Dough Guy's steps stir it straight into cold water, but the yeast package says warm. The cold plans now bloom it in about 60 g of the water warmed to 105°F and keep the rest cold. Same-day plans use all warm water.
 - "Lock it in" inserts a row in `dough_bakes` (the plan snapshot). "How did it go?" adds a 1 to 5 rating, went well, went poorly, and "next time, try". The newest bake and the newest "next time" note show in a banner above the calculator. "Make it again" loads a bake back into the calculator.
+- Flour is a dropdown (Shawn, Oct 3, 2026: no retyping). `renderFlours()` builds it from the distinct `flour_name` values in that person's bakes, newest first, plus "Add a new flour…" which reveals the text box. With no bakes yet, only the text box shows. There is no separate flours table.
 - Calculator state and the flour name are remembered in localStorage as a convenience only.
 
 ### Shawn's bakes
