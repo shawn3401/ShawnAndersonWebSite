@@ -229,7 +229,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
           <h2>The plan</h2>
           <div id="sizeCtl"></div>
           <div class="ctl">
-            <div class="top"><span class="lab">When do you need it?</span></div>
+            <div class="top"><span class="lab">How long until you bake?</span></div>
             <div class="seg" id="fermentSeg"></div>
           </div>
           <div class="ctl" id="yeastCtl">
@@ -396,9 +396,9 @@ const RANGES = { water: [45, 100, 0.5, 0.5], yeast: [0.05, 4, 0.05, 0.05], salt:
 const PLAN = { count: [1, 12, 1, 1], size: [8, 20, 1, 1], thickness: [1.6, 3.8, 0.01, 0.05], piece_g: [50, 2000, 10, 10], flour_g: [100, 3000, 10, 10] };
 // Yeast starting points are for active dry in pizza dough; the others convert from it.
 const FERMENT = {
-  quick:     { label: "Tonight",     sub: "about 2 hours",       ady: 1.5 },
-  same_day:  { label: "Today",       sub: "4 to 6 hours",        ady: 0.8 },
-  cold_1:    { label: "Tomorrow",    sub: "1 day in the fridge", ady: 0.6 },
+  quick:     { label: "Quick",       sub: "about 2 hours",       ady: 1.5 },
+  same_day:  { label: "Same day",    sub: "4 to 6 hours",        ady: 0.8 },
+  cold_1:    { label: "Overnight",   sub: "1 day in the fridge", ady: 0.6 },
   cold_long: { label: "2 to 4 days", sub: "cold ferment",        ady: 0.4 },
 };
 const YEAST = {
