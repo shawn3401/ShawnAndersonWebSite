@@ -111,6 +111,26 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .bake details{margin-top:10px}
 .bake summary{cursor:pointer;color:var(--accent);font-weight:600}
 
+.types button.ai{border-color:var(--accent);color:var(--accent);background:var(--soft);font-weight:600;border-style:solid}
+dialog.wide{width:min(640px,calc(100vw - 24px))}
+.aihead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.aihead h2{margin:0}
+#aiLog{max-height:52vh;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 12px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px}
+.msg.user{background:var(--soft);align-self:flex-end;max-width:88%}
+.msg.ai{background:var(--bg);border:1px solid var(--line)}
+.msg.wait{color:var(--ink-3);font-style:italic}
+.msg.hint{color:var(--ink-2);background:none;border:1px dashed var(--line)}
+.prop{border:1px solid var(--accent);border-radius:10px;padding:12px;background:var(--paper)}
+.prop h3{font-size:19px;margin-bottom:2px}
+.prop .when{font-size:14px;color:var(--ink-3)}
+.prop table{width:100%;border-collapse:collapse;margin-top:8px;font-variant-numeric:tabular-nums}
+.prop td{padding:4px 0;border-top:1px solid var(--line)}
+.prop td:last-child{text-align:right}
+.prop details{margin-top:8px}
+.prop summary{cursor:pointer;color:var(--accent);font-weight:600}
+.prop .src{font-size:14px;color:var(--ink-3);margin:8px 0 0}
+
 /* output */
 .sum{display:flex;gap:10px;margin-bottom:12px}
 .sum div{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
@@ -318,10 +338,21 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <select id="tSizing"></select>
     <label class="f">Ingredients</label>
     <div id="tIngs"></div>
-    <div style="margin-top:8px"><button type="button" class="btn" id="tAdd">＋ Add an ingredient</button></div>
+    <div class="acts" style="margin-top:8px"><button type="button" class="btn" id="tAdd">＋ Add an ingredient</button><button type="button" class="btn link" id="tAskAI" data-ai hidden>Not sure of the numbers? Ask AI</button></div>
     <div class="err" id="typeErr" hidden></div>
     <div class="row"><button type="button" class="btn" id="typeCancel">Cancel</button><button class="btn primary" id="typeSave">Save</button></div>
     <p class="note"><button type="button" class="btn link" id="tDelete" hidden>Delete this type</button></p>
+  </form>
+</dialog>
+
+<!-- ask AI -->
+<dialog id="aiDlg" class="wide">
+  <div class="aihead"><h2>Ask AI</h2><button type="button" class="btn" id="aiClose">Close</button></div>
+  <div id="aiLog" aria-live="polite"></div>
+  <form id="aiForm">
+    <textarea id="aiInput" maxlength="4000" rows="3" placeholder="What do you want to make, and who should I look to?" aria-label="Your message"></textarea>
+    <div class="err" id="aiErr" hidden></div>
+    <div class="row"><button type="button" class="btn" id="aiReset">Start over</button><button class="btn primary" id="aiSend">Send</button></div>
   </form>
 </dialog>
 
@@ -498,6 +529,7 @@ function buildControls(){
 function renderTypes(){
   $("#typeSmall").textContent = s.name;
   $("#typeBar").innerHTML = types.map(t => `<button type="button" data-type="${t.id || ""}" class="${t.id === s.type_id ? "on" : ""}">${esc(t.name)}</button>`).join("")
+    + (aiOK ? `<button type="button" class="ai" data-ai>Ask AI</button>` : "")
     + `<button type="button" class="ghost" data-newtype>＋ New type</button><button type="button" class="ghost" data-edittype>Edit ${esc(s.name)}</button>`;
 }
 
@@ -585,6 +617,7 @@ function wire(){
     else if (b.id === "useSug"){ setPct("yeast", suggestedYeast(s)); render(); }
     else if (d.ing){ checked.has(d.ing) ? checked.delete(d.ing) : checked.add(d.ing); keepAwake(); render(); }
     else if (d.type !== undefined){ const t = types.find(x => (x.id || "") === d.type); if (t && t.id !== s.type_id) switchType(t); }
+    else if (d.ai !== undefined) openAI();
     else if (d.newtype !== undefined) openType(null);
     else if (d.edittype !== undefined) openType(types.find(x => x.id === s.type_id) || null, true);
     else if (d.hist !== undefined){ histFilter = d.hist; renderBakes(); }
@@ -697,6 +730,105 @@ async function loadTypes(){
   types = data.length ? data : [LOCAL_PIZZA];
 }
 
+// ---- ask AI --------------------------------------------------------------------
+// Chat with Claude through the dough-ai Edge Function. It can look at a source the person names and
+// comes back with a proposal card that fills a new type or the calculator. Nothing is saved until they say so.
+let aiOK = false, aiMsgs = [], aiBusy = false;   // aiMsgs: [{role, text, proposal?}]
+async function loadAI(){
+  aiOK = false;
+  if (session){ const { data } = await sb.from("dough_ai_access").select("user_id").maybeSingle(); aiOK = !!data; }
+  $("#tAskAI").hidden = !aiOK;
+}
+function aiContext(){
+  const c = compute(s);
+  return {
+    current_type: { name: s.name, sizing: s.sizing },
+    plan: s.sizing === "pizza" ? { pizzas: s.count, size_inches: s.size, thickness: thickText(s.thickness), grams_per_ball: Math.round(c.piece) }
+        : s.sizing === "pieces" ? { pieces: s.count, grams_each: s.piece_g } : { flour_grams: s.flour_g },
+    flour_grams: Math.round(c.flour), flour: $("#flourName").value.trim(),
+    ingredients_percent_of_flour: s.ings.map(g => ({ name: g.name, pct: g.pct })),
+    yeast_type: ing(s, "yeast") ? s.yeast_type : "none",
+    when_needed: FERMENT[s.ferment].label + ", " + FERMENT[s.ferment].sub,
+    steps: stepList(s, c),
+    recent_bakes_of_this_type: bakes.filter(b => sameType(b, s)).slice(0, 4).map(b => ({ made_on: b.made_on, size: bakeSize(b), rating_of_5: b.rating, flour: b.flour_name,
+      ingredients: bakeIngs(b).map(g => ({ name: g.name, pct: g.pct })), notes: b.plan_notes, went_well: b.went_well, went_poorly: b.went_poorly, next_time: b.next_time })),
+    my_dough_types: types.map(t => t.name),
+  };
+}
+const safeUrl = (u) => /^https?:\/\//i.test(String(u || "")) ? String(u) : "";
+function propCard(p, i){
+  const ings = (p.ingredients || []).filter(g => g && g.name && g.pct > 0 && !/^flour$/i.test(String(g.name).trim())), st = (p.steps || []).filter(Boolean), src = (p.sources || []).filter(x => safeUrl(x.url));
+  const size = p.sizing === "pieces" && p.piece_g > 0 ? `${p.count} × ${grams(p.piece_g)} g to start` : p.flour_g > 0 ? `${grams(p.flour_g)} g flour to start` : "";
+  return `<div class="prop">
+    <h3>${esc(p.name || "Proposal")}</h3><div class="when">${esc([SIZING[p.sizing] || "", size].filter(Boolean).join(" · "))}</div>
+    <table><tr><td>Flour</td><td>100%</td></tr>${ings.map(g => `<tr><td>${esc(g.name)}${/^yeast$/i.test(String(g.name).trim()) && YEAST[p.yeast_type] ? ", " + YEAST[p.yeast_type].label.toLowerCase() : ""}</td><td>${pctText(g.pct)}</td></tr>`).join("")}</table>
+    ${st.length ? `<details><summary>Steps (${st.length})</summary><ol class="steps">${st.map(x => `<li>${esc(x)}</li>`).join("")}</ol></details>` : ""}
+    ${src.length ? `<p class="src">Looked at: ${src.map(x => `<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title || x.url)}</a>`).join(", ")}</p>` : ""}
+    <div class="acts"><button type="button" class="btn primary" data-ai-new="${i}">Save as a new type</button><button type="button" class="btn" data-ai-apply="${i}">Use in ${esc(s.name)}</button></div>
+  </div>`;
+}
+function renderAI(){
+  const log = $("#aiLog");
+  log.innerHTML = (aiMsgs.length ? "" : `<div class="msg hint">Tell me what you want to make, when you need it, and anyone you like to learn from. For example: "A soft sandwich loaf for tomorrow, in the style of ChainBaker." I'll come back with ratios and steps you can drop straight into the calculator and then change. I can also look at your past bakes of ${esc(s.name)} and suggest what to try next.</div>`)
+    + aiMsgs.map((m, i) => `<div class="msg ${m.role === "user" ? "user" : "ai"}">${esc(m.text)}</div>${m.proposal ? propCard(m.proposal, i) : ""}`).join("")
+    + (aiBusy ? `<div class="msg ai wait">Thinking. This can take a minute when I look things up.</div>` : "");
+  log.scrollTop = log.scrollHeight;
+  $("#aiSend").disabled = aiBusy; $("#aiReset").hidden = !aiMsgs.length;
+}
+function openAI(){
+  if (!session){ openAuth("in"); return; }
+  if ($("#typeDlg").open) $("#typeDlg").close();
+  $("#aiErr").hidden = true; renderAI(); $("#aiDlg").showModal(); $("#aiInput").focus();
+}
+$("#aiClose").addEventListener("click", () => $("#aiDlg").close());
+$("#aiReset").addEventListener("click", () => { if (!aiBusy){ aiMsgs = []; renderAI(); } });
+$("#aiInput").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) $("#aiForm").requestSubmit(); });
+$("#aiForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const text = $("#aiInput").value.trim(); if (!text || aiBusy) return;
+  $("#aiErr").hidden = true;
+  aiMsgs.push({ role: "user", text }); $("#aiInput").value = ""; aiBusy = true; renderAI();
+  // earlier proposals travel as text so the conversation stays coherent
+  const messages = aiMsgs.map(m => ({ role: m.role, text: m.text + (m.proposal ? "\n[I proposed this formula: " + JSON.stringify({ name: m.proposal.name, sizing: m.proposal.sizing, yeast_type: m.proposal.yeast_type, ingredients: m.proposal.ingredients, steps: m.proposal.steps }) + "]" : "") }));
+  const { data, error } = await sb.functions.invoke("dough-ai", { body: { messages, context: aiContext() } });
+  aiBusy = false;
+  if (error || !data || data.error){
+    let msg = data?.error || "";
+    if (!msg && error?.context?.json) { try { msg = (await error.context.json()).error || ""; } catch (_) {} }
+    aiMsgs.pop(); $("#aiInput").value = text;
+    $("#aiErr").textContent = msg || "That didn't go through. Try again in a moment."; $("#aiErr").hidden = false;
+  } else aiMsgs.push({ role: "assistant", text: data.reply || (data.proposal ? data.proposal.summary : "") || "I don't have anything to add.", proposal: data.proposal || null });
+  renderAI();
+});
+function keyedIngs(list){
+  const used = new Set(["flour"]);
+  return (list || []).filter(g => g && String(g.name || "").trim() && g.pct > 0 && !/^flour$/i.test(String(g.name).trim()))
+    .map(g => ({ key: keyFor(String(g.name), used), name: String(g.name).trim().slice(0, 40), pct: r2(Math.min(300, g.pct)) }));
+}
+$("#aiLog").addEventListener("click", async e => {
+  const b = e.target.closest("[data-ai-new],[data-ai-apply]"); if (!b) return;
+  const p = aiMsgs[+(b.dataset.aiNew ?? b.dataset.aiApply)]?.proposal; if (!p) return;
+  const ings = keyedIngs(p.ingredients), stepsText = (p.steps || []).map(x => String(x).trim()).filter(Boolean).join("\n") || null;
+  const yt = YEAST[p.yeast_type] ? p.yeast_type : null;
+  if (b.dataset.aiApply !== undefined){
+    s.ings = ings; s.steps = stepsText; if (yt) s.yeast_type = yt;
+    replan(); editingSteps = false; checked.clear(); buildControls(); render();
+    $("#aiDlg").close(); showTab("calc"); return;
+  }
+  let name = String(p.name || "New dough").trim().slice(0, 36) || "New dough", n = 2;
+  const base = name; while (types.some(t => t.name.toLowerCase() === name.toLowerCase())) name = base + " " + n++;
+  const sizing = SIZING[p.sizing] ? p.sizing : "pieces", d = {};
+  if (yt) d.yeast_type = yt;
+  if (sizing !== "flour" && p.count >= 1) d.count = clamp(Math.round(p.count), 1, sizing === "pizza" ? 12 : 24);
+  if (sizing === "pieces" && p.piece_g > 0) d.piece_g = clamp(Math.round(p.piece_g), 1, 20000);
+  if (sizing === "flour" && p.flour_g > 0) d.flour_g = clamp(Math.round(p.flour_g), 1, 20000);
+  b.disabled = true;
+  const { data, error } = await sb.from("dough_types").insert({ name, sizing, ingredients: ings, steps: stepsText, defaults: d }).select().single();
+  b.disabled = false;
+  if (error){ $("#aiErr").textContent = "That didn't save: " + error.message; $("#aiErr").hidden = false; return; }
+  await loadTypes(); switchType(data); $("#aiDlg").close(); showTab("calc");
+});
+
 // ---- flour picker ------------------------------------------------------------
 // The list is every flour this person has locked in before, newest first. Typing is only for a new one.
 let addingFlour = false;
@@ -747,7 +879,7 @@ async function lockIn(){
 
 // ---- history -----------------------------------------------------------------
 async function load(){
-  await loadTypes();
+  await loadTypes(); await loadAI();
   if (!types.some(t => t.id === s.type_id)){
     const t = types.find(x => x.name === s.name && x.sizing === s.sizing);
     s = t ? { ...s, type_id: t.id } : stateFromType(types[0]);
