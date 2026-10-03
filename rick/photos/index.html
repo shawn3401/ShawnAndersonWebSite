@@ -65,6 +65,24 @@ details.seg.upcoming summary .txt{padding:8px 0}
 details.seg.upcoming summary .count{display:none}
 details.seg summary:hover .count b,details.seg summary:focus-visible .count b{text-decoration:underline}
 @media (max-width:600px){ details.seg.upcoming summary{grid-template-columns:44px 1fr auto} details.seg summary{grid-template-columns:120px 1fr auto} details.seg summary .pick{width:120px;min-height:100px} details.seg summary .caret{padding:0 12px} details.seg .body{padding:10px} .photos{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))} }
+/* Lightbox: tap a photo to view it large, with previous/next inside the same segment and the caption underneath. */
+dialog.lb{border:0;padding:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:rgba(10,14,12,.96);color:#E8ECE6;overflow:hidden}
+dialog.lb::backdrop{background:rgba(10,14,12,.96)}
+.lb-in{display:grid;grid-template-rows:auto minmax(0,1fr) auto;height:100%}
+.lb-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#B3BDB6}
+.lb-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 8px}
+.lb-stage img{max-width:100%;max-height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}
+.lb-cap{padding:12px 18px 18px;max-width:860px;width:100%;margin:0 auto;font-size:16px;line-height:1.4;text-align:center}
+.lb-cap .d{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:#B3BDB6;margin-bottom:4px}
+.lb button{font:inherit;color:#fff;background:rgba(255,255,255,.12);border:0;border-radius:3px;cursor:pointer}
+.lb button:hover,.lb button:focus-visible{background:var(--red)}
+.lb button:disabled{opacity:.25;cursor:default;background:rgba(255,255,255,.12)}
+.lb-x{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px}
+.lb .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:76px;font-size:40px;line-height:1;padding:0 0 6px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35)}
+.lb .lb-nav:hover,.lb .lb-nav:focus-visible{background:var(--red)}
+.lb .lb-nav:disabled{opacity:.2;background:rgba(0,0,0,.55)}
+.lb-prev{left:10px}.lb-next{right:10px}
+@media (max-width:600px){ .lb .lb-nav{width:42px;height:62px;font-size:32px} .lb-prev{left:4px}.lb-next{right:4px} .lb-cap{font-size:15px;padding:10px 14px 16px} .lb-stage{padding:0} }
 .foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:720px){ h1{font-size:34px} }
 </style>
@@ -79,6 +97,17 @@ details.seg summary:hover .count b,details.seg summary:focus-visible .count b{te
   <div id="gallery"></div>
   <div class="foot"><a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a> · <span id="visits"></span></div>
 </div>
+<dialog class="lb" id="lb" aria-label="Photo viewer">
+  <div class="lb-in">
+    <div class="lb-top"><span id="lb-count"></span><button class="lb-x" id="lb-x" type="button">Close ✕</button></div>
+    <div class="lb-stage" id="lb-stage">
+      <button class="lb-nav lb-prev" id="lb-prev" type="button" aria-label="Previous photo">‹</button>
+      <img id="lb-img" alt="">
+      <button class="lb-nav lb-next" id="lb-next" type="button" aria-label="Next photo">›</button>
+    </div>
+    <div class="lb-cap" id="lb-cap"></div>
+  </div>
+</dialog>
 <script src="../data.js"></script>
 <script>
 const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
@@ -99,7 +128,7 @@ Object.entries(segByDate).forEach(([date,n]) => { const r = segDates[n] = segDat
 const segFor = p => p.seg || segByDate[p.date] || (lastLogged && p.date > lastLogged.date ? segByDate[lastLogged.date] : 1);
 const bySeg = {}; PHOTOS.forEach(p => { (bySeg[segFor(p)] = bySeg[segFor(p)] || []).push(p); });
 const total = PHOTOS.length;
-document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, in order from the border south. Tap a segment to open it and a photo for full size.`;
+document.getElementById("sub").textContent = `${total} photo${total===1?"":"s"} so far, in order from the border south. Tap a segment to open it, then tap any photo to view it large and step through the rest.`;
 // Segment picks: the cover photo on each collapsed segment strip (file name from PHOTOS). Falls back to that segment's newest photo.
 const PICKS = {1:"2026-09-11-bike-on-trestle", 2:"2026-09-12-superior-exit-sign-selfie", 3:"2026-09-16-salmon-river-bridge", 4:"2026-09-18-arco-submarine", 5:"2026-09-25-summit-10759", 6:"2026-10-01-bryce-canyon-country"};
 const tfmt = t => { if(!t) return ""; const [h,m]=t.split(":").map(Number); return ` · ${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"am":"pm"}`; };
@@ -117,6 +146,40 @@ document.getElementById("gallery").innerHTML = SEGMENTS.map(s => {
   const count = ps.length ? `<b>${ps.length} photo${ps.length===1?"":"s"}</b> over ${days} day${days===1?"":"s"}` : `No photos yet`;
   return `<details class="seg${ps.length?"":" upcoming"}"${open}><summary>${pick?`<div class="pick"><img src="${pick.file}-thumb.jpg" alt="" loading="lazy"></div>`:`<div class="pick none">🚵</div>`}<div class="txt"><h2>Segment ${s.n}: ${s.from} to ${s.to}</h2><div class="segsub">${segDates[s.n] ? `Rode ${mdy(d2(segDates[s.n].first))}${segDates[s.n].last!==segDates[s.n].first?` to ${mdy(d2(segDates[s.n].last))}`:""}${s.n===segByDate[lastLogged.date]?", still going":""}` : `Planned ${mdy(d2(s.start))} to ${mdy(d2(s.end))}`} · ${s.miles.toLocaleString()} mi</div><div class="count">${count}</div></div><div class="caret">▸</div></summary><div class="body">${body}</div></details>`;
 }).join("");
+
+// Lightbox. A plain click opens the photo large on this page; previous/next stay inside the photo's segment.
+// Ctrl/Cmd-click and middle-click still open the full-size file in a new tab.
+(function(){
+  const lb = document.getElementById("lb"); if (!lb || !lb.showModal) return;
+  const img = document.getElementById("lb-img"), cap = document.getElementById("lb-cap"), count = document.getElementById("lb-count");
+  const prev = document.getElementById("lb-prev"), next = document.getElementById("lb-next");
+  let figs = [], i = 0, segName = "";
+  const show = n => {
+    i = Math.max(0, Math.min(figs.length-1, n));
+    const f = figs[i], a = f.querySelector("a"), fc = f.querySelector("figcaption");
+    img.src = a.getAttribute("href"); img.alt = f.querySelector("img").alt;
+    cap.innerHTML = fc.innerHTML;
+    count.textContent = `${segName} · ${i+1} of ${figs.length}`;
+    prev.disabled = i===0; next.disabled = i===figs.length-1;
+    [figs[i+1], figs[i-1]].forEach(g => { if (g) new Image().src = g.querySelector("a").getAttribute("href"); });
+  };
+  document.getElementById("gallery").addEventListener("click", e => {
+    const a = e.target.closest(".photos a"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    const box = a.closest(".photos"); figs = [...box.querySelectorAll("figure")];
+    segName = (a.closest("details.seg").querySelector("h2").textContent.split(":")[0]) || "";
+    lb.showModal(); show(figs.indexOf(a.closest("figure")));
+  });
+  prev.onclick = () => show(i-1); next.onclick = () => show(i+1);
+  document.getElementById("lb-x").onclick = () => lb.close();
+  lb.addEventListener("click", e => { if (e.target === lb || e.target.id === "lb-stage") lb.close(); });
+  lb.addEventListener("keydown", e => { if (e.key==="ArrowLeft") show(i-1); else if (e.key==="ArrowRight") show(i+1); });
+  lb.addEventListener("close", () => { img.removeAttribute("src"); });
+  let x0 = null, y0 = null;
+  lb.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive:true});
+  lb.addEventListener("touchend", e => { if (x0===null) return; const dx = e.changedTouches[0].clientX-x0, dy = e.changedTouches[0].clientY-y0; x0 = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.5) show(dx<0 ? i+1 : i-1); }, {passive:true});
+})();
 </script>
 <script>
 (function(){ var el=document.getElementById("visits"); if(!el) return;
