@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Dough: a pizza dough calculator that remembers every batch, what you changed, and how it turned out.">
+<meta name="description" content="Dough: a dough calculator for pizza, bread, and more that remembers every batch, what you changed, and how it turned out.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍕</text></svg>">
 <title>Dough</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
@@ -90,11 +90,26 @@ input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:30px}
 .chips button{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:999px;padding:3px 11px;cursor:pointer}
 .chips button.on{border-color:var(--accent);color:var(--accent)}
 label.f{display:block;font-size:14px;font-weight:600;color:var(--ink-2);margin:12px 0 4px}
-input[type=text],input[type=email],input[type=password],input[type=date],select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],select,textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
 textarea{min-height:70px;resize:vertical}
 select + input[type=text]{margin-top:8px}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.types{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.types button{font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:6px 15px;cursor:pointer}
+.types button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.types button.ghost{border-style:dashed;background:none;color:var(--ink-3);font-weight:400}
+:root[data-theme="dark"] .types button.on{color:#1B120E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .types button.on{color:#1B120E}}
+.ctl .val input.valin{width:96px;text-align:right;font-weight:700;font-size:20px;padding:3px 8px;font-variant-numeric:tabular-nums}
+#stepsEdit{min-height:230px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.irow{display:grid;grid-template-columns:minmax(0,1fr) 84px auto auto;gap:6px;align-items:center;margin-top:6px}
+.irow .btn{padding:8px 11px}
+.irow span{color:var(--ink-3)}
+.bake details{margin-top:10px}
+.bake summary{cursor:pointer;color:var(--accent);font-weight:600}
 
 /* output */
 .sum{display:flex;gap:10px;margin-bottom:12px}
@@ -133,7 +148,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .bake .rep{margin-top:10px}
 .bake .rep p{margin:6px 0}
 .bake .rep b{color:var(--ink-2);font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:block}
-.bake .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.bake .acts{gap:8px;margin-top:14px}
 .empty{text-align:center;color:var(--ink-2);padding:34px 18px}
 
 /* dialogs */
@@ -165,7 +180,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 <body>
 
 <div class="bar"><div class="in">
-  <h1>Dough <small>Pizza</small></h1>
+  <h1>Dough <small id="typeSmall">Pizza</small></h1>
   <div class="who">
     <span id="whoEmail" hidden></span>
     <button class="btn" id="signOut" hidden>Sign out</button>
@@ -181,29 +196,18 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 
   <!-- ================= calculator ================= -->
   <div id="calc">
+    <div class="types" id="typeBar"></div>
     <div class="last" id="last" hidden></div>
     <div class="grid">
       <div class="col">
         <div class="card">
           <h2>The plan</h2>
-          <div class="ctl">
-            <div class="top"><span class="lab">Pizzas</span><span class="val" id="vCount"></span></div>
-            <div class="sl"><button data-step="count" data-d="-1" aria-label="Fewer pizzas">−</button><input type="range" id="count" min="1" max="12" step="1" aria-label="Number of pizzas"><button data-step="count" data-d="1" aria-label="More pizzas">+</button></div>
-          </div>
-          <div class="ctl">
-            <div class="top"><span class="lab">Size</span><span class="val" id="vSize"></span></div>
-            <div class="sl"><button data-step="size" data-d="-1" aria-label="Smaller">−</button><input type="range" id="size" min="8" max="20" step="1" aria-label="Pizza size in inches"><button data-step="size" data-d="1" aria-label="Larger">+</button></div>
-          </div>
-          <div class="ctl">
-            <div class="top"><span class="lab">Thickness</span><span class="val" id="vThick"></span></div>
-            <div class="sl"><button data-step="thickness" data-d="-0.05" aria-label="Thinner">−</button><input type="range" id="thickness" min="1.6" max="3.8" step="0.01" aria-label="Thickness"><button data-step="thickness" data-d="0.05" aria-label="Thicker">+</button></div>
-            <div class="chips" id="thickChips"></div>
-          </div>
+          <div id="sizeCtl"></div>
           <div class="ctl">
             <div class="top"><span class="lab">When do you need it?</span></div>
             <div class="seg" id="fermentSeg"></div>
           </div>
-          <div class="ctl">
+          <div class="ctl" id="yeastCtl">
             <div class="top"><span class="lab">Yeast</span></div>
             <div class="seg" id="yeastSeg"></div>
           </div>
@@ -212,7 +216,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         <div class="card">
           <h2>The ratios</h2>
           <div id="ratios"></div>
-          <p class="note">Each one is a percent of the flour weight. <button class="btn link" id="resetPct">Back to the starting recipe</button></p>
+          <p class="note">Each one is a percent of the flour weight. <button class="btn link" id="resetPct">Back to this type's saved ratios</button></p>
         </div>
       </div>
 
@@ -220,7 +224,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         <div class="card">
           <h2>Weigh this out</h2>
           <div class="sum">
-            <div><b class="num" id="oBall"></b><span>g per ball</span></div>
+            <div id="oBallBox"><b class="num" id="oBall"></b><span id="oBallLab">g per ball</span></div>
             <div><b class="num" id="oTotal"></b><span>g of dough</span></div>
           </div>
           <ul class="ing" id="ing"></ul>
@@ -228,8 +232,12 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         </div>
 
         <div class="card">
-          <h2>Then</h2>
+          <h2>Steps</h2>
           <ol class="steps" id="steps"></ol>
+          <p class="note" id="stepsEmpty" style="margin-top:0" hidden>No steps yet for this type. Add your own, one per line, and they will be here next time.</p>
+          <textarea id="stepsEdit" maxlength="6000" aria-label="Steps, one per line" hidden></textarea>
+          <p class="note" id="stepsNote"></p>
+          <div class="acts"><button type="button" class="btn" id="editSteps">Edit steps</button><button type="button" class="btn link" id="basicSteps" hidden>Back to the basic steps</button></div>
         </div>
 
         <div class="card">
@@ -253,6 +261,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 
   <!-- ================= history ================= -->
   <div id="hist" hidden>
+    <div class="types" id="histFilter" hidden></div>
     <div id="bakes"></div>
   </div>
 
@@ -293,6 +302,24 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
   </form>
 </dialog>
 
+<!-- dough type -->
+<dialog id="typeDlg">
+  <form id="typeForm">
+    <h2 id="typeTitle">New dough type</h2>
+    <p class="sub">Each ingredient is a percent of the flour weight. Flour is always 100%, so leave it off the list.</p>
+    <label class="f" for="tName">Name</label>
+    <input type="text" id="tName" maxlength="40" placeholder="Bread, Cinnamon rolls, Focaccia">
+    <label class="f" for="tSizing">How do you size a batch?</label>
+    <select id="tSizing"></select>
+    <label class="f">Ingredients</label>
+    <div id="tIngs"></div>
+    <div style="margin-top:8px"><button type="button" class="btn" id="tAdd">＋ Add an ingredient</button></div>
+    <div class="err" id="typeErr" hidden></div>
+    <div class="row"><button type="button" class="btn" id="typeCancel">Cancel</button><button class="btn primary" id="typeSave">Save</button></div>
+    <p class="note"><button type="button" class="btn link" id="tDelete" hidden>Delete this type</button></p>
+  </form>
+</dialog>
+
 <!-- report -->
 <dialog id="repDlg">
   <form id="repForm">
@@ -318,19 +345,20 @@ const GOOGLE_ENABLED = false;   // flip to true once the Google provider is set 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ---- the dough model ------------------------------------------------------
-// Thickness is grams of dough per square inch of pizza. The three stops match Dough Guy's
+// A dough type is a name, a way of sizing the batch, and a list of ingredients as a percent of flour.
+// Sizing: "pizza" (count x diameter x thickness), "pieces" (count x grams each), "flour" (start from the flour weight).
+// Pizza thickness is grams of dough per square inch. The three stops match Dough Guy's
 // thin / regular / thick (409, 480, 626 g for a 16 inch pizza).
 const THICK = [["Thin", 2.04], ["Regular", 2.39], ["Thick", 3.11]];
-const PRESET = { water: 62, yeast: 0.4, salt: 2.5, sugar: 2, oil: 3.3 };   // Dough Guy's 3 day dough, active dry yeast
-const RATIOS = [
-  // key, label, min, max, slider step, button step
-  ["water", "Water",     50, 80, 0.5,  0.5],
-  ["yeast", "Yeast",   0.05,  4, 0.05, 0.05],
-  ["salt",  "Salt",       1,  4, 0.1,  0.1],
-  ["sugar", "Sugar",      0,  6, 0.1,  0.5],
-  ["oil",   "Olive oil",  0,  8, 0.1,  0.1],
+// Dough Guy's 3 day dough, active dry yeast. The starter recipe for the built-in Pizza type.
+const PIZZA_INGS = [
+  { key: "water", name: "Water", pct: 62 }, { key: "yeast", name: "Yeast", pct: 0.4 }, { key: "salt", name: "Salt", pct: 2.5 },
+  { key: "sugar", name: "Sugar", pct: 2 }, { key: "oil", name: "Olive oil", pct: 3.3 },
 ];
-// Yeast starting points are for active dry; the others convert from it.
+// Slider ranges for the usual ingredients: min, max, slider step, button step. Anything else gets a range from its own percent.
+const RANGES = { water: [45, 100, 0.5, 0.5], yeast: [0.05, 4, 0.05, 0.05], salt: [0, 4, 0.1, 0.1], sugar: [0, 6, 0.1, 0.5], oil: [0, 8, 0.1, 0.1] };
+const PLAN = { count: [1, 12, 1, 1], size: [8, 20, 1, 1], thickness: [1.6, 3.8, 0.01, 0.05], piece_g: [50, 2000, 10, 10], flour_g: [100, 3000, 10, 10] };
+// Yeast starting points are for active dry in pizza dough; the others convert from it.
 const FERMENT = {
   quick:     { label: "Tonight",     sub: "about 2 hours",       ady: 1.5 },
   same_day:  { label: "Today",       sub: "4 to 6 hours",        ady: 0.8 },
@@ -342,100 +370,64 @@ const YEAST = {
   instant:    { label: "Instant",    f: 0.75 },
   fresh:      { label: "Fresh",      f: 2.5 },
 };
-const DEFAULTS = { count: 3, size: 14, thickness: 2.39, pct: { ...PRESET }, yeast_type: "active_dry", ferment: "cold_long" };
+const SIZING = { pizza: "Pizzas, by size and thickness", pieces: "Loaves, rolls, or balls, by weight", flour: "Start from the flour weight" };
+const BASE = { count: 3, size: 14, thickness: 2.39, piece_g: 900, flour_g: 500, yeast_type: "active_dry", ferment: "cold_long" };
+const LOCAL_PIZZA = { id: null, name: "Pizza", sizing: "pizza", ingredients: PIZZA_INGS, steps: null, defaults: {} };
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const r2 = (n) => Math.round(n * 100) / 100;
+const clone = (o) => JSON.parse(JSON.stringify(o));
 const todayISO = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
 function fmtDate(iso){ if (!iso) return ""; const [y,m,d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric", year:"numeric" }); }
 const pctText = (n) => (Math.round(n * 100) / 100) + "%";
-const grams = (n, key) => key === "yeast" ? (Math.round(n * 10) / 10).toFixed(1) : String(Math.round(n));
-function thickName(t){ const hit = THICK.find(([, v]) => Math.abs(v - t) < 0.03); return hit ? hit[0] : null; }
+const grams = (n) => n < 10 ? (Math.round(n * 10) / 10).toFixed(1) : Math.round(n).toLocaleString("en-US");
 function thickText(t){
-  const n = thickName(t); if (n) return n;
+  const hit = THICK.find(([, v]) => Math.abs(v - t) < 0.03); if (hit) return hit[0];
   if (t < THICK[0][1]) return "Extra thin";
   if (t > THICK[2][1]) return "Extra thick";
   return t < THICK[1][1] ? "Thin to regular" : "Regular to thick";
 }
 
-let s = structuredClone(DEFAULTS);
-try { const saved = JSON.parse(localStorage.getItem("dough.calc") || "null"); if (saved && saved.pct) s = { ...s, ...saved, pct: { ...PRESET, ...saved.pct } }; } catch (_) {}
-let checked = new Set();
-let session = null, bakes = [], reporting = null, rating = 0;
+function stateFromType(t){
+  const d = t.defaults || {};
+  const st = { type_id: t.id, name: t.name, sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null };
+  if (t.sizing !== "pizza"){ st.count = 1; st.ferment = "same_day"; }
+  for (const k of ["count", "size", "thickness", "piece_g", "flour_g", "yeast_type", "ferment"]) if (d[k] != null) st[k] = d[k];
+  return st;
+}
+let types = [LOCAL_PIZZA];
+let s = stateFromType(LOCAL_PIZZA);
+try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null }; } catch (_) {}
+let checked = new Set(), ranges = {}, editingSteps = false;
+let session = null, bakes = [], reporting = null, rating = 0, histFilter = "";
 
+const ing = (st, key) => st.ings.find(g => g.key === key);
+const pctOf = (st, key) => ing(st, key)?.pct || 0;
 function compute(st){
-  const ball = st.thickness * Math.PI * (st.size / 2) ** 2;
-  const total = ball * st.count;
-  const sum = 1 + Object.values(st.pct).reduce((a, b) => a + b, 0) / 100;
-  const flour = total / sum;
-  return { ball, total, flour };
+  const sum = 1 + st.ings.reduce((a, g) => a + (+g.pct || 0), 0) / 100;
+  if (st.sizing === "flour") return { piece: st.flour_g * sum, total: st.flour_g * sum, flour: st.flour_g };
+  const piece = st.sizing === "pizza" ? st.thickness * Math.PI * (st.size / 2) ** 2 : st.piece_g;
+  const total = piece * st.count;
+  return { piece, total, flour: total / sum };
 }
 function suggestedYeast(st){ return Math.round(FERMENT[st.ferment].ady * YEAST[st.yeast_type].f / 0.05) * 0.05; }
+function planOf(st){ return { count: st.count, size: st.size, thickness: st.thickness, piece_g: st.piece_g, flour_g: st.flour_g, yeast_type: st.yeast_type, ferment: st.ferment }; }
 
-// ---- calculator -------------------------------------------------------------
-function buildControls(){
-  $("#thickChips").innerHTML = THICK.map(([n, v]) => `<button type="button" data-thick="${v}">${n}</button>`).join("");
-  $("#fermentSeg").innerHTML = Object.entries(FERMENT).map(([k, f]) => `<button type="button" data-ferment="${k}">${f.label}<small>${f.sub}</small></button>`).join("");
-  $("#yeastSeg").innerHTML = Object.entries(YEAST).map(([k, y]) => `<button type="button" data-yeast="${k}">${y.label}</button>`).join("");
-  $("#ratios").innerHTML = RATIOS.map(([k, label, min, max, step, bstep]) => `
-    <div class="ctl">
-      <div class="top"><span class="lab">${label}</span><span class="val" id="v_${k}"></span></div>
-      <div class="sl"><button type="button" data-pct="${k}" data-d="${-bstep}" aria-label="Less ${label}">−</button><input type="range" id="p_${k}" data-key="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label} percent"><button type="button" data-pct="${k}" data-d="${bstep}" aria-label="More ${label}">+</button></div>
-      <div class="hint" id="h_${k}"></div>
-    </div>`).join("");
-}
-
-function render(){
-  const c = compute(s);
-  $("#count").value = s.count; $("#size").value = s.size; $("#thickness").value = s.thickness;
-  $("#vCount").textContent = s.count;
-  $("#vSize").textContent = s.size + "″";
-  $("#vThick").textContent = thickText(s.thickness);
-  document.querySelectorAll("[data-thick]").forEach(b => b.classList.toggle("on", Math.abs(+b.dataset.thick - s.thickness) < 0.03));
-  document.querySelectorAll("[data-ferment]").forEach(b => b.classList.toggle("on", b.dataset.ferment === s.ferment));
-  document.querySelectorAll("[data-yeast]").forEach(b => b.classList.toggle("on", b.dataset.yeast === s.yeast_type));
-  for (const [k] of RATIOS){ $("#p_" + k).value = s.pct[k]; $("#v_" + k).textContent = pctText(s.pct[k]); }
-
-  const sug = suggestedYeast(s);
-  $("#h_yeast").innerHTML = Math.abs(sug - s.pct.yeast) < 0.001
-    ? `${YEAST[s.yeast_type].label}. A starting point for "${FERMENT[s.ferment].label.toLowerCase()}".`
-    : `${YEAST[s.yeast_type].label}. The starting point for "${FERMENT[s.ferment].label.toLowerCase()}" is ${pctText(sug)}. <button type="button" class="btn link" id="useSug">Use it</button>`;
-  $("#h_water").textContent = "Hydration. More water is stickier to handle and bakes up airier.";
-
-  $("#oBall").textContent = Math.round(c.ball);
-  $("#oTotal").textContent = Math.round(c.total).toLocaleString("en-US");
-  const rows = [
-    ["flour", "Flour", $("#flourName").value.trim() || "bread flour", c.flour, 100],
-    ["water", "Water", waterNote(s), c.flour * s.pct.water / 100, s.pct.water],
-    ["yeast", "Yeast", YEAST[s.yeast_type].label.toLowerCase(), c.flour * s.pct.yeast / 100, s.pct.yeast],
-    ["salt",  "Salt", "", c.flour * s.pct.salt / 100, s.pct.salt],
-    ["sugar", "Sugar", "", c.flour * s.pct.sugar / 100, s.pct.sugar],
-    ["oil",   "Olive oil", "", c.flour * s.pct.oil / 100, s.pct.oil],
-  ].filter(r => r[3] > 0);
-  $("#ing").innerHTML = rows.map(([k, n, sub, g, p]) => `
-    <li data-ing="${k}" class="${checked.has(k) ? "done" : ""}" role="checkbox" aria-checked="${checked.has(k)}" tabindex="0">
-      <span class="box">✓</span>
-      <span class="nm">${n}${sub ? `<small>${esc(sub)}</small>` : ""}</span>
-      <span class="g">${grams(g, k)}<small>g</small></span>
-      <span class="p">${pctText(p)}</span>
-    </li>`).join("");
-  $("#steps").innerHTML = steps(s, c).map(t => `<li>${t}</li>`).join("");
-  $("#lock").textContent = session ? "Lock it in" : "Sign in to lock it in";
-  try { localStorage.setItem("dough.calc", JSON.stringify(s)); } catch (_) {}
-}
-
+// ---- steps --------------------------------------------------------------------
+// Steps belong to the person, per dough type. The built-in Pizza type shows these basic steps until they are edited.
+const usesBasic = (st) => st.steps == null && st.sizing === "pizza" && !!ing(st, "yeast");
 function waterNote(st){ return (st.ferment === "quick" || st.ferment === "same_day") ? "warm, about 105°F" : st.yeast_type === "active_dry" ? "cold, under 60°F, except a splash warmed for the yeast" : "cold, under 60°F"; }
-function steps(st, c){
-  const warm = st.ferment === "quick" || st.ferment === "same_day";
+function basicSteps(st, c){
+  const warm = st.ferment === "quick" || st.ferment === "same_day", oil = pctOf(st, "oil") > 0, sugar = pctOf(st, "sugar") > 0;
   const out = [];
   if (st.yeast_type === "active_dry") out.push(warm ? "Stir the yeast into the warm water and give it 5 to 10 minutes to foam." : "Warm a splash of the water (about 60 g) to 105°F, stir in the yeast, and give it 5 to 10 minutes to foam. Keep the rest of the water cold.");
   else if (st.yeast_type === "fresh") out.push("Crumble the yeast into the water and stir until it dissolves.");
   else out.push("Whisk the yeast into the flour. No proofing needed.");
-  out.push((st.yeast_type === "active_dry" && !warm ? "Add the cold water, the flour" + (st.pct.oil > 0 ? "," : "") : st.yeast_type === "instant" ? "Add the water to the flour" + (st.pct.oil > 0 ? "," : "") : "Add the flour") + (st.pct.oil > 0 ? (st.yeast_type === "instant" ? " along with the olive oil," : " and olive oil") : "") + " and mix for 2 minutes.");
-  out.push("Add the salt" + (st.pct.sugar > 0 ? " and sugar" : "") + ", then mix about 10 more minutes until smooth.");
-  const balls = `${st.count} ball${st.count === 1 ? "" : "s"} of about ${Math.round(c.ball)} g`;
+  out.push((st.yeast_type === "active_dry" && !warm ? "Add the cold water, the flour" + (oil ? "," : "") : st.yeast_type === "instant" ? "Add the water to the flour" + (oil ? "," : "") : "Add the flour") + (oil ? (st.yeast_type === "instant" ? " along with the olive oil," : " and olive oil") : "") + " and mix for 2 minutes.");
+  out.push("Add the salt" + (sugar ? " and sugar" : "") + ", then mix about 10 more minutes until smooth.");
+  const balls = `${st.count} ball${st.count === 1 ? "" : "s"} of about ${Math.round(c.piece)} g`;
   if (st.ferment === "quick"){
     out.push("Cover and let it rise somewhere warm for about an hour, until doubled.");
     out.push(`Divide into ${balls}, cover, and rest 30 to 45 minutes.`);
@@ -457,29 +449,136 @@ function steps(st, c){
   }
   return out;
 }
+const lines = (t) => String(t || "").split("\n").map(x => x.replace(/^\s*(\d+[.)]|[-*•])\s*/, "").trim()).filter(Boolean);
+function stepList(st, c){ return usesBasic(st) ? basicSteps(st, c) : lines(st.steps); }
 
-function setPct(k, v){
-  const [, , min, max] = RATIOS.find(r => r[0] === k);
-  s.pct[k] = clamp(r2(v), min, max);
+// ---- calculator: controls are rebuilt whenever the dough type changes ---------
+function sliderRow(attr, id, label, [min, max, step, d], typed){
+  return `<div class="ctl">
+    <div class="top"><span class="lab">${esc(label)}</span>${typed
+      ? `<span class="val"><input type="number" class="valin" id="n_${id}" data-num="${id}" min="1" max="20000" step="1" inputmode="numeric" aria-label="${esc(label)} in grams"> g</span>`
+      : `<span class="val" id="v_${id}"></span>`}</div>
+    <div class="sl"><button type="button" data-${attr}="${id}" data-d="${-d}" aria-label="Less ${esc(label)}">−</button><input type="range" id="r_${id}" data-${attr}-range="${id}" min="${min}" max="${max}" step="${step}" aria-label="${esc(label)}"><button type="button" data-${attr}="${id}" data-d="${d}" aria-label="More ${esc(label)}">+</button></div>
+    ${id === "thickness" ? `<div class="chips">${THICK.map(([n, v]) => `<button type="button" data-thick="${v}">${n}</button>`).join("")}</div>` : `<div class="hint" id="h_${id}"></div>`}
+  </div>`;
+}
+function buildControls(){
+  const z = s.sizing;
+  $("#sizeCtl").innerHTML =
+    z === "pizza" ? sliderRow("step", "count", "Pizzas", PLAN.count) + sliderRow("step", "size", "Size", PLAN.size) + sliderRow("step", "thickness", "Thickness", PLAN.thickness)
+    : z === "pieces" ? sliderRow("step", "count", "How many", [1, 24, 1, 1]) + sliderRow("step", "piece_g", "Weight of each", PLAN.piece_g, true)
+    : sliderRow("step", "flour_g", "Flour", PLAN.flour_g, true);
+  $("#fermentSeg").innerHTML = Object.entries(FERMENT).map(([k, f]) => `<button type="button" data-ferment="${k}">${f.label}<small>${f.sub}</small></button>`).join("");
+  $("#yeastSeg").innerHTML = Object.entries(YEAST).map(([k, y]) => `<button type="button" data-yeast="${k}">${y.label}</button>`).join("");
+  $("#yeastCtl").hidden = !ing(s, "yeast");
+  ranges = {};
+  for (const g of s.ings){
+    const r = RANGES[g.key];
+    if (r) ranges[g.key] = [r[0], Math.max(r[1], g.pct), r[2], r[3]];
+    else { const max = g.pct <= 10 ? 12 : g.pct <= 40 ? 50 : Math.max(100, g.pct); const st = max > 12 ? 0.5 : 0.1; ranges[g.key] = [0, max, st, st]; }
+  }
+  $("#ratios").innerHTML = s.ings.length
+    ? s.ings.map(g => sliderRow("pct", g.key, g.name, ranges[g.key])).join("")
+    : `<p class="note">This type has no ingredients yet. Tap "Edit type" to add them.</p>`;
+}
+function renderTypes(){
+  $("#typeSmall").textContent = s.name;
+  $("#typeBar").innerHTML = types.map(t => `<button type="button" data-type="${t.id || ""}" class="${t.id === s.type_id ? "on" : ""}">${esc(t.name)}</button>`).join("")
+    + `<button type="button" class="ghost" data-newtype>＋ New type</button><button type="button" class="ghost" data-edittype>Edit ${esc(s.name)}</button>`;
+}
+
+function render(){
+  const c = compute(s);
+  for (const id of ["count", "size", "thickness", "piece_g", "flour_g"]){
+    const r = $("#r_" + id); if (!r) continue;
+    r.value = s[id];
+    const n = $("#n_" + id); if (n && document.activeElement !== n) n.value = s[id];
+    const v = $("#v_" + id); if (v) v.textContent = id === "size" ? s.size + "″" : id === "thickness" ? thickText(s.thickness) : s[id];
+  }
+  document.querySelectorAll("[data-thick]").forEach(b => b.classList.toggle("on", Math.abs(+b.dataset.thick - s.thickness) < 0.03));
+  document.querySelectorAll("[data-ferment]").forEach(b => b.classList.toggle("on", b.dataset.ferment === s.ferment));
+  document.querySelectorAll("[data-yeast]").forEach(b => b.classList.toggle("on", b.dataset.yeast === s.yeast_type));
+  for (const g of s.ings){ const r = $("#r_" + CSS.escape(g.key)); if (r){ r.value = g.pct; $("#v_" + CSS.escape(g.key)).textContent = pctText(g.pct); } }
+
+  const hy = $("#h_yeast");
+  if (hy){
+    const sug = suggestedYeast(s), y = pctOf(s, "yeast"), plan = FERMENT[s.ferment].label.toLowerCase();
+    hy.innerHTML = s.sizing !== "pizza" ? YEAST[s.yeast_type].label + "."
+      : Math.abs(sug - y) < 0.001 ? `${YEAST[s.yeast_type].label}. A starting point for "${plan}".`
+      : `${YEAST[s.yeast_type].label}. The starting point for "${plan}" is ${pctText(sug)}. <button type="button" class="btn link" id="useSug">Use it</button>`;
+  }
+  const hw = $("#h_water"); if (hw) hw.textContent = "Hydration. More water is stickier to handle and bakes up airier.";
+
+  $("#oBallBox").hidden = s.sizing === "flour";
+  $("#oBall").textContent = grams(c.piece);
+  $("#oBallLab").textContent = s.sizing === "pizza" ? "g per ball" : "g each";
+  $("#oTotal").textContent = grams(c.total);
+  const basic = usesBasic(s);
+  const rows = [{ key: "flour", name: "Flour", sub: $("#flourName").value.trim(), g: c.flour, pct: 100 }]
+    .concat(s.ings.filter(g => g.pct > 0).map(g => ({ key: g.key, name: g.name, g: c.flour * g.pct / 100, pct: g.pct,
+      sub: g.key === "yeast" ? YEAST[s.yeast_type].label.toLowerCase() : g.key === "water" && basic ? waterNote(s) : "" })));
+  $("#ing").innerHTML = rows.map(r => `
+    <li data-ing="${esc(r.key)}" class="${checked.has(r.key) ? "done" : ""}" role="checkbox" aria-checked="${checked.has(r.key)}" tabindex="0">
+      <span class="box">✓</span>
+      <span class="nm">${esc(r.name)}${r.sub ? `<small>${esc(r.sub)}</small>` : ""}</span>
+      <span class="g">${grams(r.g)}<small>g</small></span>
+      <span class="p">${pctText(r.pct)}</span>
+    </li>`).join("");
+
+  const list = stepList(s, c);
+  $("#steps").hidden = editingSteps || !list.length;
+  $("#steps").innerHTML = list.map(t => `<li>${esc(t)}</li>`).join("");
+  $("#stepsEmpty").hidden = editingSteps || !!list.length;
+  $("#stepsEdit").hidden = !editingSteps;
+  $("#stepsNote").textContent = editingSteps ? "One step per line. They are saved with the bake and become this type's steps next time."
+    : basic ? "Basic steps to get you started. Edit them to match how you actually make it." : "";
+  $("#stepsNote").hidden = !$("#stepsNote").textContent;
+  $("#editSteps").textContent = editingSteps ? "Done" : list.length ? "Edit steps" : "Add steps";
+  $("#basicSteps").hidden = !(s.sizing === "pizza" && s.steps != null && ing(s, "yeast"));
+
+  $("#lock").textContent = session ? "Lock it in" : "Sign in to lock it in";
+  try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {}
+}
+
+function setPct(k, v){ const g = ing(s, k), [min, max] = ranges[k]; g.pct = clamp(r2(v), min, max); }
+function switchType(t, st){
+  s = st || stateFromType(t);
+  checked.clear(); editingSteps = false; $("#lockOk").hidden = $("#lockErr").hidden = true;
+  buildControls(); renderTypes(); renderBakes();
 }
 function wire(){
-  for (const id of ["count", "size", "thickness"]) $("#" + id).addEventListener("input", e => { s[id] = +e.target.value; render(); });
+  document.addEventListener("input", e => {
+    const t = e.target;
+    if (t.dataset.stepRange){ s[t.dataset.stepRange] = +t.value; render(); }
+    else if (t.dataset.pctRange){ setPct(t.dataset.pctRange, +t.value); render(); }
+    else if (t.dataset.num){ s[t.dataset.num] = clamp(Math.round(+t.value) || 1, 1, 20000); render(); }
+    else if (t.id === "stepsEdit"){ s.steps = t.value; try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {} }
+  });
   document.addEventListener("click", e => {
     const b = e.target.closest("button, li[data-ing]"); if (!b) return;
-    if (b.dataset.step){ const k = b.dataset.step, el = $("#" + k); s[k] = clamp(r2(s[k] + +b.dataset.d), +el.min, +el.max); render(); }
-    else if (b.dataset.thick){ s.thickness = +b.dataset.thick; render(); }
-    else if (b.dataset.ferment){ s.ferment = b.dataset.ferment; s.pct.yeast = suggestedYeast(s); render(); }
-    else if (b.dataset.yeast){
-      const from = YEAST[s.yeast_type].f, to = YEAST[b.dataset.yeast].f;
-      s.yeast_type = b.dataset.yeast; setPct("yeast", Math.round(s.pct.yeast * to / from / 0.05) * 0.05); render();
+    const d = b.dataset;
+    if (d.step){ const r = $("#r_" + d.step); s[d.step] = clamp(r2(s[d.step] + +d.d), +r.min, Math.max(+r.max, s[d.step])); render(); }
+    else if (d.thick){ s.thickness = +d.thick; render(); }
+    else if (d.ferment){ s.ferment = d.ferment; if (s.sizing === "pizza" && ing(s, "yeast")) setPct("yeast", suggestedYeast(s)); render(); }
+    else if (d.yeast){
+      const from = YEAST[s.yeast_type].f, to = YEAST[d.yeast].f;
+      s.yeast_type = d.yeast; if (ing(s, "yeast")) setPct("yeast", Math.round(pctOf(s, "yeast") * to / from / 0.05) * 0.05); render();
     }
-    else if (b.dataset.pct){ setPct(b.dataset.pct, s.pct[b.dataset.pct] + +b.dataset.d); render(); }
-    else if (b.id === "useSug"){ s.pct.yeast = suggestedYeast(s); render(); }
-    else if (b.dataset.ing){ checked.has(b.dataset.ing) ? checked.delete(b.dataset.ing) : checked.add(b.dataset.ing); keepAwake(); render(); }
+    else if (d.pct){ setPct(d.pct, pctOf(s, d.pct) + +d.d); render(); }
+    else if (b.id === "useSug"){ setPct("yeast", suggestedYeast(s)); render(); }
+    else if (d.ing){ checked.has(d.ing) ? checked.delete(d.ing) : checked.add(d.ing); keepAwake(); render(); }
+    else if (d.type !== undefined){ const t = types.find(x => (x.id || "") === d.type); if (t && t.id !== s.type_id) switchType(t); }
+    else if (d.newtype !== undefined) openType(null);
+    else if (d.edittype !== undefined) openType(types.find(x => x.id === s.type_id) || null, true);
+    else if (d.hist !== undefined){ histFilter = d.hist; renderBakes(); }
   });
   $("#ing").addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
-  $("#ratios").addEventListener("input", e => { if (e.target.dataset.key){ setPct(e.target.dataset.key, +e.target.value); render(); } });
-  $("#resetPct").addEventListener("click", () => { s.pct = { ...PRESET }; s.pct.yeast = suggestedYeast(s); render(); });
+  $("#resetPct").addEventListener("click", () => { const t = types.find(x => x.id === s.type_id); if (t){ s.ings = clone(t.ingredients); buildControls(); render(); } });
+  $("#editSteps").addEventListener("click", () => {
+    if (!editingSteps){ const cur = stepList(s, compute(s)).join("\n"); s.steps = cur; $("#stepsEdit").value = cur; editingSteps = true; render(); $("#stepsEdit").focus(); }
+    else { editingSteps = false; if (!lines(s.steps).length) s.steps = null; render(); }
+  });
+  $("#basicSteps").addEventListener("click", () => { if (confirm("Replace your steps with the basic ones?")){ s.steps = null; editingSteps = false; render(); } });
   $("#flourName").addEventListener("input", () => { try { localStorage.setItem("dough.flour", $("#flourName").value); } catch (_) {} render(); });
   $("#tabCalc").addEventListener("click", () => showTab("calc"));
   $("#tabHist").addEventListener("click", () => showTab("hist"));
@@ -493,6 +592,82 @@ function showTab(t){
 // Keep the phone awake once weighing has started.
 let wake = null;
 async function keepAwake(){ try { if (!wake && navigator.wakeLock) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } } catch (_) {} }
+
+// ---- dough types ---------------------------------------------------------------
+let editingType = null, tIngs = [];
+function openType(t, wantEdit){
+  if (!session){ openAuth("in"); return; }
+  if (wantEdit && !t) return;
+  editingType = t;
+  $("#typeTitle").textContent = t ? "Edit " + t.name : "New dough type";
+  $("#tName").value = t ? t.name : "";
+  $("#tSizing").innerHTML = Object.entries(SIZING).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+  $("#tSizing").value = t ? t.sizing : "pieces";
+  tIngs = t ? clone(t.ingredients) : [{ name: "Water", pct: "" }, { name: "Yeast", pct: "" }, { name: "Salt", pct: "" }];
+  $("#tDelete").hidden = !t || types.length < 2;
+  $("#typeErr").hidden = true; drawTIngs(); $("#typeDlg").showModal();
+}
+function drawTIngs(){
+  $("#tIngs").innerHTML = tIngs.map((g, i) => `<div class="irow">
+    <input type="text" data-i="${i}" data-f="name" value="${esc(g.name)}" maxlength="40" placeholder="Ingredient" aria-label="Ingredient name">
+    <input type="number" data-i="${i}" data-f="pct" value="${esc(g.pct)}" min="0" max="300" step="0.01" inputmode="decimal" placeholder="0" aria-label="Percent of flour"><span>%</span>
+    <button type="button" class="btn" data-rm="${i}" aria-label="Remove ${esc(g.name || "ingredient")}">✕</button></div>`).join("");
+}
+$("#tIngs").addEventListener("input", e => { const t = e.target; if (t.dataset.i) tIngs[+t.dataset.i][t.dataset.f] = t.value; });
+$("#tIngs").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (b){ tIngs.splice(+b.dataset.rm, 1); drawTIngs(); } });
+$("#tAdd").addEventListener("click", () => { tIngs.push({ name: "", pct: "" }); drawTIngs(); $("#tIngs").querySelector(".irow:last-child input").focus(); });
+$("#typeCancel").addEventListener("click", () => $("#typeDlg").close());
+function keyFor(name, used){
+  const n = name.toLowerCase().trim();
+  let k = /yeast/.test(n) ? "yeast" : n === "water" ? "water" : n === "salt" ? "salt" : n === "sugar" ? "sugar" : /^(olive )?oil$/.test(n) ? "oil" : (n.replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "item");
+  let out = k, i = 2; while (used.has(out)) out = k + "_" + i++;
+  used.add(out); return out;
+}
+$("#typeForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const fail = (m) => { $("#typeErr").textContent = m; $("#typeErr").hidden = false; };
+  const name = $("#tName").value.trim(); if (!name) return fail("Give it a name.");
+  if (types.some(t => t.id !== editingType?.id && t.name.toLowerCase() === name.toLowerCase())) return fail("You already have a type with that name.");
+  const used = new Set(["flour"]), ingredients = [];
+  for (const g of tIngs){
+    const nm = String(g.name || "").trim(), p = parseFloat(g.pct);
+    if (!nm && (g.pct === "" || g.pct == null)) continue;
+    if (!nm) return fail("One ingredient is missing its name.");
+    if (/^flour$/i.test(nm)) return fail("Leave flour off the list. It is always 100%.");
+    if (!(p > 0) || p > 300) return fail(`Give ${nm} a percent of the flour weight, above 0.`);
+    ingredients.push({ key: keyFor(nm, used), name: nm, pct: r2(p) });
+  }
+  if (!ingredients.length) return fail("Add at least one ingredient besides flour.");
+  const row = { name, sizing: $("#tSizing").value, ingredients };
+  $("#typeSave").disabled = true;
+  const q = editingType ? sb.from("dough_types").update(row).eq("id", editingType.id) : sb.from("dough_types").insert(row);
+  const { data, error } = await q.select().single();
+  $("#typeSave").disabled = false;
+  if (error) return fail("That didn't save: " + error.message);
+  $("#typeDlg").close();
+  await loadTypes();
+  // keep the plan on screen when the same type was edited without changing how it is sized
+  const keep = editingType && editingType.id === s.type_id && data.sizing === s.sizing;
+  switchType(data, keep ? { ...s, name: data.name, ings: clone(data.ingredients) } : null);
+});
+$("#tDelete").addEventListener("click", async () => {
+  if (!editingType || !confirm(`Delete the type "${editingType.name}"? Bakes you already logged stay in your history.`)) return;
+  const { error } = await sb.from("dough_types").delete().eq("id", editingType.id);
+  if (error){ $("#typeErr").textContent = "Couldn't delete it: " + error.message; $("#typeErr").hidden = false; return; }
+  $("#typeDlg").close(); await loadTypes(); switchType(types[0]);
+});
+async function loadTypes(){
+  if (!session){ types = [LOCAL_PIZZA]; return; }
+  let { data, error } = await sb.from("dough_types").select("*").order("created_at");
+  if (error){ types = [LOCAL_PIZZA]; return; }
+  if (!data.length){
+    // first visit: everyone starts with the Pizza type, and earlier bakes are attached to it
+    const r = await sb.from("dough_types").insert({ name: "Pizza", sizing: "pizza", ingredients: PIZZA_INGS }).select();
+    data = r.data || [];
+    if (data[0]) await sb.from("dough_bakes").update({ type_id: data[0].id }).is("type_id", null);
+  }
+  types = data.length ? data : [LOCAL_PIZZA];
+}
 
 // ---- flour picker ------------------------------------------------------------
 // The list is every flour this person has locked in before, newest first. Typing is only for a new one.
@@ -520,58 +695,81 @@ $("#flourPick").addEventListener("change", e => {
 async function lockIn(){
   $("#lockErr").hidden = $("#lockOk").hidden = true;
   if (!session){ openAuth("in"); return; }
-  const c = compute(s), b = $("#lock");
+  if (editingSteps){ editingSteps = false; if (!lines(s.steps).length) s.steps = null; }
+  const c = compute(s), b = $("#lock"), pizza = s.sizing === "pizza";
   b.disabled = true;
   const { error } = await sb.from("dough_bakes").insert({
-    dough_type: "pizza",
+    dough_type: s.name.toLowerCase(), type_id: s.type_id, type_name: s.name, sizing: s.sizing,
     made_on: $("#madeOn").value || todayISO(),
     bake_on: $("#bakeOn").value || null,
-    count: s.count, size_in: s.size, thickness: s.thickness,
-    ball_g: Math.round(c.ball), flour_g: Math.round(c.flour),
-    pct: s.pct, yeast_type: s.yeast_type, ferment: s.ferment,
+    count: s.sizing === "flour" ? 1 : s.count, size_in: pizza ? s.size : null, thickness: pizza ? s.thickness : null,
+    ball_g: Math.round(c.piece), flour_g: Math.round(c.flour),
+    ingredients: s.ings, yeast_type: s.yeast_type, ferment: s.ferment,
+    steps: stepList(s, c).join("\n"),
     flour_name: $("#flourName").value.trim(), plan_notes: $("#planNotes").value.trim(),
   });
+  if (error){ b.disabled = false; $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
+  // what you just made becomes this type's starting point next time
+  if (s.type_id) await sb.from("dough_types").update({ ingredients: s.ings, steps: s.steps, defaults: planOf(s) }).eq("id", s.type_id);
   b.disabled = false;
-  if (error){ $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
   $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report."; $("#lockOk").hidden = false;
   $("#planNotes").value = ""; checked.clear(); addingFlour = false;
-  await load(); render();
+  await load();
 }
 
 // ---- history -----------------------------------------------------------------
 async function load(){
-  if (!session){ bakes = []; addingFlour = false; renderBakes(); return; }
-  const { data, error } = await sb.from("dough_bakes").select("*").order("made_on", { ascending: false }).order("created_at", { ascending: false });
-  if (error){ $("#bakes").innerHTML = `<div class="err">Couldn't load your bakes: ${esc(error.message)}</div>`; return; }
-  bakes = data || [];
-  renderBakes();
+  await loadTypes();
+  if (!types.some(t => t.id === s.type_id)){
+    const t = types.find(x => x.name === s.name && x.sizing === s.sizing);
+    s = t ? { ...s, type_id: t.id } : stateFromType(types[0]);
+  }
+  if (!session){ bakes = []; addingFlour = false; }
+  else {
+    const { data, error } = await sb.from("dough_bakes").select("*").order("made_on", { ascending: false }).order("created_at", { ascending: false });
+    if (error){ $("#bakes").innerHTML = `<div class="err">Couldn't load your bakes: ${esc(error.message)}</div>`; return; }
+    bakes = data || [];
+  }
+  buildControls(); renderTypes(); renderBakes();
 }
-function bakeTitle(b){ return `${b.count} × ${+b.size_in}″ ${thickText(+b.thickness).toLowerCase()} pizza${b.count === 1 ? "" : "s"}`; }
+const bakeIngs = (b) => Array.isArray(b.ingredients) ? b.ingredients : PIZZA_INGS.filter(g => b.pct && b.pct[g.key] != null).map(g => ({ ...g, pct: +b.pct[g.key] }));
+function bakeSize(b){
+  return b.sizing === "pizza" ? `${b.count} × ${+b.size_in}″ ${thickText(+b.thickness).toLowerCase()}`
+    : b.sizing === "pieces" ? `${b.count} × ${grams(+b.ball_g)} g` : `${grams(+b.flour_g)} g flour`;
+}
+const bakeTitle = (b) => `${b.type_name}: ${bakeSize(b)}`;
 const stars = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+const sameType = (b, st) => b.type_id ? b.type_id === st.type_id : b.type_name === st.name;
 function renderBakes(){
   $("#tabHist").textContent = bakes.length ? `My bakes (${bakes.length})` : "My bakes";
   renderFlours();
-  // "last time" banner: the newest bake, plus the newest "next time" note if there is one
-  const lastEl = $("#last"), newest = bakes[0], noted = bakes.find(b => b.next_time);
+  // "last time" banner for the type on screen: its newest bake, plus its newest "next time" note
+  const mine = bakes.filter(b => sameType(b, s)), lastEl = $("#last"), newest = mine[0], noted = mine.find(b => b.next_time);
   if (newest){
-    lastEl.innerHTML = `<b>Last time:</b> ${esc(bakeTitle(newest))}, ${fmtDate(newest.made_on)}, ${newest.rating ? stars(newest.rating) : "no report yet"}. <button type="button" class="btn link" data-again="${newest.id}">Make it again</button>`
+    lastEl.innerHTML = `<b>Last time:</b> ${esc(bakeSize(newest))}, ${fmtDate(newest.made_on)}, ${newest.rating ? stars(newest.rating) : "no report yet"}. <button type="button" class="btn link" data-again="${newest.id}">Make it again</button>`
       + (noted ? `<span class="nt"><b>Next time, try:</b> ${esc(noted.next_time)}</span>` : "");
     lastEl.hidden = false;
   } else lastEl.hidden = true;
 
-  if (!session){ $("#bakes").innerHTML = `<div class="card empty"><p>Sign in to see your bakes and how each one turned out.</p><button class="btn primary" data-open-auth>Sign in</button></div>`; return; }
-  if (!bakes.length){ $("#bakes").innerHTML = `<div class="card empty"><p>Nothing here yet. Set up a dough in the calculator and tap "Lock it in".</p></div>`; return; }
-  $("#bakes").innerHTML = bakes.map(b => {
-    const f = +b.flour_g, p = b.pct || {};
-    const rows = [["Flour", f, 100, "flour"]].concat(RATIOS.filter(([k]) => p[k] > 0).map(([k, label]) => [k === "yeast" ? "Yeast, " + YEAST[b.yeast_type].label.toLowerCase() : label, f * p[k] / 100, p[k], k]));
-    const facts = [`${+b.ball_g} g per ball`, FERMENT[b.ferment].label + ", " + FERMENT[b.ferment].sub, b.flour_name].filter(Boolean).join(" · ");
+  if (!session){ $("#histFilter").hidden = true; $("#bakes").innerHTML = `<div class="card empty"><p>Sign in to see your bakes and how each one turned out.</p><button class="btn primary" data-open-auth>Sign in</button></div>`; return; }
+  if (!bakes.length){ $("#histFilter").hidden = true; $("#bakes").innerHTML = `<div class="card empty"><p>Nothing here yet. Set up a dough in the calculator and tap "Lock it in".</p></div>`; return; }
+  const names = [...new Set(bakes.map(b => b.type_name))];
+  if (!names.includes(histFilter)) histFilter = "";
+  $("#histFilter").hidden = names.length < 2;
+  $("#histFilter").innerHTML = [["", "All"]].concat(names.map(n => [n, n])).map(([v, l]) => `<button type="button" data-hist="${esc(v)}" class="${v === histFilter ? "on" : ""}">${esc(l)}</button>`).join("");
+  $("#bakes").innerHTML = bakes.filter(b => !histFilter || b.type_name === histFilter).map(b => {
+    const f = +b.flour_g;
+    const rows = [["Flour", f, 100]].concat(bakeIngs(b).filter(g => g.pct > 0).map(g => [g.key === "yeast" ? g.name + ", " + YEAST[b.yeast_type].label.toLowerCase() : g.name, f * g.pct / 100, g.pct]));
+    const facts = [b.sizing === "pizza" ? `${grams(+b.ball_g)} g per ball` : "", FERMENT[b.ferment].label + ", " + FERMENT[b.ferment].sub, b.flour_name].filter(Boolean).join(" · ");
+    const st = lines(b.steps);
     return `<div class="card bake">
       <div class="head">
         <div><h3>${esc(bakeTitle(b))}</h3><div class="when">Made ${fmtDate(b.made_on)}${b.bake_on ? ", baked " + fmtDate(b.bake_on) : ""}</div></div>
         ${b.rating ? `<span class="stars" aria-label="${b.rating} of 5 stars">${stars(b.rating)}</span>` : `<span class="pend">Awaiting report</span>`}
       </div>
       <p class="facts">${esc(facts)}</p>
-      <table>${rows.map(([n, g, pc, k]) => `<tr><td>${esc(n)}</td><td>${grams(g, k)} g</td><td>${pctText(pc)}</td></tr>`).join("")}</table>
+      <table>${rows.map(([n, g, pc]) => `<tr><td>${esc(n)}</td><td>${grams(g)} g</td><td>${pctText(pc)}</td></tr>`).join("")}</table>
+      ${st.length ? `<details><summary>Steps (${st.length})</summary><ol class="steps">${st.map(x => `<li>${esc(x)}</li>`).join("")}</ol></details>` : ""}
       <div class="rep">
         ${b.plan_notes ? `<p><b>Notes</b>${esc(b.plan_notes)}</p>` : ""}
         ${b.went_well ? `<p><b>Went well</b>${esc(b.went_well)}</p>` : ""}
@@ -591,9 +789,12 @@ document.addEventListener("click", async e => {
   if (t.hasAttribute("data-open-auth")){ openAuth("in"); return; }
   const b = bakes.find(x => x.id === (t.dataset.again || t.dataset.report || t.dataset.del)); if (!b) return;
   if (t.dataset.again){
-    s = { count: b.count, size: +b.size_in, thickness: +b.thickness, pct: { ...PRESET, ...b.pct }, yeast_type: b.yeast_type, ferment: b.ferment };
+    const ty = types.find(x => x.id && x.id === b.type_id) || types.find(x => x.name === b.type_name && x.sizing === b.sizing);
+    const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
+      ings: clone(bakeIngs(b)), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null };
+    if (b.sizing === "pizza"){ st.size = +b.size_in; st.thickness = +b.thickness; }
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
-    checked.clear(); $("#lockOk").hidden = true; renderFlours(); showTab("calc");
+    switchType(ty, st); showTab("calc");
   } else if (t.dataset.report){
     reporting = b; rating = b.rating || 0;
     $("#repSub").textContent = bakeTitle(b) + ", made " + fmtDate(b.made_on);
@@ -675,15 +876,14 @@ function setSession(sess){
   session = sess;
   $("#signIn").hidden = !!sess; $("#signOut").hidden = !sess;
   $("#whoEmail").hidden = !sess; $("#whoEmail").textContent = sess ? sess.user.email : "";
-  if (changed || !sess) load();
-  render();
+  if (changed || !sess) load(); else render();
 }
 
 // ---- boot --------------------------------------------------------------------
-buildControls(); wire();
+wire();
 $("#madeOn").value = todayISO();
 try { $("#flourName").value = localStorage.getItem("dough.flour") || ""; } catch (_) {}
-render(); renderBakes();
+buildControls(); renderTypes(); renderBakes();
 sb.auth.onAuthStateChange((event, sess) => {
   if (event === "PASSWORD_RECOVERY") $("#pwDlg").showModal();
   setTimeout(() => setSession(sess), 0);   // never call back into supabase from inside this callback

@@ -164,5 +164,14 @@ shawnandersonapps.com/dough/. Shawn is learning dough (pizza now; bread and cinn
 - Flour is a dropdown (Shawn, Oct 3, 2026: no retyping). `renderFlours()` builds it from the distinct `flour_name` values in that person's bakes, newest first, plus "Add a new flour…" which reveals the text box. With no bakes yet, only the text box shows. There is no separate flours table.
 - Calculator state and the flour name are remembered in localStorage as a convenience only.
 
+### Dough types and steps (Oct 3, 2026)
+- `supabase/dough/002_types_and_steps.sql`. Table `dough_types`, one row per person per type: `name`, `sizing`, `ingredients` (`[{key, name, pct}]`, flour is always 100 and not listed), `steps` (text, one per line, null = none written), `defaults` (the plan from the last locked-in bake). Everyone gets a "Pizza" type on first sign-in (`loadTypes()` inserts it and attaches older bakes to it). Signed out, the page uses an in-memory Pizza type only.
+- `sizing` is how a batch is sized: `pizza` (count, diameter, thickness), `pieces` (count and grams each, for loaves and rolls), `flour` (start from the flour weight). The type bar above the calculator switches types; "New type" and "Edit <name>" open the type dialog (name, sizing, ingredient rows). New types start with Water, Yeast, Salt rows and EMPTY percents on purpose: never prefill a recipe Shawn did not give.
+- An ingredient whose name contains "yeast" gets key `yeast`, which turns on the yeast type switch. Water, salt, sugar, and oil keys get tuned slider ranges (`RANGES`); other ingredients get a range from their own percent.
+- Steps belong to the person, not the app (Shawn, Oct 3, 2026: "not sure we want to get in the business of giving people steps"; his own are a mix of Dough Guy and Leo Spizzirri). The Steps card has "Edit steps" (a textarea, one per line). The generated basic steps only show for a pizza-sized type whose steps have never been edited, labeled as a starting point.
+- Lock it in saves a snapshot on the bake (`type_id`, `type_name`, `sizing`, `ingredients`, `steps`) and writes the ratios, steps, and plan back to the type, so next time starts from the last bake. The old `pct` column is only on bakes from before this change. The yeast starting-point hint and the auto yeast change on ferment plan apply to pizza sizing only.
+- My bakes shows type filter pills once there are two or more types. The "Last time" banner follows the type on screen.
+- Not built yet: an AI "draft my steps" button. It needs a Supabase Edge Function holding an Anthropic API key as a secret (Shawn must create the key), signed-in users only. Waiting on Shawn's go-ahead.
+
 ### Shawn's bakes
 - Oct 2, 2026: 3 x 16 inch thick, Dough Guy ratios unchanged, 1,100 g King Arthur Bread Flour (12.7%), active dry yeast, cold ferment for Sunday Oct 4. He made pizza three times in the month before with different ratios and does not remember them. Never invent a bake or a result; ask.
