@@ -140,6 +140,20 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-10-02-country-rose-rv-park", date:"2026-10-02", time:"17:50", seg:7, caption:"Day 27. Rick at the Country Rose RV Park sign at the end of the day."},
+  {file:"2026-10-02-arizona-state-line", date:"2026-10-02", time:"17:16", seg:7, caption:"Day 27. Arizona! Rick at the state line sign, his fifth state."},
+  {file:"2026-10-02-crossbedded-sandstone", date:"2026-10-02", time:"13:48", caption:"Day 27. The bike below a wall of swirled white sandstone."},
+  {file:"2026-10-02-sage-and-mesas", date:"2026-10-02", time:"12:24", caption:"Day 27. Sage and rabbitbrush flats with mesas lined up on the horizon."},
+  {file:"2026-10-02-longhorn", date:"2026-10-02", time:"11:52", caption:"Day 27. A longhorn keeping an eye on him from the brush."},
+  {file:"2026-10-02-rocky-road", date:"2026-10-02", time:"11:25", caption:"Day 27. Over the handlebars: a road that is mostly loose rock."},
+  {file:"2026-10-02-washed-out-road", date:"2026-10-02", time:"11:18", caption:"Day 27. The bike laid down in a washed-out rut on a rough forest road."},
+  {file:"2026-10-02-morning-lake", date:"2026-10-02", time:"09:06", caption:"Day 27, morning. A lake through the pines on the way south."},
+  {file:"2026-10-01-ponderosa-camp", date:"2026-10-01", time:"19:09", caption:"Day 26. Camp in the ponderosa pines, laundry on the line."},
+  {file:"2026-10-01-bryce-canyon-country", date:"2026-10-01", time:"14:15", caption:"Day 26. Rick at the Welcome to Bryce Canyon Country sign, red rock all around."},
+  {file:"2026-10-01-old-mill", date:"2026-10-01", time:"10:48", caption:"Day 26. The bike parked below an old wooden mill and its concrete silos."},
+  {file:"2026-09-30-otter-creek-tent", date:"2026-09-30", time:"19:24", caption:"Day 25, evening. The tent tucked into the rabbitbrush above Otter Creek Reservoir."},
+  {file:"2026-09-30-otter-creek-shelter", date:"2026-09-30", time:"19:24", caption:"Day 25. The bike and gear spread out under a picnic shelter at Otter Creek Reservoir."},
+  {file:"2026-09-30-salina-morning-crew", date:"2026-09-30", time:"09:43", caption:"Day 25, morning. The crew under the trees at Butch Cassidy Campground in Salina before the day's ride."},
   {file:"2026-09-29-campfire-circle", date:"2026-09-29", time:"19:38", caption:"Day 24, evening. Around the campfire in Salina."},
   {file:"2026-09-29-group-camp", date:"2026-09-29", time:"17:40", caption:"Day 24. The group camp under the cottonwoods at Butch Cassidy Campground."},
   {file:"2026-09-29-barbecue", date:"2026-09-29", time:"15:39", caption:"Day 24. Barbecue at camp in Salina: ribs coming off the grill."},
@@ -246,5 +260,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 1, 2026, 7:00 am MT";
+const LAST_UPDATED = "Oct 3, 2026, 8:15 am MT";
 // ===== END DATA =====
