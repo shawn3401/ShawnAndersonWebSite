@@ -123,6 +123,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .ing .nm{flex:1}
 .ing .nm small{display:block;color:var(--ink-3);font-size:13.5px}
 .ing .g{font-family:"Fraunces",Georgia,serif;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.ing .gin{font:inherit;width:4.2ch;min-width:86px;text-align:right;color:inherit;background:none;border:1px solid transparent;border-radius:6px;padding:0 2px;-moz-appearance:textfield;appearance:textfield}
+.ing .gin::-webkit-outer-spin-button,.ing .gin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ing .gin:hover{border-color:var(--line)}
+.ing .gin:focus{border-color:var(--accent);background:var(--bg);outline:none}
+.ing li.typed .gin{color:var(--accent)}
 .ing .g small{font-family:"Source Sans 3",sans-serif;font-size:15px;font-weight:600;color:var(--ink-3);margin-left:2px}
 .ing .p{width:54px;text-align:right;color:var(--ink-3);font-size:14px;font-variant-numeric:tabular-nums}
 .ing li.done{opacity:.45}
@@ -228,7 +233,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
             <div><b class="num" id="oTotal"></b><span>g of dough</span></div>
           </div>
           <ul class="ing" id="ing"></ul>
-          <p class="note">Tap an ingredient once it is in the bowl.</p>
+          <p class="note">Tap an ingredient once it is in the bowl. If the scale says something different, tap the number and type what really went in. Typing the flour re-scales everything else to it.</p>
         </div>
 
         <div class="card">
@@ -392,14 +397,14 @@ function thickText(t){
 
 function stateFromType(t){
   const d = t.defaults || {};
-  const st = { type_id: t.id, name: t.name, sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null };
+  const st = { type_id: t.id, name: t.name, sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {} };
   if (t.sizing !== "pizza"){ st.count = 1; st.ferment = "same_day"; }
   for (const k of ["count", "size", "thickness", "piece_g", "flour_g", "yeast_type", "ferment"]) if (d[k] != null) st[k] = d[k];
   return st;
 }
 let types = [LOCAL_PIZZA];
 let s = stateFromType(LOCAL_PIZZA);
-try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null }; } catch (_) {}
+try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null, flour_fix: null, actual: {} }; } catch (_) {}
 let checked = new Set(), ranges = {}, editingSteps = false;
 let session = null, bakes = [], reporting = null, rating = 0, histFilter = "";
 
@@ -407,10 +412,19 @@ const ing = (st, key) => st.ings.find(g => g.key === key);
 const pctOf = (st, key) => ing(st, key)?.pct || 0;
 function compute(st){
   const sum = 1 + st.ings.reduce((a, g) => a + (+g.pct || 0), 0) / 100;
-  if (st.sizing === "flour") return { piece: st.flour_g * sum, total: st.flour_g * sum, flour: st.flour_g };
+  if (st.sizing === "flour") return { piece: st.flour_g * sum, total: st.flour_g * sum, flour: st.flour_g, plan: st.flour_g };
   const piece = st.sizing === "pizza" ? st.thickness * Math.PI * (st.size / 2) ** 2 : st.piece_g;
-  const total = piece * st.count;
-  return { piece, total, flour: total / sum };
+  const plan = piece * st.count / sum;
+  // typing the flour you actually weighed re-scales the whole batch to it
+  if (st.flour_fix) return { piece: st.flour_fix * sum / st.count, total: st.flour_fix * sum, flour: st.flour_fix, plan };
+  return { piece, total: piece * st.count, flour: plan, plan };
+}
+// What went in the bowl: the planned grams unless a real number was typed over it.
+function amounts(st, c){
+  return st.ings.filter(g => g.pct > 0).map(g => {
+    const plan = c.flour * g.pct / 100, a = st.actual?.[g.key];
+    return { key: g.key, name: g.name, plan, g: a ?? plan, pct: a != null ? r2(a / c.flour * 100) : g.pct, typed: a != null };
+  });
 }
 function suggestedYeast(st){ return Math.round(FERMENT[st.ferment].ady * YEAST[st.yeast_type].f / 0.05) * 0.05; }
 function planOf(st){ return { count: st.count, size: st.size, thickness: st.thickness, piece_g: st.piece_g, flour_g: st.flour_g, yeast_type: st.yeast_type, ferment: st.ferment }; }
@@ -510,18 +524,19 @@ function render(){
   const hw = $("#h_water"); if (hw) hw.textContent = "Hydration. More water is stickier to handle and bakes up airier.";
 
   $("#oBallBox").hidden = s.sizing === "flour";
-  $("#oBall").textContent = grams(c.piece);
   $("#oBallLab").textContent = s.sizing === "pizza" ? "g per ball" : "g each";
-  $("#oTotal").textContent = grams(c.total);
   const basic = usesBasic(s);
-  const rows = [{ key: "flour", name: "Flour", sub: $("#flourName").value.trim(), g: c.flour, pct: 100 }]
-    .concat(s.ings.filter(g => g.pct > 0).map(g => ({ key: g.key, name: g.name, g: c.flour * g.pct / 100, pct: g.pct,
-      sub: g.key === "yeast" ? YEAST[s.yeast_type].label.toLowerCase() : g.key === "water" && basic ? waterNote(s) : "" })));
+  const am = amounts(s, c), was = (g) => "typed in, the plan was " + grams(g) + " g";
+  const rows = [{ key: "flour", name: "Flour", sub: s.flour_fix ? was(c.plan) : $("#flourName").value.trim(), g: c.flour, pct: 100, typed: !!s.flour_fix }]
+    .concat(am.map(r => ({ ...r, sub: r.typed ? was(r.plan) : r.key === "yeast" ? YEAST[s.yeast_type].label.toLowerCase() : r.key === "water" && basic ? waterNote(s) : "" })));
+  const totalNow = c.flour + am.reduce((x, r) => x + r.g, 0);
+  $("#oBall").textContent = grams(s.sizing === "flour" ? totalNow : totalNow / s.count);
+  $("#oTotal").textContent = grams(totalNow);
   $("#ing").innerHTML = rows.map(r => `
-    <li data-ing="${esc(r.key)}" class="${checked.has(r.key) ? "done" : ""}" role="checkbox" aria-checked="${checked.has(r.key)}" tabindex="0">
+    <li data-ing="${esc(r.key)}" class="${checked.has(r.key) ? "done" : ""}${r.typed ? " typed" : ""}" role="checkbox" aria-checked="${checked.has(r.key)}" tabindex="0">
       <span class="box">✓</span>
       <span class="nm">${esc(r.name)}${r.sub ? `<small>${esc(r.sub)}</small>` : ""}</span>
-      <span class="g">${grams(r.g)}<small>g</small></span>
+      <span class="g"><input type="number" class="gin" data-actual="${esc(r.key)}" value="${r.g < 10 ? (Math.round(r.g * 10) / 10).toFixed(1) : Math.round(r.g)}" min="0" max="50000" step="${r.g < 10 ? 0.1 : 1}" inputmode="decimal" aria-label="${esc(r.name)}, grams that went in"><small>g</small></span>
       <span class="p">${pctText(r.pct)}</span>
     </li>`).join("");
 
@@ -540,7 +555,8 @@ function render(){
   try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {}
 }
 
-function setPct(k, v){ const g = ing(s, k), [min, max] = ranges[k]; g.pct = clamp(r2(v), min, max); }
+function setPct(k, v){ const g = ing(s, k), [min, max] = ranges[k]; g.pct = clamp(r2(v), min, max); if (s.actual) delete s.actual[k]; }
+function replan(){ s.flour_fix = null; s.actual = {}; }   // a new plan throws away numbers typed against the old one
 function switchType(t, st){
   s = st || stateFromType(t);
   checked.clear(); editingSteps = false; $("#lockOk").hidden = $("#lockErr").hidden = true;
@@ -549,16 +565,17 @@ function switchType(t, st){
 function wire(){
   document.addEventListener("input", e => {
     const t = e.target;
-    if (t.dataset.stepRange){ s[t.dataset.stepRange] = +t.value; render(); }
+    if (t.dataset.stepRange){ s[t.dataset.stepRange] = +t.value; replan(); render(); }
     else if (t.dataset.pctRange){ setPct(t.dataset.pctRange, +t.value); render(); }
-    else if (t.dataset.num){ s[t.dataset.num] = clamp(Math.round(+t.value) || 1, 1, 20000); render(); }
+    else if (t.dataset.num){ s[t.dataset.num] = clamp(Math.round(+t.value) || 1, 1, 20000); replan(); render(); }
     else if (t.id === "stepsEdit"){ s.steps = t.value; try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {} }
   });
   document.addEventListener("click", e => {
+    if (e.target.closest(".gin")) return;   // typing a real amount is not a check-off
     const b = e.target.closest("button, li[data-ing]"); if (!b) return;
     const d = b.dataset;
-    if (d.step){ const r = $("#r_" + d.step); s[d.step] = clamp(r2(s[d.step] + +d.d), +r.min, Math.max(+r.max, s[d.step])); render(); }
-    else if (d.thick){ s.thickness = +d.thick; render(); }
+    if (d.step){ const r = $("#r_" + d.step); s[d.step] = clamp(r2(s[d.step] + +d.d), +r.min, Math.max(+r.max, s[d.step])); replan(); render(); }
+    else if (d.thick){ s.thickness = +d.thick; replan(); render(); }
     else if (d.ferment){ s.ferment = d.ferment; if (s.sizing === "pizza" && ing(s, "yeast")) setPct("yeast", suggestedYeast(s)); render(); }
     else if (d.yeast){
       const from = YEAST[s.yeast_type].f, to = YEAST[d.yeast].f;
@@ -572,7 +589,18 @@ function wire(){
     else if (d.edittype !== undefined) openType(types.find(x => x.id === s.type_id) || null, true);
     else if (d.hist !== undefined){ histFilter = d.hist; renderBakes(); }
   });
-  $("#ing").addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
+  $("#ing").addEventListener("change", e => {
+    const k = e.target.dataset.actual; if (!k) return;
+    const v = e.target.value.trim() === "" ? null : Math.max(0, +e.target.value);
+    if (k === "flour"){
+      if (s.sizing === "flour"){ if (v) s.flour_g = clamp(Math.round(v), 1, 20000); }
+      else s.flour_fix = v || null;
+      s.actual = {};
+    } else if (v == null) delete s.actual[k];
+    else s.actual[k] = v;
+    render();
+  });
+  $("#ing").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.actual){ e.target.blur(); return; } if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
   $("#resetPct").addEventListener("click", () => { const t = types.find(x => x.id === s.type_id); if (t){ s.ings = clone(t.ingredients); buildControls(); render(); } });
   $("#editSteps").addEventListener("click", () => {
     if (!editingSteps){ const cur = stepList(s, compute(s)).join("\n"); s.steps = cur; $("#stepsEdit").value = cur; editingSteps = true; render(); $("#stepsEdit").focus(); }
@@ -648,7 +676,7 @@ $("#typeForm").addEventListener("submit", async e => {
   await loadTypes();
   // keep the plan on screen when the same type was edited without changing how it is sized
   const keep = editingType && editingType.id === s.type_id && data.sizing === s.sizing;
-  switchType(data, keep ? { ...s, name: data.name, ings: clone(data.ingredients) } : null);
+  switchType(data, keep ? { ...s, name: data.name, ings: clone(data.ingredients), actual: {} } : null);
 });
 $("#tDelete").addEventListener("click", async () => {
   if (!editingType || !confirm(`Delete the type "${editingType.name}"? Bakes you already logged stay in your history.`)) return;
@@ -696,15 +724,15 @@ async function lockIn(){
   $("#lockErr").hidden = $("#lockOk").hidden = true;
   if (!session){ openAuth("in"); return; }
   if (editingSteps){ editingSteps = false; if (!lines(s.steps).length) s.steps = null; }
-  const c = compute(s), b = $("#lock"), pizza = s.sizing === "pizza";
+  const c = compute(s), b = $("#lock"), pizza = s.sizing === "pizza", am = amounts(s, c), total = c.flour + am.reduce((x, r) => x + r.g, 0);
   b.disabled = true;
   const { error } = await sb.from("dough_bakes").insert({
     dough_type: s.name.toLowerCase(), type_id: s.type_id, type_name: s.name, sizing: s.sizing,
     made_on: $("#madeOn").value || todayISO(),
     bake_on: $("#bakeOn").value || null,
     count: s.sizing === "flour" ? 1 : s.count, size_in: pizza ? s.size : null, thickness: pizza ? s.thickness : null,
-    ball_g: Math.round(c.piece), flour_g: Math.round(c.flour),
-    ingredients: s.ings, yeast_type: s.yeast_type, ferment: s.ferment,
+    ball_g: Math.round(total / (s.sizing === "flour" ? 1 : s.count)), flour_g: Math.round(c.flour),
+    ingredients: s.ings.map(g => { const a = am.find(r => r.key === g.key); return a && a.typed ? { ...g, pct: a.pct, plan_pct: g.pct } : g; }), yeast_type: s.yeast_type, ferment: s.ferment,
     steps: stepList(s, c).join("\n"),
     flour_name: $("#flourName").value.trim(), plan_notes: $("#planNotes").value.trim(),
   });
@@ -713,7 +741,7 @@ async function lockIn(){
   if (s.type_id) await sb.from("dough_types").update({ ingredients: s.ings, steps: s.steps, defaults: planOf(s) }).eq("id", s.type_id);
   b.disabled = false;
   $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report."; $("#lockOk").hidden = false;
-  $("#planNotes").value = ""; checked.clear(); addingFlour = false;
+  $("#planNotes").value = ""; checked.clear(); addingFlour = false; replan();
   await load();
 }
 
@@ -791,7 +819,7 @@ document.addEventListener("click", async e => {
   if (t.dataset.again){
     const ty = types.find(x => x.id && x.id === b.type_id) || types.find(x => x.name === b.type_name && x.sizing === b.sizing);
     const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
-      ings: clone(bakeIngs(b)), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null };
+      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {} };
     if (b.sizing === "pizza"){ st.size = +b.size_in; st.thickness = +b.thickness; }
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
     switchType(ty, st); showTab("calc");
