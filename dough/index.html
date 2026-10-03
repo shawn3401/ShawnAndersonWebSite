@@ -105,7 +105,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .ctl .val input.valin{width:96px;text-align:right;font-weight:700;font-size:20px;padding:3px 8px;font-variant-numeric:tabular-nums}
 #stepsEdit{min-height:230px}
 .acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.irow{display:grid;grid-template-columns:minmax(0,1fr) 84px auto auto;gap:6px;align-items:center;margin-top:6px}
+.irow{display:grid;grid-template-columns:auto minmax(0,1fr) 78px auto auto;gap:6px;align-items:center;margin-top:6px}
+.irow .mv{display:flex;flex-direction:column;gap:2px}
+.irow .mv button{font:inherit;font-size:11px;line-height:1;width:30px;height:20px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:4px;cursor:pointer;padding:0}
+.irow .mv button:hover:not([disabled]){background:var(--soft);color:var(--accent)}
+.irow .mv button[disabled]{opacity:.3;cursor:default}
 .irow .btn{padding:8px 11px}
 .irow span{color:var(--ink-3)}
 .bake details{margin-top:10px}
@@ -337,7 +341,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <input type="text" id="tName" maxlength="40" placeholder="Bread, Cinnamon rolls, Focaccia">
     <label class="f" for="tSizing">How do you size a batch?</label>
     <select id="tSizing"></select>
-    <label class="f">Ingredients</label>
+    <label class="f">Ingredients <span style="font-weight:400;color:var(--ink-3)">(use the arrows to put them in the order you weigh them)</span></label>
     <div id="tIngs"></div>
     <div class="acts" style="margin-top:8px"><button type="button" class="btn" id="tAdd">＋ Add an ingredient</button><button type="button" class="btn link" id="tAskAI" data-ai hidden>Not sure of the numbers? Ask AI</button></div>
     <div class="err" id="typeErr" hidden></div>
@@ -674,12 +678,22 @@ function openType(t, wantEdit){
 }
 function drawTIngs(){
   $("#tIngs").innerHTML = tIngs.map((g, i) => `<div class="irow">
+    <span class="mv"><button type="button" data-mv="${i}" data-by="-1" aria-label="Move ${esc(g.name || "ingredient")} up"${i === 0 ? " disabled" : ""}>▲</button><button type="button" data-mv="${i}" data-by="1" aria-label="Move ${esc(g.name || "ingredient")} down"${i === tIngs.length - 1 ? " disabled" : ""}>▼</button></span>
     <input type="text" data-i="${i}" data-f="name" value="${esc(g.name)}" maxlength="40" placeholder="Ingredient" aria-label="Ingredient name">
     <input type="number" data-i="${i}" data-f="pct" value="${esc(g.pct)}" min="0" max="300" step="0.01" inputmode="decimal" placeholder="0" aria-label="Percent of flour"><span>%</span>
     <button type="button" class="btn" data-rm="${i}" aria-label="Remove ${esc(g.name || "ingredient")}">✕</button></div>`).join("");
 }
 $("#tIngs").addEventListener("input", e => { const t = e.target; if (t.dataset.i) tIngs[+t.dataset.i][t.dataset.f] = t.value; });
-$("#tIngs").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (b){ tIngs.splice(+b.dataset.rm, 1); drawTIngs(); } });
+$("#tIngs").addEventListener("click", e => {
+  const b = e.target.closest("[data-rm],[data-mv]"); if (!b) return;
+  if (b.dataset.rm !== undefined) tIngs.splice(+b.dataset.rm, 1);
+  else {
+    const i = +b.dataset.mv, j = i + +b.dataset.by; if (j < 0 || j >= tIngs.length) return;
+    [tIngs[i], tIngs[j]] = [tIngs[j], tIngs[i]];
+  }
+  drawTIngs();
+  if (b.dataset.mv !== undefined){ const again = $("#tIngs").querySelector(`[data-mv="${+b.dataset.mv + +b.dataset.by}"][data-by="${b.dataset.by}"]`); (again && !again.disabled ? again : $("#tIngs").querySelector(`[data-mv="${+b.dataset.mv + +b.dataset.by}"]:not([disabled])`))?.focus(); }
+});
 $("#tAdd").addEventListener("click", () => { tIngs.push({ name: "", pct: "" }); drawTIngs(); $("#tIngs").querySelector(".irow:last-child input").focus(); });
 $("#typeCancel").addEventListener("click", () => $("#typeDlg").close());
 function keyFor(name, used){
