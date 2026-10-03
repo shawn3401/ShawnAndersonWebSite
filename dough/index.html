@@ -431,7 +431,7 @@ function steps(st, c){
   if (st.yeast_type === "active_dry") out.push(warm ? "Stir the yeast into the warm water and give it 5 to 10 minutes to foam." : "Warm a splash of the water (about 60 g) to 105°F, stir in the yeast, and give it 5 to 10 minutes to foam. Keep the rest of the water cold.");
   else if (st.yeast_type === "fresh") out.push("Crumble the yeast into the water and stir until it dissolves.");
   else out.push("Whisk the yeast into the flour. No proofing needed.");
-  out.push((st.yeast_type === "active_dry" && !warm ? "Add the cold water, the flour" + (st.pct.oil > 0 ? "," : "") : "Add the flour") + (st.pct.oil > 0 ? " and olive oil" : "") + " and mix for 2 minutes.");
+  out.push((st.yeast_type === "active_dry" && !warm ? "Add the cold water, the flour" + (st.pct.oil > 0 ? "," : "") : st.yeast_type === "instant" ? "Add the water to the flour" + (st.pct.oil > 0 ? "," : "") : "Add the flour") + (st.pct.oil > 0 ? (st.yeast_type === "instant" ? " along with the olive oil," : " and olive oil") : "") + " and mix for 2 minutes.");
   out.push("Add the salt" + (st.pct.sugar > 0 ? " and sugar" : "") + ", then mix about 10 more minutes until smooth.");
   const balls = `${st.count} ball${st.count === 1 ? "" : "s"} of about ${Math.round(c.ball)} g`;
   if (st.ferment === "quick"){
