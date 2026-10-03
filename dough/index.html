@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Dough: a pizza dough calculator that remembers every batch, what you changed, and how it turned out.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍕</text></svg>">
+<title>Dough</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root{color-scheme:light dark;
+  --bg:#F6F1E7; --paper:#FFFDF8; --ink:#2A211B; --ink-2:#5E5248; --ink-3:#8F8276;
+  --line:#E2D8C8; --accent:#B8402A; --accent-deep:#8F2E1C; --soft:#F4E3D7; --crust:#C98B3C;
+  --good:#3F7A45; --good-soft:#E0EEDD; --bad:#9B2A2A; --bad-soft:#F5DEDE;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191512; --paper:#221D19; --ink:#F1EAE0; --ink-2:#C6BBAE; --ink-3:#8F8276;
+    --line:#3A322B; --accent:#E8765C; --accent-deep:#F29A84; --soft:#3A2620; --crust:#E0A85A;
+    --good:#8FBF88; --good-soft:#20311F; --bad:#E27373; --bad-soft:#3B1E1E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191512; --paper:#221D19; --ink:#F1EAE0; --ink-2:#C6BBAE; --ink-3:#8F8276;
+  --line:#3A322B; --accent:#E8765C; --accent-deep:#F29A84; --soft:#3A2620; --crust:#E0A85A;
+  --good:#8FBF88; --good-soft:#20311F; --bad:#E27373; --bad-soft:#3B1E1E;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.45}
+a{color:var(--accent)}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;margin:0;line-height:1.1}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 70px}
+
+/* top bar */
+.bar{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.bar .in{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar h1{font-size:28px}
+.bar h1 small{font-family:"Source Sans 3",sans-serif;font-weight:400;font-size:13px;color:var(--ink-3);margin-left:8px;letter-spacing:.08em;text-transform:uppercase}
+.who{font-size:13px;color:var(--ink-3);display:flex;gap:10px;align-items:center;min-width:0}
+.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
+.btn{font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:6px;padding:8px 13px;cursor:pointer}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
+:root[data-theme="dark"] .btn.primary{color:#1B120E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#1B120E}}
+.btn.big{width:100%;padding:13px;font-size:17px}
+.btn.link{border:0;background:none;color:var(--accent);padding:0;text-decoration:underline;font-weight:400}
+.btn[disabled]{opacity:.6;cursor:default}
+
+/* tabs */
+.tabs{display:flex;gap:6px;margin:18px 0 16px}
+.tabs button{font:inherit;font-weight:600;font-size:16px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:8px 18px;cursor:pointer}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* cards */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:18px}
+.card + .card{margin-top:14px}
+.card h2{font-size:22px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.col > .card + .card{margin-top:14px}
+.right{position:sticky;top:66px}
+
+.last{background:var(--soft);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:16px}
+.last b{font-weight:700}
+.last .nt{display:block;margin-top:4px;color:var(--ink-2)}
+
+/* controls */
+.ctl{padding:10px 0;border-top:1px solid var(--line)}
+.ctl:first-of-type{border-top:0;padding-top:0}
+.ctl .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ctl .lab{font-weight:600}
+.ctl .val{font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.ctl .hint{font-size:14px;color:var(--ink-3);margin-top:2px}
+.sl{display:flex;align-items:center;gap:8px;margin-top:6px}
+.sl button{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:20px;font-weight:600;line-height:1;cursor:pointer}
+.sl button:hover{background:var(--soft)}
+input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:30px}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.seg button{flex:1 1 0;min-width:88px;font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:8px 6px;cursor:pointer;line-height:1.2}
+.seg button small{display:block;font-weight:400;font-size:12.5px;color:var(--ink-3)}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.seg button.on small{color:#fff;opacity:.85}
+:root[data-theme="dark"] .seg button.on, :root[data-theme="dark"] .seg button.on small{color:#1B120E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button.on, :root:not([data-theme="light"]) .seg button.on small{color:#1B120E}}
+.chips{display:flex;gap:6px;margin-top:6px}
+.chips button{font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:999px;padding:3px 11px;cursor:pointer}
+.chips button.on{border-color:var(--accent);color:var(--accent)}
+label.f{display:block;font-size:14px;font-weight:600;color:var(--ink-2);margin:12px 0 4px}
+input[type=text],input[type=email],input[type=password],input[type=date],textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px}
+textarea{min-height:70px;resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* output */
+.sum{display:flex;gap:10px;margin-bottom:12px}
+.sum div{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.sum b{display:block;font-family:"Fraunces",Georgia,serif;font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.sum span{font-size:12.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.ing{list-style:none;margin:0;padding:0}
+.ing li{display:flex;align-items:center;gap:12px;padding:11px 4px;border-top:1px solid var(--line);cursor:pointer;user-select:none;-webkit-user-select:none}
+.ing li:first-child{border-top:0}
+.ing .box{flex:none;width:24px;height:24px;border:2px solid var(--line);border-radius:6px;display:grid;place-items:center;color:transparent;font-weight:700}
+.ing .nm{flex:1}
+.ing .nm small{display:block;color:var(--ink-3);font-size:13.5px}
+.ing .g{font-family:"Fraunces",Georgia,serif;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.ing .g small{font-family:"Source Sans 3",sans-serif;font-size:15px;font-weight:600;color:var(--ink-3);margin-left:2px}
+.ing .p{width:54px;text-align:right;color:var(--ink-3);font-size:14px;font-variant-numeric:tabular-nums}
+.ing li.done{opacity:.45}
+.ing li.done .box{background:var(--good);border-color:var(--good);color:#fff}
+.ing li.done .nm{text-decoration:line-through}
+.steps{margin:0;padding-left:22px;color:var(--ink-2)}
+.steps li{margin:6px 0}
+.note{font-size:14px;color:var(--ink-3);margin-top:10px}
+.err{margin-top:12px;padding:10px 12px;border-radius:6px;background:var(--bad-soft);color:var(--bad);border-left:4px solid var(--bad);font-size:15px}
+.ok{margin-top:12px;padding:10px 12px;border-radius:6px;background:var(--good-soft);color:var(--good);border-left:4px solid var(--good);font-size:15px}
+
+/* history */
+.bake .head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.bake h3{font-size:21px}
+.bake .when{font-size:14px;color:var(--ink-3)}
+.bake .stars{color:var(--crust);font-size:20px;letter-spacing:2px;white-space:nowrap}
+.bake .pend{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 10px}
+.bake .facts{margin:8px 0 0;color:var(--ink-2)}
+.bake table{width:100%;border-collapse:collapse;margin-top:10px;font-variant-numeric:tabular-nums}
+.bake td{padding:5px 0;border-top:1px solid var(--line)}
+.bake td:nth-child(2),.bake td:nth-child(3){text-align:right}
+.bake td:nth-child(3){color:var(--ink-3);width:70px}
+.bake .rep{margin-top:10px}
+.bake .rep p{margin:6px 0}
+.bake .rep b{color:var(--ink-2);font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:block}
+.bake .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.empty{text-align:center;color:var(--ink-2);padding:34px 18px}
+
+/* dialogs */
+dialog{border:1px solid var(--line);border-top:5px solid var(--accent);border-radius:10px;background:var(--paper);color:var(--ink);padding:22px;width:min(440px,calc(100vw - 24px));max-height:calc(100vh - 24px)}
+dialog::backdrop{background:rgba(20,14,10,.55)}
+dialog h2{font-size:26px;margin-bottom:4px}
+dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
+.rate{display:flex;gap:4px;margin:6px 0 2px}
+.rate button{font-size:36px;line-height:1;background:none;border:0;color:var(--line);cursor:pointer;padding:0 2px}
+.rate button.on{color:var(--crust)}
+.row{display:flex;gap:8px;margin-top:16px}
+.row .btn{flex:1}
+.or{text-align:center;color:var(--ink-3);font-size:13px;margin:14px 0 0}
+.foot{margin-top:26px;font-size:14px;color:var(--ink-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:820px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .right{position:static}
+}
+@media (max-width:480px){
+  body{font-size:16px}
+  .card{padding:14px}
+  .who span{display:none}
+  .ing .g{font-size:26px}
+  .ing .p{width:46px}
+}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="in">
+  <h1>Dough <small>Pizza</small></h1>
+  <div class="who">
+    <span id="whoEmail" hidden></span>
+    <button class="btn" id="signOut" hidden>Sign out</button>
+    <button class="btn primary" id="signIn">Sign in</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="tabs" role="tablist">
+    <button id="tabCalc" class="on" role="tab">Calculator</button>
+    <button id="tabHist" role="tab">My bakes</button>
+  </div>
+
+  <!-- ================= calculator ================= -->
+  <div id="calc">
+    <div class="last" id="last" hidden></div>
+    <div class="grid">
+      <div class="col">
+        <div class="card">
+          <h2>The plan</h2>
+          <div class="ctl">
+            <div class="top"><span class="lab">Pizzas</span><span class="val" id="vCount"></span></div>
+            <div class="sl"><button data-step="count" data-d="-1" aria-label="Fewer pizzas">−</button><input type="range" id="count" min="1" max="12" step="1" aria-label="Number of pizzas"><button data-step="count" data-d="1" aria-label="More pizzas">+</button></div>
+          </div>
+          <div class="ctl">
+            <div class="top"><span class="lab">Size</span><span class="val" id="vSize"></span></div>
+            <div class="sl"><button data-step="size" data-d="-1" aria-label="Smaller">−</button><input type="range" id="size" min="8" max="20" step="1" aria-label="Pizza size in inches"><button data-step="size" data-d="1" aria-label="Larger">+</button></div>
+          </div>
+          <div class="ctl">
+            <div class="top"><span class="lab">Thickness</span><span class="val" id="vThick"></span></div>
+            <div class="sl"><button data-step="thickness" data-d="-0.05" aria-label="Thinner">−</button><input type="range" id="thickness" min="1.6" max="3.8" step="0.01" aria-label="Thickness"><button data-step="thickness" data-d="0.05" aria-label="Thicker">+</button></div>
+            <div class="chips" id="thickChips"></div>
+          </div>
+          <div class="ctl">
+            <div class="top"><span class="lab">When do you need it?</span></div>
+            <div class="seg" id="fermentSeg"></div>
+          </div>
+          <div class="ctl">
+            <div class="top"><span class="lab">Yeast</span></div>
+            <div class="seg" id="yeastSeg"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>The ratios</h2>
+          <div id="ratios"></div>
+          <p class="note">Each one is a percent of the flour weight. <button class="btn link" id="resetPct">Back to the starting recipe</button></p>
+        </div>
+      </div>
+
+      <div class="col right">
+        <div class="card">
+          <h2>Weigh this out</h2>
+          <div class="sum">
+            <div><b class="num" id="oBall"></b><span>g per ball</span></div>
+            <div><b class="num" id="oTotal"></b><span>g of dough</span></div>
+          </div>
+          <ul class="ing" id="ing"></ul>
+          <p class="note">Tap an ingredient once it is in the bowl.</p>
+        </div>
+
+        <div class="card">
+          <h2>Then</h2>
+          <ol class="steps" id="steps"></ol>
+        </div>
+
+        <div class="card">
+          <h2>Lock it in</h2>
+          <label class="f" for="flourName">Flour</label>
+          <input type="text" id="flourName" maxlength="80" placeholder="King Arthur Bread Flour, 12.7%">
+          <div class="two">
+            <div><label class="f" for="madeOn">Made on</label><input type="date" id="madeOn"></div>
+            <div><label class="f" for="bakeOn">Baking on</label><input type="date" id="bakeOn"></div>
+          </div>
+          <label class="f" for="planNotes">Notes on what you did</label>
+          <textarea id="planNotes" maxlength="2000" placeholder="Anything different this time?"></textarea>
+          <div style="margin-top:14px"><button class="btn primary big" id="lock">Lock it in</button></div>
+          <div class="err" id="lockErr" hidden></div>
+          <div class="ok" id="lockOk" hidden></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= history ================= -->
+  <div id="hist" hidden>
+    <div id="bakes"></div>
+  </div>
+
+  <div class="foot"><span>Starting recipe and thickness stops borrowed from <a href="https://doughguy.co/pages/dough" rel="noopener">Dough Guy's calculator</a>.</span><a href="/">shawnandersonapps.com</a></div>
+</div>
+
+<!-- sign in -->
+<dialog id="authDlg">
+  <form id="authForm">
+    <h2 id="authTitle">Sign in</h2>
+    <p class="sub" id="authSub">Your bakes are saved to your account and only you can see them.</p>
+    <div id="googleWrap" hidden>
+      <button type="button" class="btn big" id="google">Continue with Google</button>
+      <p class="or">or use your email</p>
+    </div>
+    <label class="f" for="email">Email</label>
+    <input type="email" id="email" autocomplete="email" required>
+    <div id="pwWrap">
+      <label class="f" for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" minlength="8">
+    </div>
+    <div class="err" id="authErr" hidden></div>
+    <div class="ok" id="authOk" hidden></div>
+    <div class="row"><button type="button" class="btn" id="authCancel">Cancel</button><button class="btn primary" id="authBtn">Sign in</button></div>
+    <p class="note" id="authLinks"><button type="button" class="btn link" id="toSignUp">Create an account</button> · <button type="button" class="btn link" id="toReset">Forgot your password?</button></p>
+  </form>
+</dialog>
+
+<!-- new password, after a reset link -->
+<dialog id="pwDlg">
+  <form id="pwForm">
+    <h2>New password</h2>
+    <p class="sub">You're in from the reset link. Pick a new password.</p>
+    <label class="f" for="pw1">New password</label>
+    <input type="password" id="pw1" autocomplete="new-password" minlength="8" required>
+    <div class="err" id="pwErr" hidden></div>
+    <div class="row"><button class="btn primary" id="pwBtn">Save password</button></div>
+  </form>
+</dialog>
+
+<!-- report -->
+<dialog id="repDlg">
+  <form id="repForm">
+    <h2>How did it go?</h2>
+    <p class="sub" id="repSub"></p>
+    <div class="rate" id="rate" role="group" aria-label="Rating"></div>
+    <label class="f" for="wentWell">What went well</label>
+    <textarea id="wentWell" maxlength="2000"></textarea>
+    <label class="f" for="wentPoorly">What went poorly</label>
+    <textarea id="wentPoorly" maxlength="2000"></textarea>
+    <label class="f" for="nextTime">Next time, try</label>
+    <textarea id="nextTime" maxlength="2000" placeholder="This shows up at the top of the calculator next time."></textarea>
+    <div class="err" id="repErr" hidden></div>
+    <div class="row"><button type="button" class="btn" id="repCancel">Cancel</button><button class="btn primary" id="repBtn">Save</button></div>
+  </form>
+</dialog>
+
+<script>
+// Shared "Shawnz Apps" Supabase project. Publishable key only; rows are protected by RLS.
+const SUPABASE_URL = "https://yjurglvfzlboblestfdz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_oGRMRv_8B4_ngkwpe10y5A_S91dOcfe";
+const GOOGLE_ENABLED = false;   // flip to true once the Google provider is set up in Supabase Auth
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ---- the dough model ------------------------------------------------------
+// Thickness is grams of dough per square inch of pizza. The three stops match Dough Guy's
+// thin / regular / thick (409, 480, 626 g for a 16 inch pizza).
+const THICK = [["Thin", 2.04], ["Regular", 2.39], ["Thick", 3.11]];
+const PRESET = { water: 62, yeast: 0.4, salt: 2.5, sugar: 2, oil: 3.3 };   // Dough Guy's 3 day dough, active dry yeast
+const RATIOS = [
+  // key, label, min, max, slider step, button step
+  ["water", "Water",     50, 80, 0.5,  0.5],
+  ["yeast", "Yeast",   0.05,  4, 0.05, 0.05],
+  ["salt",  "Salt",       1,  4, 0.1,  0.1],
+  ["sugar", "Sugar",      0,  6, 0.1,  0.5],
+  ["oil",   "Olive oil",  0,  8, 0.1,  0.1],
+];
+// Yeast starting points are for active dry; the others convert from it.
+const FERMENT = {
+  quick:     { label: "Tonight",     sub: "about 2 hours",       ady: 1.5 },
+  same_day:  { label: "Today",       sub: "4 to 6 hours",        ady: 0.8 },
+  cold_1:    { label: "Tomorrow",    sub: "1 day in the fridge", ady: 0.6 },
+  cold_long: { label: "2 to 4 days", sub: "cold ferment",        ady: 0.4 },
+};
+const YEAST = {
+  active_dry: { label: "Active dry", f: 1 },
+  instant:    { label: "Instant",    f: 0.75 },
+  fresh:      { label: "Fresh",      f: 2.5 },
+};
+const DEFAULTS = { count: 3, size: 14, thickness: 2.39, pct: { ...PRESET }, yeast_type: "active_dry", ferment: "cold_long" };
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const r2 = (n) => Math.round(n * 100) / 100;
+const todayISO = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
+function fmtDate(iso){ if (!iso) return ""; const [y,m,d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric", year:"numeric" }); }
+const pctText = (n) => (Math.round(n * 100) / 100) + "%";
+const grams = (n, key) => key === "yeast" ? (Math.round(n * 10) / 10).toFixed(1) : String(Math.round(n));
+function thickName(t){ const hit = THICK.find(([, v]) => Math.abs(v - t) < 0.03); return hit ? hit[0] : null; }
+function thickText(t){
+  const n = thickName(t); if (n) return n;
+  if (t < THICK[0][1]) return "Extra thin";
+  if (t > THICK[2][1]) return "Extra thick";
+  return t < THICK[1][1] ? "Thin to regular" : "Regular to thick";
+}
+
+let s = structuredClone(DEFAULTS);
+try { const saved = JSON.parse(localStorage.getItem("dough.calc") || "null"); if (saved && saved.pct) s = { ...s, ...saved, pct: { ...PRESET, ...saved.pct } }; } catch (_) {}
+let checked = new Set();
+let session = null, bakes = [], reporting = null, rating = 0;
+
+function compute(st){
+  const ball = st.thickness * Math.PI * (st.size / 2) ** 2;
+  const total = ball * st.count;
+  const sum = 1 + Object.values(st.pct).reduce((a, b) => a + b, 0) / 100;
+  const flour = total / sum;
+  return { ball, total, flour };
+}
+function suggestedYeast(st){ return Math.round(FERMENT[st.ferment].ady * YEAST[st.yeast_type].f / 0.05) * 0.05; }
+
+// ---- calculator -------------------------------------------------------------
+function buildControls(){
+  $("#thickChips").innerHTML = THICK.map(([n, v]) => `<button type="button" data-thick="${v}">${n}</button>`).join("");
+  $("#fermentSeg").innerHTML = Object.entries(FERMENT).map(([k, f]) => `<button type="button" data-ferment="${k}">${f.label}<small>${f.sub}</small></button>`).join("");
+  $("#yeastSeg").innerHTML = Object.entries(YEAST).map(([k, y]) => `<button type="button" data-yeast="${k}">${y.label}</button>`).join("");
+  $("#ratios").innerHTML = RATIOS.map(([k, label, min, max, step, bstep]) => `
+    <div class="ctl">
+      <div class="top"><span class="lab">${label}</span><span class="val" id="v_${k}"></span></div>
+      <div class="sl"><button type="button" data-pct="${k}" data-d="${-bstep}" aria-label="Less ${label}">−</button><input type="range" id="p_${k}" data-key="${k}" min="${min}" max="${max}" step="${step}" aria-label="${label} percent"><button type="button" data-pct="${k}" data-d="${bstep}" aria-label="More ${label}">+</button></div>
+      <div class="hint" id="h_${k}"></div>
+    </div>`).join("");
+}
+
+function render(){
+  const c = compute(s);
+  $("#count").value = s.count; $("#size").value = s.size; $("#thickness").value = s.thickness;
+  $("#vCount").textContent = s.count;
+  $("#vSize").textContent = s.size + "″";
+  $("#vThick").textContent = thickText(s.thickness);
+  document.querySelectorAll("[data-thick]").forEach(b => b.classList.toggle("on", Math.abs(+b.dataset.thick - s.thickness) < 0.03));
+  document.querySelectorAll("[data-ferment]").forEach(b => b.classList.toggle("on", b.dataset.ferment === s.ferment));
+  document.querySelectorAll("[data-yeast]").forEach(b => b.classList.toggle("on", b.dataset.yeast === s.yeast_type));
+  for (const [k] of RATIOS){ $("#p_" + k).value = s.pct[k]; $("#v_" + k).textContent = pctText(s.pct[k]); }
+
+  const sug = suggestedYeast(s);
+  $("#h_yeast").innerHTML = Math.abs(sug - s.pct.yeast) < 0.001
+    ? `${YEAST[s.yeast_type].label}. A starting point for "${FERMENT[s.ferment].label.toLowerCase()}".`
+    : `${YEAST[s.yeast_type].label}. The starting point for "${FERMENT[s.ferment].label.toLowerCase()}" is ${pctText(sug)}. <button type="button" class="btn link" id="useSug">Use it</button>`;
+  $("#h_water").textContent = "Hydration. More water is stickier to handle and bakes up airier.";
+
+  $("#oBall").textContent = Math.round(c.ball);
+  $("#oTotal").textContent = Math.round(c.total).toLocaleString("en-US");
+  const rows = [
+    ["flour", "Flour", $("#flourName").value.trim() || "bread flour", c.flour, 100],
+    ["water", "Water", waterNote(s), c.flour * s.pct.water / 100, s.pct.water],
+    ["yeast", "Yeast", YEAST[s.yeast_type].label.toLowerCase(), c.flour * s.pct.yeast / 100, s.pct.yeast],
+    ["salt",  "Salt", "", c.flour * s.pct.salt / 100, s.pct.salt],
+    ["sugar", "Sugar", "", c.flour * s.pct.sugar / 100, s.pct.sugar],
+    ["oil",   "Olive oil", "", c.flour * s.pct.oil / 100, s.pct.oil],
+  ].filter(r => r[3] > 0);
+  $("#ing").innerHTML = rows.map(([k, n, sub, g, p]) => `
+    <li data-ing="${k}" class="${checked.has(k) ? "done" : ""}" role="checkbox" aria-checked="${checked.has(k)}" tabindex="0">
+      <span class="box">✓</span>
+      <span class="nm">${n}${sub ? `<small>${esc(sub)}</small>` : ""}</span>
+      <span class="g">${grams(g, k)}<small>g</small></span>
+      <span class="p">${pctText(p)}</span>
+    </li>`).join("");
+  $("#steps").innerHTML = steps(s, c).map(t => `<li>${t}</li>`).join("");
+  $("#lock").textContent = session ? "Lock it in" : "Sign in to lock it in";
+  try { localStorage.setItem("dough.calc", JSON.stringify(s)); } catch (_) {}
+}
+
+function waterNote(st){ return (st.ferment === "quick" || st.ferment === "same_day") ? "warm, about 95°F" : "cold, under 60°F"; }
+function steps(st, c){
+  const warm = st.ferment === "quick" || st.ferment === "same_day";
+  const out = [];
+  if (st.yeast_type === "active_dry") out.push(warm ? "Stir the yeast into the warm water and give it 5 to 10 minutes to foam." : "Stir the yeast into the cold water.");
+  else if (st.yeast_type === "fresh") out.push("Crumble the yeast into the water and stir until it dissolves.");
+  else out.push("Whisk the yeast into the flour. No proofing needed.");
+  out.push("Add the flour" + (st.pct.oil > 0 ? " and olive oil" : "") + " and mix for 2 minutes.");
+  out.push("Add the salt" + (st.pct.sugar > 0 ? " and sugar" : "") + ", then mix about 10 more minutes until smooth.");
+  const balls = `${st.count} ball${st.count === 1 ? "" : "s"} of about ${Math.round(c.ball)} g`;
+  if (st.ferment === "quick"){
+    out.push("Cover and let it rise somewhere warm for about an hour, until doubled.");
+    out.push(`Divide into ${balls}, cover, and rest 30 to 45 minutes.`);
+    out.push("Shape and bake.");
+  } else if (st.ferment === "same_day"){
+    out.push("Cover and let it rise at room temperature for 2 to 3 hours.");
+    out.push(`Divide into ${balls}, cover, and rest 1 to 2 more hours.`);
+    out.push("Shape and bake.");
+  } else if (st.ferment === "cold_1"){
+    out.push("Cover and rest about an hour at room temperature.");
+    out.push(`Divide into ${balls} and seal the seams.`);
+    out.push("Refrigerate about 24 hours.");
+    out.push("Take it out 1 to 2 hours before baking so it comes to room temperature.");
+  } else {
+    out.push("Cover and rest 1 to 3 hours at room temperature.");
+    out.push(`Divide into ${balls} and seal the seams.`);
+    out.push("Refrigerate 2 to 4 days. Three is the sweet spot.");
+    out.push("Bring it to room temperature before shaping.");
+  }
+  return out;
+}
+
+function setPct(k, v){
+  const [, , min, max] = RATIOS.find(r => r[0] === k);
+  s.pct[k] = clamp(r2(v), min, max);
+}
+function wire(){
+  for (const id of ["count", "size", "thickness"]) $("#" + id).addEventListener("input", e => { s[id] = +e.target.value; render(); });
+  document.addEventListener("click", e => {
+    const b = e.target.closest("button, li[data-ing]"); if (!b) return;
+    if (b.dataset.step){ const k = b.dataset.step, el = $("#" + k); s[k] = clamp(r2(s[k] + +b.dataset.d), +el.min, +el.max); render(); }
+    else if (b.dataset.thick){ s.thickness = +b.dataset.thick; render(); }
+    else if (b.dataset.ferment){ s.ferment = b.dataset.ferment; s.pct.yeast = suggestedYeast(s); render(); }
+    else if (b.dataset.yeast){
+      const from = YEAST[s.yeast_type].f, to = YEAST[b.dataset.yeast].f;
+      s.yeast_type = b.dataset.yeast; setPct("yeast", Math.round(s.pct.yeast * to / from / 0.05) * 0.05); render();
+    }
+    else if (b.dataset.pct){ setPct(b.dataset.pct, s.pct[b.dataset.pct] + +b.dataset.d); render(); }
+    else if (b.id === "useSug"){ s.pct.yeast = suggestedYeast(s); render(); }
+    else if (b.dataset.ing){ checked.has(b.dataset.ing) ? checked.delete(b.dataset.ing) : checked.add(b.dataset.ing); keepAwake(); render(); }
+  });
+  $("#ing").addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
+  $("#ratios").addEventListener("input", e => { if (e.target.dataset.key){ setPct(e.target.dataset.key, +e.target.value); render(); } });
+  $("#resetPct").addEventListener("click", () => { s.pct = { ...PRESET }; s.pct.yeast = suggestedYeast(s); render(); });
+  $("#flourName").addEventListener("input", () => { try { localStorage.setItem("dough.flour", $("#flourName").value); } catch (_) {} render(); });
+  $("#tabCalc").addEventListener("click", () => showTab("calc"));
+  $("#tabHist").addEventListener("click", () => showTab("hist"));
+  $("#lock").addEventListener("click", lockIn);
+}
+function showTab(t){
+  $("#calc").hidden = t !== "calc"; $("#hist").hidden = t !== "hist";
+  $("#tabCalc").classList.toggle("on", t === "calc"); $("#tabHist").classList.toggle("on", t === "hist");
+  window.scrollTo(0, 0);
+}
+// Keep the phone awake once weighing has started.
+let wake = null;
+async function keepAwake(){ try { if (!wake && navigator.wakeLock) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } } catch (_) {} }
+
+// ---- lock in -----------------------------------------------------------------
+async function lockIn(){
+  $("#lockErr").hidden = $("#lockOk").hidden = true;
+  if (!session){ openAuth("in"); return; }
+  const c = compute(s), b = $("#lock");
+  b.disabled = true;
+  const { error } = await sb.from("dough_bakes").insert({
+    dough_type: "pizza",
+    made_on: $("#madeOn").value || todayISO(),
+    bake_on: $("#bakeOn").value || null,
+    count: s.count, size_in: s.size, thickness: s.thickness,
+    ball_g: Math.round(c.ball), flour_g: Math.round(c.flour),
+    pct: s.pct, yeast_type: s.yeast_type, ferment: s.ferment,
+    flour_name: $("#flourName").value.trim(), plan_notes: $("#planNotes").value.trim(),
+  });
+  b.disabled = false;
+  if (error){ $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
+  $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report."; $("#lockOk").hidden = false;
+  $("#planNotes").value = ""; checked.clear();
+  await load(); render();
+}
+
+// ---- history -----------------------------------------------------------------
+async function load(){
+  if (!session){ bakes = []; renderBakes(); return; }
+  const { data, error } = await sb.from("dough_bakes").select("*").order("made_on", { ascending: false }).order("created_at", { ascending: false });
+  if (error){ $("#bakes").innerHTML = `<div class="err">Couldn't load your bakes: ${esc(error.message)}</div>`; return; }
+  bakes = data || [];
+  renderBakes();
+}
+function bakeTitle(b){ return `${b.count} × ${+b.size_in}″ ${thickText(+b.thickness).toLowerCase()} pizza${b.count === 1 ? "" : "s"}`; }
+const stars = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+function renderBakes(){
+  $("#tabHist").textContent = bakes.length ? `My bakes (${bakes.length})` : "My bakes";
+  // "last time" banner: the newest bake, plus the newest "next time" note if there is one
+  const lastEl = $("#last"), newest = bakes[0], noted = bakes.find(b => b.next_time);
+  if (newest){
+    lastEl.innerHTML = `<b>Last time:</b> ${esc(bakeTitle(newest))}, ${fmtDate(newest.made_on)}, ${newest.rating ? stars(newest.rating) : "no report yet"}. <button type="button" class="btn link" data-again="${newest.id}">Make it again</button>`
+      + (noted ? `<span class="nt"><b>Next time, try:</b> ${esc(noted.next_time)}</span>` : "");
+    lastEl.hidden = false;
+  } else lastEl.hidden = true;
+
+  if (!session){ $("#bakes").innerHTML = `<div class="card empty"><p>Sign in to see your bakes and how each one turned out.</p><button class="btn primary" data-open-auth>Sign in</button></div>`; return; }
+  if (!bakes.length){ $("#bakes").innerHTML = `<div class="card empty"><p>Nothing here yet. Set up a dough in the calculator and tap "Lock it in".</p></div>`; return; }
+  $("#bakes").innerHTML = bakes.map(b => {
+    const f = +b.flour_g, p = b.pct || {};
+    const rows = [["Flour", f, 100, "flour"]].concat(RATIOS.filter(([k]) => p[k] > 0).map(([k, label]) => [k === "yeast" ? "Yeast, " + YEAST[b.yeast_type].label.toLowerCase() : label, f * p[k] / 100, p[k], k]));
+    const facts = [`${+b.ball_g} g per ball`, FERMENT[b.ferment].label + ", " + FERMENT[b.ferment].sub, b.flour_name].filter(Boolean).join(" · ");
+    return `<div class="card bake">
+      <div class="head">
+        <div><h3>${esc(bakeTitle(b))}</h3><div class="when">Made ${fmtDate(b.made_on)}${b.bake_on ? ", baked " + fmtDate(b.bake_on) : ""}</div></div>
+        ${b.rating ? `<span class="stars" aria-label="${b.rating} of 5 stars">${stars(b.rating)}</span>` : `<span class="pend">Awaiting report</span>`}
+      </div>
+      <p class="facts">${esc(facts)}</p>
+      <table>${rows.map(([n, g, pc, k]) => `<tr><td>${esc(n)}</td><td>${grams(g, k)} g</td><td>${pctText(pc)}</td></tr>`).join("")}</table>
+      <div class="rep">
+        ${b.plan_notes ? `<p><b>Notes</b>${esc(b.plan_notes)}</p>` : ""}
+        ${b.went_well ? `<p><b>Went well</b>${esc(b.went_well)}</p>` : ""}
+        ${b.went_poorly ? `<p><b>Went poorly</b>${esc(b.went_poorly)}</p>` : ""}
+        ${b.next_time ? `<p><b>Next time, try</b>${esc(b.next_time)}</p>` : ""}
+      </div>
+      <div class="acts">
+        <button class="btn primary" data-again="${b.id}">Make it again</button>
+        <button class="btn" data-report="${b.id}">${b.reported_at ? "Edit report" : "How did it go?"}</button>
+        <button class="btn" data-del="${b.id}">Delete</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+document.addEventListener("click", async e => {
+  const t = e.target.closest("[data-again],[data-report],[data-del],[data-open-auth]"); if (!t) return;
+  if (t.hasAttribute("data-open-auth")){ openAuth("in"); return; }
+  const b = bakes.find(x => x.id === (t.dataset.again || t.dataset.report || t.dataset.del)); if (!b) return;
+  if (t.dataset.again){
+    s = { count: b.count, size: +b.size_in, thickness: +b.thickness, pct: { ...PRESET, ...b.pct }, yeast_type: b.yeast_type, ferment: b.ferment };
+    $("#flourName").value = b.flour_name || $("#flourName").value;
+    checked.clear(); $("#lockOk").hidden = true; render(); showTab("calc");
+  } else if (t.dataset.report){
+    reporting = b; rating = b.rating || 0;
+    $("#repSub").textContent = bakeTitle(b) + ", made " + fmtDate(b.made_on);
+    $("#wentWell").value = b.went_well; $("#wentPoorly").value = b.went_poorly; $("#nextTime").value = b.next_time;
+    $("#repErr").hidden = true; drawRate(); $("#repDlg").showModal();
+  } else if (t.dataset.del){
+    if (!confirm("Delete this bake and its report? This can't be undone.")) return;
+    const { error } = await sb.from("dough_bakes").delete().eq("id", b.id);
+    if (error) alert("Couldn't delete it: " + error.message); else load();
+  }
+});
+function drawRate(){ $("#rate").innerHTML = [1,2,3,4,5].map(n => `<button type="button" data-rate="${n}" class="${n <= rating ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}" aria-pressed="${n === rating}">★</button>`).join(""); }
+$("#rate").addEventListener("click", e => { const b = e.target.closest("[data-rate]"); if (b){ rating = +b.dataset.rate; drawRate(); } });
+$("#repCancel").addEventListener("click", () => $("#repDlg").close());
+$("#repForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!rating){ $("#repErr").textContent = "Give it a star rating first."; $("#repErr").hidden = false; return; }
+  $("#repBtn").disabled = true;
+  const { error } = await sb.from("dough_bakes").update({
+    rating, went_well: $("#wentWell").value.trim(), went_poorly: $("#wentPoorly").value.trim(), next_time: $("#nextTime").value.trim(),
+    reported_at: reporting.reported_at || new Date().toISOString(),
+  }).eq("id", reporting.id);
+  $("#repBtn").disabled = false;
+  if (error){ $("#repErr").textContent = "That didn't save: " + error.message; $("#repErr").hidden = false; return; }
+  $("#repDlg").close(); load();
+});
+
+// ---- auth --------------------------------------------------------------------
+let mode = "in";   // "in" | "up" | "reset"
+const HERE = location.origin + location.pathname;
+function openAuth(m){
+  mode = m;
+  $("#authTitle").textContent = m === "in" ? "Sign in" : m === "up" ? "Create an account" : "Reset your password";
+  $("#authSub").textContent = m === "reset" ? "Enter your email and I'll send a link to set a new password." : "Your bakes are saved to your account and only you can see them.";
+  $("#authBtn").textContent = m === "in" ? "Sign in" : m === "up" ? "Create account" : "Send the link";
+  $("#pwWrap").hidden = m === "reset"; $("#password").required = m !== "reset";
+  $("#password").autocomplete = m === "up" ? "new-password" : "current-password";
+  $("#googleWrap").hidden = !GOOGLE_ENABLED || m === "reset";
+  $("#authLinks").innerHTML = m === "in"
+    ? `<button type="button" class="btn link" data-mode="up">Create an account</button> · <button type="button" class="btn link" data-mode="reset">Forgot your password?</button>`
+    : `<button type="button" class="btn link" data-mode="in">Back to sign in</button>`;
+  $("#authErr").hidden = $("#authOk").hidden = true;
+  if (!$("#authDlg").open) $("#authDlg").showModal();
+}
+$("#authLinks").addEventListener("click", e => { const b = e.target.closest("[data-mode]"); if (b) openAuth(b.dataset.mode); });
+$("#authCancel").addEventListener("click", () => $("#authDlg").close());
+$("#signIn").addEventListener("click", () => openAuth("in"));
+$("#signOut").addEventListener("click", () => sb.auth.signOut());
+$("#google").addEventListener("click", () => sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: HERE } }));
+$("#authForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = $("#email").value.trim(), password = $("#password").value, b = $("#authBtn");
+  const fail = (m) => { $("#authErr").textContent = m; $("#authErr").hidden = false; };
+  const good = (m) => { $("#authOk").textContent = m; $("#authOk").hidden = false; };
+  $("#authErr").hidden = $("#authOk").hidden = true; b.disabled = true;
+  if (mode === "in"){
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) fail(/confirm/i.test(error.message) ? "Confirm your email first. The link is in the message I sent when you signed up." : "That email and password didn't match."); else $("#authDlg").close();
+  } else if (mode === "up"){
+    const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: HERE } });
+    if (error) fail("Couldn't create the account: " + error.message);
+    else if (data.session) $("#authDlg").close();
+    else good("Almost there. Check your email (and spam) for a confirmation link, then sign in here.");
+  } else {
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: HERE });
+    if (error) fail("Couldn't send that: " + error.message); else good("Sent. Check your email (and spam) for a link back here.");
+  }
+  b.disabled = false;
+});
+$("#pwForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  $("#pwErr").hidden = true; $("#pwBtn").disabled = true;
+  const { error } = await sb.auth.updateUser({ password: $("#pw1").value });
+  $("#pwBtn").disabled = false;
+  if (error){ $("#pwErr").textContent = "Couldn't save that: " + error.message; $("#pwErr").hidden = false; } else $("#pwDlg").close();
+});
+function setSession(sess){
+  const changed = (sess?.user?.id || null) !== (session?.user?.id || null);
+  session = sess;
+  $("#signIn").hidden = !!sess; $("#signOut").hidden = !sess;
+  $("#whoEmail").hidden = !sess; $("#whoEmail").textContent = sess ? sess.user.email : "";
+  if (changed || !sess) load();
+  render();
+}
+
+// ---- boot --------------------------------------------------------------------
+buildControls(); wire();
+$("#madeOn").value = todayISO();
+try { $("#flourName").value = localStorage.getItem("dough.flour") || ""; } catch (_) {}
+render(); renderBakes();
+sb.auth.onAuthStateChange((event, sess) => {
+  if (event === "PASSWORD_RECOVERY") $("#pwDlg").showModal();
+  setTimeout(() => setSession(sess), 0);   // never call back into supabase from inside this callback
+});
+</script>
+</body>
+</html>

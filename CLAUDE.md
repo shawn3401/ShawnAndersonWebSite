@@ -1,9 +1,11 @@
 # ShawnAndersonWebSite
 
-Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Two live sub-sites are actively maintained:
+Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Three live sub-sites are actively maintained:
 
 - `rick/` Rick Saunders' Western Wildlands Route tracker (Canada to Mexico by bike, Sept 6 to Nov 7, 2026). Updated most days.
 - `danceflowers/` Dance Flowers, Leah's corsage, boutonnière, and bouquet business for school dances and weddings in Idaho Falls. Landing page plus order form. See "danceflowers/ page" below.
+
+- `dough/` Dough, Shawn's pizza dough calculator with saved bakes and reports, behind logins. See "dough/ app" at the bottom.
 
 Everything else at the root (`index.html`, etc.) is the personal landing site.
 
@@ -136,3 +138,29 @@ Same structure as the tracker (color tokens on `:root`, dark palette under `pref
 - Stated promises on the page: confirmation within a day, pickup in Idaho Falls the day of or the day before, at least 5 days' notice (a week or more is better), and the payment policy below. Several sections repeat the same promise (hero lead, step 3, order intro, summary note, confirmation panel text, FAQ), so change them together.
 - Payment policy (Shawn, Sept 10, 2026, kept deliberately casual since customers are friends and the kids' friends): Venmo when you order is easiest, cash at pickup is fine, flowers are paid for by pickup, no deposit. If plans change, text Leah early because she buys fresh flowers a few days ahead.
 - Leah's contact details on the page: Venmo @Leah-Anderson-58 (`VENMO_USER`), phone 208-403-7323 (`CONTACT_PHONE`, also in the "What if plans change?" FAQ). Notification email, not yet wired: leah3401@gmail.com. If Leah changes any of these, update the hero lead, the How it works steps, the Order intro, the summary note, and the FAQ, since several repeat the same promise.
+
+## dough/ app (started Oct 3, 2026)
+
+### What it is
+shawnandersonapps.com/dough/. Shawn is learning dough (pizza now; bread and cinnamon rolls later) and wanted a calculator he can adjust, lock in, and report back on, so each batch improves on the last ("kaizen"). Anyone can use the calculator; saving needs an account, and each person sees only their own bakes. Friends will get accounts later.
+
+### Files
+- `dough/index.html` the whole app, CSS and JS inline, supabase-js v2 from jsDelivr.
+- `supabase/dough/*.sql` database setup, numbered, safe to re-run.
+
+### Shared Supabase project
+- Project `Shawnz Apps` (ref `yjurglvfzlboblestfdz`, us-west-1, $10/month) in the "Shawn Anderson Apps" org. Shawn's decision, Oct 3, 2026: ONE shared project for every hobby app on the site that needs logins, so one account works across them. Real products and Dance Flowers keep their own projects.
+- Every app prefixes its tables (`dough_`), with RLS by `user_id = auth.uid()`, so an app that takes off can be moved to its own project later.
+- Sign-in standard for Shawn's projects: email and password, or Google. The page has a Google button behind `GOOGLE_ENABLED` (false until the Google provider is configured in Supabase Auth, which needs an OAuth client from Google Cloud).
+- Auth URL configuration must list the site (Site URL plus Redirect URLs `https://shawnandersonapps.com/**`), or confirmation and reset emails link to localhost.
+- Shawn bought shawnzapps.com on Oct 3, 2026 ("Shawn's Apps") and plans to move the site there later. When that happens, add it to the Redirect URLs.
+
+### How the calculator works
+- Modeled on Dough Guy's calculator (doughguy.co/pages/dough), which Shawn was using. His fixed recipe is the starting preset (`PRESET`): 62% water, 0.4% active dry yeast, 2.5% salt, 2% sugar, 3.3% olive oil, all as a percent of flour.
+- Thickness is grams of dough per square inch. `THICK` stops match his thin, regular, thick (2.04, 2.39, 3.11; that is 409, 480, 626 g for a 16 inch pizza). Ball weight = thickness x area; flour = total dough / (1 + sum of percents).
+- Unlike his, every ratio has a slider, thickness is a slider, and there are two more inputs: when the dough is needed (`FERMENT`: tonight, today, tomorrow, 2 to 4 days) and yeast type (`YEAST`: active dry, instant x0.75, fresh x2.5). Picking a ferment plan sets a starting yeast percent and changes the steps. The yeast numbers for the shorter plans are Claude's rule-of-thumb starting points, not tested by Shawn; adjust them from his reports.
+- "Lock it in" inserts a row in `dough_bakes` (the plan snapshot). "How did it go?" adds a 1 to 5 rating, went well, went poorly, and "next time, try". The newest bake and the newest "next time" note show in a banner above the calculator. "Make it again" loads a bake back into the calculator.
+- Calculator state and the flour name are remembered in localStorage as a convenience only.
+
+### Shawn's bakes
+- Oct 2, 2026: 3 x 16 inch thick, Dough Guy ratios unchanged, 1,100 g King Arthur Bread Flour (12.7%), active dry yeast, cold ferment for Sunday Oct 4. He made pizza three times in the month before with different ratios and does not remember them. Never invent a bake or a result; ask.
