@@ -143,11 +143,11 @@ dialog.wide{width:min(640px,calc(100vw - 24px))}
 .ing .nm{flex:1}
 .ing .nm small{display:block;color:var(--ink-3);font-size:13.5px}
 .ing .g{font-family:"Fraunces",Georgia,serif;font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
-.ing .gin{font:inherit;width:4.2ch;min-width:86px;text-align:right;color:inherit;background:none;border:1px solid transparent;border-radius:6px;padding:0 2px;-moz-appearance:textfield;appearance:textfield}
+.ing .gin{font:inherit;width:4.2ch;min-width:96px;text-align:right;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px;cursor:text;-moz-appearance:textfield;appearance:textfield}
 .ing .gin::-webkit-outer-spin-button,.ing .gin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.ing .gin:hover{border-color:var(--line)}
-.ing .gin:focus{border-color:var(--accent);background:var(--bg);outline:none}
-.ing li.typed .gin{color:var(--accent)}
+.ing .gin:hover{border-color:var(--ink-3)}
+.ing .gin:focus{border-color:var(--accent);outline:2px solid var(--accent);outline-offset:1px}
+.ing li.typed .gin{color:var(--accent);border-color:var(--accent)}
 .ing .g small{font-family:"Source Sans 3",sans-serif;font-size:15px;font-weight:600;color:var(--ink-3);margin-left:2px}
 .ing .p{width:54px;text-align:right;color:var(--ink-3);font-size:14px;font-variant-numeric:tabular-nums}
 .ing li.done{opacity:.45}
@@ -252,8 +252,9 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
             <div id="oBallBox"><b class="num" id="oBall"></b><span id="oBallLab">g per ball</span></div>
             <div><b class="num" id="oTotal"></b><span>g of dough</span></div>
           </div>
+          <p class="note" style="margin:0 0 6px">These amounts match your sliders. Every number is a box you can type in: round it, or enter what actually went in. Changing the flour re-scales the rest.</p>
           <ul class="ing" id="ing"></ul>
-          <p class="note">Tap an ingredient once it is in the bowl. If the scale says something different, tap the number and type what really went in. Typing the flour re-scales everything else to it.</p>
+          <p class="note">Tick the box on the left once an ingredient is in the bowl. <button type="button" class="btn link" id="unType" hidden>Back to the slider amounts</button></p>
         </div>
 
         <div class="card">
@@ -564,6 +565,7 @@ function render(){
   const totalNow = c.flour + am.reduce((x, r) => x + r.g, 0);
   $("#oBall").textContent = grams(s.sizing === "flour" ? totalNow : totalNow / s.count);
   $("#oTotal").textContent = grams(totalNow);
+  $("#unType").hidden = !rows.some(r => r.typed);
   $("#ing").innerHTML = rows.map(r => `
     <li data-ing="${esc(r.key)}" class="${checked.has(r.key) ? "done" : ""}${r.typed ? " typed" : ""}" role="checkbox" aria-checked="${checked.has(r.key)}" tabindex="0">
       <span class="box">✓</span>
@@ -622,6 +624,8 @@ function wire(){
     else if (d.edittype !== undefined) openType(types.find(x => x.id === s.type_id) || null, true);
     else if (d.hist !== undefined){ histFilter = d.hist; renderBakes(); }
   });
+  $("#unType").addEventListener("click", () => { replan(); render(); });
+  $("#ing").addEventListener("focusin", e => { if (e.target.dataset.actual) e.target.select(); });
   $("#ing").addEventListener("change", e => {
     const k = e.target.dataset.actual; if (!k) return;
     const v = e.target.value.trim() === "" ? null : Math.max(0, +e.target.value);
