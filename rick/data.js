@@ -125,14 +125,18 @@ const LOG = [
   {day:25, date:"2026-09-30", end:"Otter Creek Reservoir, UT", miles:61.4, gain:2756, loss:1359, high:7371, low:5139, lat:38.196272, lng:-111.999746, notes:"Salina to Otter Creek Reservoir. Back on the Western Wildlands route after the Skyline Drive bypass. One long climb out of the Sevier valley from 5,139 ft to a 7,371 ft high point, then a gentle run south, mostly downhill, to camp at Otter Creek Reservoir. 61.4 miles with 2,756 ft of climbing.", updates:[
     {time:"Evening", miles:61.4, gain:2756, text:"Camped at Otter Creek Reservoir after 61.4 miles, +2,756 / -1,359 ft."},
   ]},
+  {day:26, date:"2026-10-01", end:"Kings Ranch, UT (Bryce Canyon country)", miles:57.6, gain:3025, loss:1698, high:8100, low:6370, lat:37.608897, lng:-112.256602, notes:"Otter Creek Reservoir to Kings Ranch. A steady climb all day from 6,370 ft near the reservoir into Bryce Canyon country, past an old wooden mill in the morning and the Welcome to Bryce Canyon Country sign in the afternoon, topping out at 8,100 ft. Camped in the ponderosa pines. 57.6 miles with 3,025 ft of climbing.", updates:[
+    {time:"2:15 pm", text:"Into Bryce Canyon country, red rock all around."},
+    {time:"Evening", miles:57.6, gain:3025, text:"Camped in the pines at Kings Ranch after 57.6 miles, +3,025 / -1,698 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:38.196272, lng:-111.999746, town:"Otter Creek Reservoir", state:"UT", label:"Camped at the reservoir after 61.4 miles on day 25", asOf:"Sept 30, evening MT", approx:false};
+const LOCATION = {lat:37.608897, lng:-112.256602, town:"Kings Ranch", state:"UT", label:"Camped in the pines in Bryce Canyon country after 57.6 miles on day 26", asOf:"Oct 1, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is back on the route. Day 25 took him out of Salina, where he rejoined the Western Wildlands line after going around Skyline Drive, up one long climb to 7,371 ft and then gently downhill to camp at Otter Creek Reservoir: 61.4 miles with 2,756 ft of climbing. Kanab and the end of segment 6 are about 150 miles south.";
+const STATUS = "Catching up. Day 26 took Rick from Otter Creek Reservoir up into Bryce Canyon country: a steady all-day climb to 8,100 ft and a camp in the ponderosa pines at Kings Ranch, 57.6 miles with 3,025 ft of climbing. Day 27, which took him on to Arizona, is coming next.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Sept 30, 2026, end of day 25", caption:"Blue and green is Rick's track so far, Roosville to Otter Creek Reservoir in southern Utah, with day 25 in green. The route runs on south through Utah and Arizona to the Mexican border at Sierra Vista."};
@@ -260,5 +264,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 3, 2026, 8:15 am MT";
+const LAST_UPDATED = "Oct 3, 2026, 8:30 am MT";
 // ===== END DATA =====
