@@ -42,3 +42,7 @@ update public.dough_bakes set ingredients = (
   from (values ('water','Water',1),('yeast','Yeast',2),('salt','Salt',3),('sugar','Sugar',4),('oil','Olive oil',5)) as k(key, name, ord)
   where pct ? k.key
 ) where ingredients is null and pct is not null;
+
+-- Oct 4, 2026: each timing ("How long until you bake?") keeps its own steps and yeast amount.
+-- {ferment_key: {steps, yeast, yeast_type}}; dough_types.steps stays as the last-used set.
+alter table public.dough_types add column if not exists variants jsonb not null default '{}'::jsonb;

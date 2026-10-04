@@ -105,6 +105,11 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .ctl .val input.valin{width:96px;text-align:right;font-weight:700;font-size:20px;padding:3px 8px;font-variant-numeric:tabular-nums}
 #stepsEdit{min-height:230px}
 .acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.adapt{margin-top:12px;padding:12px;border:1px solid var(--accent);border-left-width:5px;border-radius:8px;background:var(--soft)}
+.adapt p{margin:0 0 8px}
+.adapt h3{font-size:18px;margin-bottom:6px}
+.adapt .steps{color:var(--ink)}
+.adapt .wait{color:var(--ink-2);font-style:italic;margin:0}
 .irow{display:grid;grid-template-columns:auto minmax(0,1fr) 78px auto auto;gap:6px;align-items:center;margin-top:6px}
 .irow .mv{display:flex;flex-direction:column;gap:2px}
 .irow .mv button{font:inherit;font-size:11px;line-height:1;width:30px;height:20px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:4px;cursor:pointer;padding:0}
@@ -268,6 +273,8 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
           <textarea id="stepsEdit" maxlength="6000" aria-label="Steps, one per line" hidden></textarea>
           <p class="note" id="stepsNote"></p>
           <div class="acts"><button type="button" class="btn" id="editSteps">Edit steps</button><button type="button" class="btn link" id="basicSteps" hidden>Back to the basic steps</button></div>
+          <div class="adapt" id="adaptBox" hidden></div>
+          <div class="err" id="adaptErr" hidden></div>
         </div>
 
         <div class="card">
@@ -432,16 +439,23 @@ function thickText(t){
   return t < THICK[1][1] ? "Thin to regular" : "Regular to thick";
 }
 
+// Each timing keeps its own version of a dough: the steps and the yeast amount that go with it.
+function applyVariant(st, v){
+  st.steps = v.steps ?? null;
+  const y = st.ings.find(g => g.key === "yeast");
+  if (y && v.yeast != null) y.pct = v.yeast_type && v.yeast_type !== st.yeast_type && YEAST[v.yeast_type] ? Math.round(v.yeast * YEAST[st.yeast_type].f / YEAST[v.yeast_type].f / 0.05) * 0.05 : v.yeast;
+}
 function stateFromType(t){
   const d = t.defaults || {};
-  const st = { type_id: t.id, name: t.name, sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {} };
+  const st = { type_id: t.id, name: t.name, sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, variants: clone(t.variants || {}), adaptFrom: null };
   if (t.sizing !== "pizza"){ st.count = 1; st.ferment = "same_day"; }
   for (const k of ["count", "size", "thickness", "piece_g", "flour_g", "yeast_type", "ferment"]) if (d[k] != null) st[k] = d[k];
+  if (st.variants[st.ferment]) applyVariant(st, st.variants[st.ferment]);
   return st;
 }
 let types = [LOCAL_PIZZA];
 let s = stateFromType(LOCAL_PIZZA);
-try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null, flour_fix: null, actual: {} }; } catch (_) {}
+try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null, flour_fix: null, actual: {}, variants: saved.variants || {}, adaptFrom: null }; } catch (_) {}
 let checked = new Set(), ranges = {}, editingSteps = false;
 let session = null, bakes = [], reporting = null, rating = 0, histFilter = "";
 
@@ -591,14 +605,57 @@ function render(){
   $("#editSteps").textContent = editingSteps ? "Done" : list.length ? "Edit steps" : "Add steps";
   $("#basicSteps").hidden = !(s.sizing === "pizza" && s.steps != null && ing(s, "yeast"));
 
+  const ab = $("#adaptBox"), toL = FERMENT[s.ferment].label;
+  if (adaptProposal){
+    const y = ing(s, "yeast"), ny = +adaptProposal.yeast_pct;
+    ab.innerHTML = `<h3>Proposed for ${esc(toL)}</h3><p>${esc(adaptProposal.changes || "")}</p>`
+      + (y && ny > 0 && Math.abs(ny - y.pct) > 0.001 ? `<p><b>Yeast:</b> ${pctText(y.pct)} becomes ${pctText(ny)}.</p>` : "")
+      + `<ol class="steps">${(adaptProposal.steps || []).map(x => `<li>${esc(x)}</li>`).join("")}</ol>`
+      + `<div class="acts"><button type="button" class="btn primary" id="adaptUse">Use these</button><button type="button" class="btn" id="adaptNo">No thanks</button></div>`;
+    ab.hidden = false;
+  } else if (s.adaptFrom && s.adaptFrom !== s.ferment && list.length && !editingSteps){
+    const fromL = FERMENT[s.adaptFrom].label;
+    ab.innerHTML = adaptBusy ? `<p class="wait">Rewriting your steps for ${esc(toL)}. This takes about 15 seconds.</p>`
+      : `<p>These steps were written for <b>${esc(fromL)}</b>, and you picked <b>${esc(toL)}</b>. The rests, the temperatures, and the yeast usually need to change.</p>`
+        + `<div class="acts">${aiOK ? `<button type="button" class="btn primary" id="adaptGo">Adapt them for ${esc(toL)}</button>` : ""}<button type="button" class="btn" id="adaptKeep">${aiOK ? "Keep them as they are" : "I'll edit them myself"}</button></div>`;
+    ab.hidden = false;
+  } else ab.hidden = true;
+
   $("#lock").textContent = session ? "Lock it in" : "Sign in to lock it in";
   try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {}
 }
 
 function setPct(k, v){ const g = ing(s, k), [min, max] = ranges[k]; g.pct = clamp(r2(v), min, max); if (s.actual) delete s.actual[k]; }
+const curVariant = () => ({ steps: s.steps, yeast: ing(s, "yeast") ? pctOf(s, "yeast") : null, yeast_type: s.yeast_type });
+function setFerment(k){
+  const old = s.ferment;
+  if (editingSteps){ editingSteps = false; if (!lines(s.steps).length) s.steps = null; }
+  if (!s.adaptFrom) s.variants[old] = curVariant();   // steps still waiting to be adapted are not a version of anything
+  s.ferment = k; adaptProposal = null; $("#adaptErr").hidden = true;
+  const v = s.variants[k];
+  if (v){ applyVariant(s, v); s.adaptFrom = null; if (s.actual) delete s.actual.yeast; buildControls(); }
+  else if (lines(s.steps).length) s.adaptFrom = s.adaptFrom || old;   // their own steps, written for another timing
+  else { s.adaptFrom = null; if (usesBasic(s)) setPct("yeast", suggestedYeast(s)); }
+  render();
+}
+async function saveVariants(){ if (session && s.type_id) await sb.from("dough_types").update({ variants: s.variants }).eq("id", s.type_id); }
+let adaptProposal = null, adaptBusy = false;
+async function adaptSteps(){
+  if (adaptBusy || !s.adaptFrom) return;
+  const from = FERMENT[s.adaptFrom], to = FERMENT[s.ferment], forKey = s.ferment;
+  adaptBusy = true; $("#adaptErr").hidden = true; render();
+  const { data, error } = await sb.functions.invoke("dough-adapt", { body: { from: from.label + ", " + from.sub, to: to.label + ", " + to.sub, context: aiContext() } });
+  adaptBusy = false;
+  if (error || !data?.adapted){
+    let msg = data?.error || "";
+    if (!msg && error?.context?.json){ try { msg = (await error.context.json()).error || ""; } catch (_) {} }
+    $("#adaptErr").textContent = msg || "That didn't go through. Try again in a moment."; $("#adaptErr").hidden = false;
+  } else if (forKey === s.ferment) adaptProposal = data.adapted;
+  render();
+}
 function replan(){ s.flour_fix = null; s.actual = {}; }   // a new plan throws away numbers typed against the old one
 function switchType(t, st){
-  s = st || stateFromType(t);
+  s = st || stateFromType(t); adaptProposal = null;
   checked.clear(); editingSteps = false; $("#lockOk").hidden = $("#lockErr").hidden = true;
   buildControls(); renderTypes(); renderBakes();
 }
@@ -616,7 +673,7 @@ function wire(){
     const d = b.dataset;
     if (d.step){ const r = $("#r_" + d.step); s[d.step] = clamp(r2(s[d.step] + +d.d), +r.min, Math.max(+r.max, s[d.step])); replan(); render(); }
     else if (d.thick){ s.thickness = +d.thick; replan(); render(); }
-    else if (d.ferment){ s.ferment = d.ferment; if (s.sizing === "pizza" && ing(s, "yeast")) setPct("yeast", suggestedYeast(s)); render(); }
+    else if (d.ferment){ if (d.ferment !== s.ferment) setFerment(d.ferment); }
     else if (d.yeast){
       const from = YEAST[s.yeast_type].f, to = YEAST[d.yeast].f;
       s.yeast_type = d.yeast; if (ing(s, "yeast")) setPct("yeast", Math.round(pctOf(s, "yeast") * to / from / 0.05) * 0.05); render();
@@ -647,7 +704,20 @@ function wire(){
   $("#resetPct").addEventListener("click", () => { const t = types.find(x => x.id === s.type_id); if (t){ s.ings = clone(t.ingredients); buildControls(); render(); } });
   $("#editSteps").addEventListener("click", () => {
     if (!editingSteps){ const cur = stepList(s, compute(s)).join("\n"); s.steps = cur; $("#stepsEdit").value = cur; editingSteps = true; render(); $("#stepsEdit").focus(); }
-    else { editingSteps = false; if (!lines(s.steps).length) s.steps = null; render(); }
+    else { editingSteps = false; if (!lines(s.steps).length) s.steps = null; s.adaptFrom = null; render(); }
+  });
+  $("#adaptBox").addEventListener("click", async e => {
+    const id = e.target.closest("button")?.id;
+    if (id === "adaptGo") adaptSteps();
+    else if (id === "adaptKeep"){ s.adaptFrom = null; s.variants[s.ferment] = curVariant(); render(); }
+    else if (id === "adaptNo"){ adaptProposal = null; render(); }
+    else if (id === "adaptUse"){
+      const p = adaptProposal; adaptProposal = null;
+      s.steps = (p.steps || []).map(x => String(x).trim()).filter(Boolean).join("\n") || s.steps;
+      const y = ing(s, "yeast"); if (y && +p.yeast_pct > 0){ y.pct = r2(Math.min(10, +p.yeast_pct)); if (s.actual) delete s.actual.yeast; }
+      s.adaptFrom = null; s.variants[s.ferment] = curVariant();
+      buildControls(); render(); saveVariants();   // it cost a call, so keep it even before the next lock-in
+    }
   });
   $("#basicSteps").addEventListener("click", () => { if (confirm("Replace your steps with the basic ones?")){ s.steps = null; editingSteps = false; render(); } });
   $("#flourName").addEventListener("input", () => { try { localStorage.setItem("dough.flour", $("#flourName").value); } catch (_) {} render(); });
@@ -831,7 +901,7 @@ $("#aiLog").addEventListener("click", async e => {
   const ings = keyedIngs(p.ingredients), stepsText = (p.steps || []).map(x => String(x).trim()).filter(Boolean).join("\n") || null;
   const yt = YEAST[p.yeast_type] ? p.yeast_type : null;
   if (b.dataset.aiApply !== undefined){
-    s.ings = ings; s.steps = stepsText; if (yt) s.yeast_type = yt;
+    s.ings = ings; s.steps = stepsText; if (yt) s.yeast_type = yt; s.adaptFrom = null; adaptProposal = null;
     replan(); editingSteps = false; checked.clear(); buildControls(); render();
     $("#aiDlg").close(); showTab("calc"); return;
   }
@@ -890,7 +960,8 @@ async function lockIn(){
   });
   if (error){ b.disabled = false; $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
   // what you just made becomes this type's starting point next time
-  if (s.type_id) await sb.from("dough_types").update({ ingredients: s.ings, steps: s.steps, defaults: planOf(s) }).eq("id", s.type_id);
+  s.adaptFrom = null; adaptProposal = null; s.variants[s.ferment] = curVariant();
+  if (s.type_id) await sb.from("dough_types").update({ ingredients: s.ings, steps: s.steps, defaults: planOf(s), variants: s.variants }).eq("id", s.type_id);
   b.disabled = false;
   $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report."; $("#lockOk").hidden = false;
   $("#planNotes").value = ""; checked.clear(); addingFlour = false; replan();
@@ -971,7 +1042,7 @@ document.addEventListener("click", async e => {
   if (t.dataset.again){
     const ty = types.find(x => x.id && x.id === b.type_id) || types.find(x => x.name === b.type_name && x.sizing === b.sizing);
     const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
-      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {} };
+      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {}, variants: clone(ty?.variants || {}), adaptFrom: null };
     if (b.sizing === "pizza"){ st.size = +b.size_in; st.thickness = +b.thickness; }
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
     switchType(ty, st); showTab("calc");
