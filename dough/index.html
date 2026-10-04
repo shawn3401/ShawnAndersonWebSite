@@ -397,7 +397,8 @@ const PIZZA_INGS = [
   { key: "sugar", name: "Sugar", pct: 2 }, { key: "oil", name: "Olive oil", pct: 3.3 },
 ];
 // Slider ranges for the usual ingredients: min, max, slider step, button step. Anything else gets a range from its own percent.
-const RANGES = { water: [45, 100, 0.5, 0.5], yeast: [0.05, 4, 0.05, 0.05], salt: [0, 4, 0.1, 0.1], sugar: [0, 6, 0.1, 0.5], oil: [0, 8, 0.1, 0.1] };
+// Minimums are 0: a milk bread can have very little water, so no ingredient gets a floor.
+const RANGES = { water: [0, 100, 0.5, 0.5], yeast: [0, 4, 0.05, 0.05], salt: [0, 4, 0.1, 0.1], sugar: [0, 20, 0.1, 0.5], oil: [0, 15, 0.1, 0.1] };
 const PLAN = { count: [1, 12, 1, 1], size: [8, 20, 1, 1], thickness: [1.6, 3.8, 0.01, 0.05], piece_g: [50, 2000, 10, 10], flour_g: [100, 3000, 10, 10] };
 // Yeast starting points are for active dry in pizza dough; the others convert from it.
 const FERMENT = {
@@ -524,8 +525,9 @@ function buildControls(){
   ranges = {};
   for (const g of s.ings){
     const r = RANGES[g.key];
-    if (r) ranges[g.key] = [r[0], Math.max(r[1], g.pct), r[2], r[3]];
-    else { const max = g.pct <= 10 ? 12 : g.pct <= 40 ? 50 : Math.max(100, g.pct); const st = max > 12 ? 0.5 : 0.1; ranges[g.key] = [0, max, st, st]; }
+    // every slider goes down to 0 and leaves room above where the recipe sits now
+    if (r) ranges[g.key] = [r[0], Math.max(r[1], Math.ceil(g.pct * 1.5)), r[2], r[3]];
+    else { const max = g.pct <= 5 ? 10 : g.pct <= 20 ? 30 : g.pct <= 40 ? 60 : Math.max(110, Math.ceil(g.pct * 1.5)); const st = max > 30 ? 0.5 : 0.1; ranges[g.key] = [0, max, st, st]; }
   }
   $("#ratios").innerHTML = s.ings.length
     ? s.ings.map(g => sliderRow("pct", g.key, g.name, ranges[g.key])).join("")
