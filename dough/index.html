@@ -96,6 +96,17 @@ select + input[type=text]{margin-top:8px}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+.picker{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.cats button{flex:1 0 auto;font:inherit;font-size:16px;font-weight:600;white-space:nowrap;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:9px 14px;cursor:pointer}
+.cats button small{font-weight:400;color:var(--ink-3);margin-left:5px}
+.cats button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.cats button.on small{color:var(--bg);opacity:.7}
+.recipe{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.recipe label{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.recipe select{flex:1 1 220px;width:auto;min-width:0;font-weight:600;font-size:17px}
+.recipe .btn.ai{border-color:var(--accent);color:var(--accent);background:var(--soft)}
+.empty .acts{justify-content:center}
 .types{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .types button{font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:6px 15px;cursor:pointer}
 .types button.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -202,6 +213,10 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
   .grid{grid-template-columns:minmax(0,1fr)}
   .right{position:static}
 }
+@media (max-width:620px){
+  .cats{display:grid;grid-template-columns:1fr 1fr;overflow:visible}
+  .cats button{padding:9px 8px}
+}
 @media (max-width:480px){
   body{font-size:16px}
   .card{padding:14px}
@@ -230,7 +245,9 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 
   <!-- ================= calculator ================= -->
   <div id="calc">
-    <div class="types" id="typeBar"></div>
+    <div class="picker" id="typeBar"></div>
+    <div class="card empty" id="emptyCat" hidden></div>
+    <div id="calcBody">
     <div class="last" id="last" hidden></div>
     <div class="grid">
       <div class="col">
@@ -250,7 +267,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         <div class="card">
           <h2>The ratios</h2>
           <div id="ratios"></div>
-          <p class="note">Each one is a percent of the flour weight. <button class="btn link" id="resetPct">Back to this type's saved ratios</button></p>
+          <p class="note">Each one is a percent of the flour weight. <button class="btn link" id="resetPct">Back to this recipe's saved ratios</button></p>
         </div>
       </div>
 
@@ -269,7 +286,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         <div class="card">
           <h2>Steps</h2>
           <ol class="steps" id="steps"></ol>
-          <p class="note" id="stepsEmpty" style="margin-top:0" hidden>No steps yet for this type. Add your own, one per line, and they will be here next time.</p>
+          <p class="note" id="stepsEmpty" style="margin-top:0" hidden>No steps yet for this recipe. Add your own, one per line, and they will be here next time.</p>
           <textarea id="stepsEdit" maxlength="6000" aria-label="Steps, one per line" hidden></textarea>
           <p class="note" id="stepsNote"></p>
           <div class="acts"><button type="button" class="btn" id="editSteps">Edit steps</button><button type="button" class="btn link" id="basicSteps" hidden>Back to the basic steps</button></div>
@@ -293,6 +310,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
           <div class="ok" id="lockOk" hidden></div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -339,21 +357,23 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
   </form>
 </dialog>
 
-<!-- dough type -->
+<!-- recipe -->
 <dialog id="typeDlg">
   <form id="typeForm">
-    <h2 id="typeTitle">New dough type</h2>
+    <h2 id="typeTitle">New recipe</h2>
     <p class="sub">Each ingredient is a percent of the flour weight. Flour is always 100%, so leave it off the list.</p>
     <label class="f" for="tName">Name</label>
-    <input type="text" id="tName" maxlength="40" placeholder="Bread, Cinnamon rolls, Focaccia">
-    <label class="f" for="tSizing">How do you size a batch?</label>
-    <select id="tSizing"></select>
+    <input type="text" id="tName" maxlength="40" placeholder="Sunday sandwich loaf, Overnight cinnamon rolls">
+    <div class="two">
+      <div><label class="f" for="tCat">Category</label><select id="tCat"></select></div>
+      <div><label class="f" for="tSizing">Batch size by</label><select id="tSizing"></select></div>
+    </div>
     <label class="f">Ingredients <span style="font-weight:400;color:var(--ink-3)">(use the arrows to put them in the order you weigh them)</span></label>
     <div id="tIngs"></div>
     <div class="acts" style="margin-top:8px"><button type="button" class="btn" id="tAdd">＋ Add an ingredient</button><button type="button" class="btn link" id="tAskAI" data-ai hidden>Not sure of the numbers? Ask AI</button></div>
     <div class="err" id="typeErr" hidden></div>
     <div class="row"><button type="button" class="btn" id="typeCancel">Cancel</button><button class="btn primary" id="typeSave">Save</button></div>
-    <p class="note"><button type="button" class="btn link" id="tDelete" hidden>Delete this type</button></p>
+    <p class="note"><button type="button" class="btn link" id="tDelete" hidden>Delete this recipe</button></p>
   </form>
 </dialog>
 
@@ -420,8 +440,16 @@ const YEAST = {
   fresh:      { label: "Fresh",      f: 2.5 },
 };
 const SIZING = { pizza: "Pizzas, by size and thickness", pieces: "Loaves, rolls, or balls, by weight", flour: "Start from the flour weight" };
+// Categories are fixed (Shawn and Claude decide them); people make their own recipes inside each one.
+// key, label, the usual way to size a batch in it
+const CATS = [["pizza", "Pizza Dough", "pizza"], ["bread", "Bread", "pieces"], ["rolls", "Rolls", "pieces"], ["cinnamon_rolls", "Cinnamon Rolls", "pieces"]];
+const catLabel = (k) => (CATS.find(c => c[0] === k) || CATS[1])[1];
+function guessCat(name, sizing, fallback){
+  const n = String(name || "").toLowerCase();
+  return /cinnamon/.test(n) ? "cinnamon_rolls" : /pizza/.test(n) || sizing === "pizza" ? "pizza" : /roll|bun/.test(n) ? "rolls" : fallback || "bread";
+}
 const BASE = { count: 3, size: 14, thickness: 2.39, piece_g: 900, flour_g: 500, yeast_type: "active_dry", ferment: "cold_long" };
-const LOCAL_PIZZA = { id: null, name: "Pizza", sizing: "pizza", ingredients: PIZZA_INGS, steps: null, defaults: {} };
+const LOCAL_PIZZA = { id: null, name: "Pizza", category: "pizza", sizing: "pizza", ingredients: PIZZA_INGS, steps: null, defaults: {} };
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -447,7 +475,7 @@ function applyVariant(st, v){
 }
 function stateFromType(t){
   const d = t.defaults || {};
-  const st = { type_id: t.id, name: t.name, sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, variants: clone(t.variants || {}), adaptFrom: null };
+  const st = { type_id: t.id, name: t.name, category: t.category || guessCat(t.name, t.sizing), sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, variants: clone(t.variants || {}), adaptFrom: null };
   if (t.sizing !== "pizza"){ st.count = 1; st.ferment = "same_day"; }
   for (const k of ["count", "size", "thickness", "piece_g", "flour_g", "yeast_type", "ferment"]) if (d[k] != null) st[k] = d[k];
   if (st.variants[st.ferment]) applyVariant(st, st.variants[st.ferment]);
@@ -457,6 +485,7 @@ let types = [LOCAL_PIZZA];
 let s = stateFromType(LOCAL_PIZZA);
 try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null, flour_fix: null, actual: {}, variants: saved.variants || {}, adaptFrom: null }; } catch (_) {}
 let checked = new Set(), ranges = {}, editingSteps = false;
+let cat = "pizza", lastIn = {};   // the category on screen, and the recipe last opened in each one
 let session = null, bakes = [], reporting = null, rating = 0, histFilter = "";
 
 const ing = (st, key) => st.ings.find(g => g.key === key);
@@ -545,13 +574,30 @@ function buildControls(){
   }
   $("#ratios").innerHTML = s.ings.length
     ? s.ings.map(g => sliderRow("pct", g.key, g.name, ranges[g.key])).join("")
-    : `<p class="note">This type has no ingredients yet. Tap "Edit type" to add them.</p>`;
+    : `<p class="note">This recipe has no ingredients yet. Tap "Edit" to add them.</p>`;
 }
+const inCat = (k) => types.filter(x => (x.category || guessCat(x.name, x.sizing)) === k);
 function renderTypes(){
-  $("#typeSmall").textContent = s.name;
-  $("#typeBar").innerHTML = types.map(t => `<button type="button" data-type="${t.id || ""}" class="${t.id === s.type_id ? "on" : ""}">${esc(t.name)}</button>`).join("")
-    + (aiOK ? `<button type="button" class="ai" data-ai>Ask AI</button>` : "")
-    + `<button type="button" class="ghost" data-newtype>＋ New type</button><button type="button" class="ghost" data-edittype>Edit ${esc(s.name)}</button>`;
+  // "orphan": what is on screen came from an old bake whose recipe was deleted, so it is in no list
+  const mine = inCat(cat), orphan = s.category === cat && !types.some(x => x.id === s.type_id);
+  const empty = !mine.length && !orphan;
+  $("#typeSmall").textContent = catLabel(cat);
+  $("#typeBar").innerHTML = `<div class="cats" role="tablist">${CATS.map(([k, l]) => { const n = inCat(k).length; return `<button type="button" role="tab" data-cat="${k}" class="${k === cat ? "on" : ""}">${l}${session && n ? `<small>${n}</small>` : ""}</button>`; }).join("")}</div>`
+    + (empty ? "" : `<div class="recipe"><label for="recipePick">Recipe</label>
+        <select id="recipePick">${mine.map(x => `<option value="${x.id || ""}"${x.id === s.type_id ? " selected" : ""}>${esc(x.name)}</option>`).join("")}${mine.some(x => x.id === s.type_id) ? "" : `<option selected>${esc(s.name)} (not saved as a recipe)</option>`}</select>
+        ${mine.some(x => x.id === s.type_id && x.id) ? `<button type="button" class="btn" data-edittype>Edit</button>` : ""}
+        <button type="button" class="btn" data-newtype>＋ New recipe</button>
+        ${aiOK ? `<button type="button" class="btn ai" data-ai>Ask AI</button>` : ""}</div>`);
+  $("#calcBody").hidden = empty;
+  const ec = $("#emptyCat"); ec.hidden = !empty;
+  if (empty) ec.innerHTML = session
+    ? `<p>You don't have a ${esc(catLabel(cat))} recipe yet.</p><div class="acts">${aiOK ? `<button type="button" class="btn primary" data-ai>Ask AI for a starting point</button>` : ""}<button type="button" class="btn${aiOK ? "" : " primary"}" data-newtype>Start one from scratch</button></div>`
+    : `<p>Sign in to make your own ${esc(catLabel(cat))} recipes.</p><div class="acts"><button type="button" class="btn primary" data-open-auth>Sign in</button></div>`;
+}
+function setCat(k){
+  cat = k;
+  const mine = inCat(k), t = mine.find(x => x.id === lastIn[k]) || mine[0];
+  if (t && t.id !== s.type_id) switchType(t); else renderTypes();
 }
 
 function render(){
@@ -599,7 +645,7 @@ function render(){
   $("#steps").innerHTML = list.map(t => `<li>${esc(t)}</li>`).join("");
   $("#stepsEmpty").hidden = editingSteps || !!list.length;
   $("#stepsEdit").hidden = !editingSteps;
-  $("#stepsNote").textContent = editingSteps ? "One step per line. They are saved with the bake and become this type's steps next time."
+  $("#stepsNote").textContent = editingSteps ? "One step per line. They are saved with the bake and become this recipe's steps next time."
     : basic ? "Basic steps to get you started. Edit them to match how you actually make it." : "";
   $("#stepsNote").hidden = !$("#stepsNote").textContent;
   $("#editSteps").textContent = editingSteps ? "Done" : list.length ? "Edit steps" : "Add steps";
@@ -656,6 +702,8 @@ async function adaptSteps(){
 function replan(){ s.flour_fix = null; s.actual = {}; }   // a new plan throws away numbers typed against the old one
 function switchType(t, st){
   s = st || stateFromType(t); adaptProposal = null;
+  if (!s.category) s.category = guessCat(s.name, s.sizing);
+  cat = s.category; lastIn[cat] = s.type_id;
   checked.clear(); editingSteps = false; $("#lockOk").hidden = $("#lockErr").hidden = true;
   buildControls(); renderTypes(); renderBakes();
 }
@@ -681,7 +729,7 @@ function wire(){
     else if (d.pct){ setPct(d.pct, pctOf(s, d.pct) + +d.d); render(); }
     else if (b.id === "useSug"){ setPct("yeast", suggestedYeast(s)); render(); }
     else if (d.ing){ checked.has(d.ing) ? checked.delete(d.ing) : checked.add(d.ing); keepAwake(); render(); }
-    else if (d.type !== undefined){ const t = types.find(x => (x.id || "") === d.type); if (t && t.id !== s.type_id) switchType(t); }
+    else if (d.cat){ if (d.cat !== cat) setCat(d.cat); }
     else if (d.ai !== undefined) openAI();
     else if (d.newtype !== undefined) openType(null);
     else if (d.edittype !== undefined) openType(types.find(x => x.id === s.type_id) || null, true);
@@ -700,6 +748,7 @@ function wire(){
     else s.actual[k] = v;
     render();
   });
+  $("#typeBar").addEventListener("change", e => { if (e.target.id === "recipePick"){ const t = types.find(x => (x.id || "") === e.target.value); if (t) switchType(t); } });
   $("#ing").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.actual){ e.target.blur(); return; } if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
   $("#resetPct").addEventListener("click", () => { const t = types.find(x => x.id === s.type_id); if (t){ s.ings = clone(t.ingredients); buildControls(); render(); } });
   $("#editSteps").addEventListener("click", () => {
@@ -740,12 +789,14 @@ function openType(t, wantEdit){
   if (!session){ openAuth("in"); return; }
   if (wantEdit && !t) return;
   editingType = t;
-  $("#typeTitle").textContent = t ? "Edit " + t.name : "New dough type";
+  $("#typeTitle").textContent = t ? "Edit recipe" : "New " + catLabel(cat) + " recipe";
   $("#tName").value = t ? t.name : "";
+  $("#tCat").innerHTML = CATS.map(([k, l]) => `<option value="${k}">${l}</option>`).join("");
+  $("#tCat").value = t ? (t.category || guessCat(t.name, t.sizing)) : cat;
   $("#tSizing").innerHTML = Object.entries(SIZING).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
-  $("#tSizing").value = t ? t.sizing : "pieces";
+  $("#tSizing").value = t ? t.sizing : CATS.find(c => c[0] === cat)[2];
   tIngs = t ? clone(t.ingredients) : [{ name: "Water", pct: "" }, { name: "Yeast", pct: "" }, { name: "Salt", pct: "" }];
-  $("#tDelete").hidden = !t || types.length < 2;
+  $("#tDelete").hidden = !t;
   $("#typeErr").hidden = true; drawTIngs(); $("#typeDlg").showModal();
 }
 function drawTIngs(){
@@ -768,6 +819,7 @@ $("#tIngs").addEventListener("click", e => {
 });
 $("#tAdd").addEventListener("click", () => { tIngs.push({ name: "", pct: "" }); drawTIngs(); $("#tIngs").querySelector(".irow:last-child input").focus(); });
 $("#typeCancel").addEventListener("click", () => $("#typeDlg").close());
+$("#tCat").addEventListener("change", e => { if (!editingType) $("#tSizing").value = CATS.find(c => c[0] === e.target.value)[2]; });
 function keyFor(name, used){
   const n = name.toLowerCase().trim();
   let k = /yeast/.test(n) ? "yeast" : n === "water" ? "water" : n === "salt" ? "salt" : n === "sugar" ? "sugar" : /^(olive )?oil$/.test(n) ? "oil" : (n.replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "item");
@@ -778,7 +830,7 @@ $("#typeForm").addEventListener("submit", async e => {
   e.preventDefault();
   const fail = (m) => { $("#typeErr").textContent = m; $("#typeErr").hidden = false; };
   const name = $("#tName").value.trim(); if (!name) return fail("Give it a name.");
-  if (types.some(t => t.id !== editingType?.id && t.name.toLowerCase() === name.toLowerCase())) return fail("You already have a type with that name.");
+  if (types.some(t => t.id !== editingType?.id && t.name.toLowerCase() === name.toLowerCase())) return fail("You already have a recipe with that name.");
   const used = new Set(["flour"]), ingredients = [];
   for (const g of tIngs){
     const nm = String(g.name || "").trim(), p = parseFloat(g.pct);
@@ -789,7 +841,7 @@ $("#typeForm").addEventListener("submit", async e => {
     ingredients.push({ key: keyFor(nm, used), name: nm, pct: r2(p) });
   }
   if (!ingredients.length) return fail("Add at least one ingredient besides flour.");
-  const row = { name, sizing: $("#tSizing").value, ingredients };
+  const row = { name, category: $("#tCat").value, sizing: $("#tSizing").value, ingredients };
   $("#typeSave").disabled = true;
   const q = editingType ? sb.from("dough_types").update(row).eq("id", editingType.id) : sb.from("dough_types").insert(row);
   const { data, error } = await q.select().single();
@@ -799,13 +851,15 @@ $("#typeForm").addEventListener("submit", async e => {
   await loadTypes();
   // keep the plan on screen when the same type was edited without changing how it is sized
   const keep = editingType && editingType.id === s.type_id && data.sizing === s.sizing;
-  switchType(data, keep ? { ...s, name: data.name, ings: clone(data.ingredients), actual: {} } : null);
+  switchType(data, keep ? { ...s, name: data.name, category: data.category, ings: clone(data.ingredients), actual: {} } : null);
 });
 $("#tDelete").addEventListener("click", async () => {
-  if (!editingType || !confirm(`Delete the type "${editingType.name}"? Bakes you already logged stay in your history.`)) return;
+  if (!editingType || !confirm(`Delete the recipe "${editingType.name}"? Bakes you already logged stay in your history.`)) return;
   const { error } = await sb.from("dough_types").delete().eq("id", editingType.id);
   if (error){ $("#typeErr").textContent = "Couldn't delete it: " + error.message; $("#typeErr").hidden = false; return; }
-  $("#typeDlg").close(); await loadTypes(); switchType(types[0]);
+  $("#typeDlg").close(); await loadTypes();
+  const next = inCat(cat)[0];
+  if (next) switchType(next); else { lastIn[cat] = null; if (types[0]) { const keepCat = cat; s = stateFromType(types[0]); buildControls(); cat = keepCat; } renderTypes(); renderBakes(); }
 });
 async function loadTypes(){
   if (!session){ types = [LOCAL_PIZZA]; return; }
@@ -813,7 +867,7 @@ async function loadTypes(){
   if (error){ types = [LOCAL_PIZZA]; return; }
   if (!data.length){
     // first visit: everyone starts with the Pizza type, and earlier bakes are attached to it
-    const r = await sb.from("dough_types").insert({ name: "Pizza", sizing: "pizza", ingredients: PIZZA_INGS }).select();
+    const r = await sb.from("dough_types").insert({ name: "Pizza", category: "pizza", sizing: "pizza", ingredients: PIZZA_INGS }).select();
     data = r.data || [];
     if (data[0]) await sb.from("dough_bakes").update({ type_id: data[0].id }).is("type_id", null);
   }
@@ -842,7 +896,8 @@ function aiContext(){
     steps: stepList(s, c),
     recent_bakes_of_this_type: bakes.filter(b => sameType(b, s)).slice(0, 4).map(b => ({ made_on: b.made_on, size: bakeSize(b), rating_of_5: b.rating, flour: b.flour_name,
       ingredients: bakeIngs(b).map(g => ({ name: g.name, pct: g.pct })), notes: b.plan_notes, went_well: b.went_well, went_poorly: b.went_poorly, next_time: b.next_time })),
-    my_dough_types: types.map(t => t.name),
+    category: catLabel(cat),
+    my_recipes: types.map(t => catLabel(t.category) + ": " + t.name),
   };
 }
 const safeUrl = (u) => /^https?:\/\//i.test(String(u || "")) ? String(u) : "";
@@ -854,7 +909,7 @@ function propCard(p, i){
     <table><tr><td>Flour</td><td>100%</td></tr>${ings.map(g => `<tr><td>${esc(g.name)}${/^yeast$/i.test(String(g.name).trim()) && YEAST[p.yeast_type] ? ", " + YEAST[p.yeast_type].label.toLowerCase() : ""}</td><td>${pctText(g.pct)}</td></tr>`).join("")}</table>
     ${st.length ? `<details><summary>Steps (${st.length})</summary><ol class="steps">${st.map(x => `<li>${esc(x)}</li>`).join("")}</ol></details>` : ""}
     ${src.length ? `<p class="src">Looked at: ${src.map(x => `<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title || x.url)}</a>`).join(", ")}</p>` : ""}
-    <div class="acts"><button type="button" class="btn primary" data-ai-new="${i}">Save as a new type</button><button type="button" class="btn" data-ai-apply="${i}">Use in ${esc(s.name)}</button></div>
+    <div class="acts"><button type="button" class="btn primary" data-ai-new="${i}">Save as a new recipe</button>${$("#calcBody").hidden ? "" : `<button type="button" class="btn" data-ai-apply="${i}">Use in ${esc(s.name)}</button>`}</div>
   </div>`;
 }
 function renderAI(){
@@ -913,7 +968,7 @@ $("#aiLog").addEventListener("click", async e => {
   if (sizing === "pieces" && p.piece_g > 0) d.piece_g = clamp(Math.round(p.piece_g), 1, 20000);
   if (sizing === "flour" && p.flour_g > 0) d.flour_g = clamp(Math.round(p.flour_g), 1, 20000);
   b.disabled = true;
-  const { data, error } = await sb.from("dough_types").insert({ name, sizing, ingredients: ings, steps: stepsText, defaults: d }).select().single();
+  const { data, error } = await sb.from("dough_types").insert({ name, category: guessCat(name, sizing, cat === "pizza" ? "bread" : cat), sizing, ingredients: ings, steps: stepsText, defaults: d }).select().single();
   b.disabled = false;
   if (error){ $("#aiErr").textContent = "That didn't save: " + error.message; $("#aiErr").hidden = false; return; }
   await loadTypes(); switchType(data); $("#aiDlg").close(); showTab("calc");
@@ -949,7 +1004,7 @@ async function lockIn(){
   const c = compute(s), b = $("#lock"), pizza = s.sizing === "pizza", am = amounts(s, c), total = c.flour + am.reduce((x, r) => x + r.g, 0);
   b.disabled = true;
   const { error } = await sb.from("dough_bakes").insert({
-    dough_type: s.name.toLowerCase(), type_id: s.type_id, type_name: s.name, sizing: s.sizing,
+    dough_type: s.name.toLowerCase(), type_id: s.type_id, type_name: s.name, category: s.category || cat, sizing: s.sizing,
     made_on: $("#madeOn").value || todayISO(),
     bake_on: $("#bakeOn").value || null,
     count: s.sizing === "flour" ? 1 : s.count, size_in: pizza ? s.size : null, thickness: pizza ? s.thickness : null,
@@ -973,7 +1028,8 @@ async function load(){
   await loadTypes(); await loadAI();
   if (!types.some(t => t.id === s.type_id)){
     const t = types.find(x => x.name === s.name && x.sizing === s.sizing);
-    s = t ? { ...s, type_id: t.id } : stateFromType(types[0]);
+    s = t ? { ...s, type_id: t.id, category: t.category || s.category } : stateFromType(types[0]);
+    cat = s.category || "pizza";
   }
   if (!session){ bakes = []; addingFlour = false; }
   else {
@@ -1004,11 +1060,12 @@ function renderBakes(){
 
   if (!session){ $("#histFilter").hidden = true; $("#bakes").innerHTML = `<div class="card empty"><p>Sign in to see your bakes and how each one turned out.</p><button class="btn primary" data-open-auth>Sign in</button></div>`; return; }
   if (!bakes.length){ $("#histFilter").hidden = true; $("#bakes").innerHTML = `<div class="card empty"><p>Nothing here yet. Set up a dough in the calculator and tap "Lock it in".</p></div>`; return; }
-  const names = [...new Set(bakes.map(b => b.type_name))];
+  const bcat = (b) => b.category || guessCat(b.type_name, b.sizing);
+  const names = CATS.map(c => c[0]).filter(k => bakes.some(b => bcat(b) === k));
   if (!names.includes(histFilter)) histFilter = "";
   $("#histFilter").hidden = names.length < 2;
-  $("#histFilter").innerHTML = [["", "All"]].concat(names.map(n => [n, n])).map(([v, l]) => `<button type="button" data-hist="${esc(v)}" class="${v === histFilter ? "on" : ""}">${esc(l)}</button>`).join("");
-  $("#bakes").innerHTML = bakes.filter(b => !histFilter || b.type_name === histFilter).map(b => {
+  $("#histFilter").innerHTML = [["", "All"]].concat(names.map(n => [n, catLabel(n)])).map(([v, l]) => `<button type="button" data-hist="${esc(v)}" class="${v === histFilter ? "on" : ""}">${esc(l)}</button>`).join("");
+  $("#bakes").innerHTML = bakes.filter(b => !histFilter || bcat(b) === histFilter).map(b => {
     const f = +b.flour_g;
     const rows = [["Flour", f, 100]].concat(bakeIngs(b).filter(g => g.pct > 0).map(g => [g.key === "yeast" ? g.name + ", " + YEAST[b.yeast_type].label.toLowerCase() : g.name, f * g.pct / 100, g.pct]));
     const facts = [b.sizing === "pizza" ? `${grams(+b.ball_g)} g per ball` : "", FERMENT[b.ferment].label + ", " + FERMENT[b.ferment].sub, b.flour_name].filter(Boolean).join(" · ");
@@ -1041,7 +1098,7 @@ document.addEventListener("click", async e => {
   const b = bakes.find(x => x.id === (t.dataset.again || t.dataset.report || t.dataset.del)); if (!b) return;
   if (t.dataset.again){
     const ty = types.find(x => x.id && x.id === b.type_id) || types.find(x => x.name === b.type_name && x.sizing === b.sizing);
-    const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
+    const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, category: ty?.category || b.category || guessCat(b.type_name, b.sizing), sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
       ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {}, variants: clone(ty?.variants || {}), adaptFrom: null };
     if (b.sizing === "pizza"){ st.size = +b.size_in; st.thickness = +b.thickness; }
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
