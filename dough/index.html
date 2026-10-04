@@ -95,6 +95,8 @@ textarea{min-height:70px;resize:vertical}
 select + input[type=text]{margin-top:8px}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2);margin-top:8px;cursor:pointer}
+label.chk input{width:18px;height:18px;accent-color:var(--accent)}
 
 .sharebar{background:var(--paper);border:1px solid var(--accent);border-top-width:5px;border-radius:10px;padding:14px;margin-bottom:14px}
 .sharebar h2{font-size:22px;margin-bottom:4px}
@@ -396,6 +398,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <div id="pwWrap">
       <label class="f" for="password">Password</label>
       <input type="password" id="password" autocomplete="current-password" minlength="8">
+      <label class="chk"><input type="checkbox" id="showPw"> Show password</label>
     </div>
     <div class="err" id="authErr" hidden></div>
     <div class="ok" id="authOk" hidden></div>
@@ -408,11 +411,11 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 <dialog id="pwDlg">
   <form id="pwForm">
     <h2>New password</h2>
-    <p class="sub">You're in from the reset link. Pick a new password.</p>
+    <p class="sub">You're signed in from the reset link. Pick a new password, at least 8 characters. You'll use it next time you sign in.</p>
     <label class="f" for="pw1">New password</label>
-    <input type="password" id="pw1" autocomplete="new-password" minlength="8" required>
+    <input type="text" id="pw1" autocomplete="new-password" minlength="8" required autocapitalize="off" autocorrect="off" spellcheck="false">
     <div class="err" id="pwErr" hidden></div>
-    <div class="row"><button class="btn primary" id="pwBtn">Save password</button></div>
+    <div class="row"><button type="button" class="btn" id="pwSkip">Not now</button><button class="btn primary" id="pwBtn">Save password</button></div>
   </form>
 </dialog>
 
@@ -501,7 +504,8 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 // Shared "ShawnZapps" Supabase project. Publishable key only; rows are protected by RLS.
 const SUPABASE_URL = "https://yjurglvfzlboblestfdz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_oGRMRv_8B4_ngkwpe10y5A_S91dOcfe";
-const GOOGLE_ENABLED = false;   // flip to true once the Google provider is set up in Supabase Auth
+let GOOGLE_ENABLED = false;   // set at load from Supabase Auth's public settings: true once the Google provider is saved there
+fetch(SUPABASE_URL + "/auth/v1/settings", { headers: { apikey: SUPABASE_KEY } }).then(r => r.json()).then(d => { GOOGLE_ENABLED = !!d?.external?.google; const w = document.getElementById("googleWrap"); if (w && document.getElementById("authDlg").open && mode !== "reset") w.hidden = !GOOGLE_ENABLED; }).catch(() => {});
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ---- the dough model ------------------------------------------------------
@@ -1451,6 +1455,7 @@ $("#repForm").addEventListener("submit", async e => {
 // ---- auth --------------------------------------------------------------------
 let mode = "in";   // "in" | "up" | "reset"
 const HERE = location.origin + location.pathname;
+const BACK = () => HERE + (shareTok ? "?r=" + encodeURIComponent(shareTok) : "");   // where sign-in emails and Google send people back to
 function openAuth(m){
   mode = m;
   $("#authTitle").textContent = m === "in" ? "Sign in" : m === "up" ? "Create an account" : "Reset your password";
@@ -1469,7 +1474,7 @@ $("#authLinks").addEventListener("click", e => { const b = e.target.closest("[da
 $("#authCancel").addEventListener("click", () => $("#authDlg").close());
 $("#signIn").addEventListener("click", () => openAuth("in"));
 $("#signOut").addEventListener("click", () => sb.auth.signOut());
-$("#google").addEventListener("click", () => sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: HERE } }));
+$("#google").addEventListener("click", () => sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: BACK() } }));
 $("#authForm").addEventListener("submit", async e => {
   e.preventDefault();
   const email = $("#email").value.trim(), password = $("#password").value, b = $("#authBtn");
@@ -1478,18 +1483,26 @@ $("#authForm").addEventListener("submit", async e => {
   $("#authErr").hidden = $("#authOk").hidden = true; b.disabled = true;
   if (mode === "in"){
     const { error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) fail(/confirm/i.test(error.message) ? "Confirm your email first. The link is in the message I sent when you signed up." : "That email and password didn't match."); else $("#authDlg").close();
+    if (error) fail(/confirm/i.test(error.message) ? "Confirm your email first. The link is in the message I sent when you signed up." : "That email and password didn't match. Check for a typo, or tap Forgot your password." + (GOOGLE_ENABLED ? " Continue with Google also works if it's a Google address." : "")); else $("#authDlg").close();
   } else if (mode === "up"){
-    const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: HERE } });
+    const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: BACK() } });
     if (error) fail("Couldn't create the account: " + error.message);
     else if (data.session) $("#authDlg").close();
-    else good("Almost there. Check your email (and spam) for a confirmation link, then sign in here.");
+    // Supabase answers a sign-up for an existing email with a user that has no identities, and sends nothing
+    else if (data.user && Array.isArray(data.user.identities) && !data.user.identities.length){
+      openAuth("in"); $("#email").value = email;
+      fail(GOOGLE_ENABLED ? "You already have an account with that email. Use Continue with Google, or sign in with your password. If you don't remember it, tap Forgot your password."
+        : "You already have an account with that email (Shawn's apps share one sign-in). Sign in with your password, or tap Forgot your password to set a new one.");
+    }
+    else good("Almost there. Check your email (and spam) for a confirmation link. Open it on this same device and browser, then you're in.");
   } else {
-    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: HERE });
-    if (error) fail("Couldn't send that: " + error.message); else good("Sent. Check your email (and spam) for a link back here.");
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: BACK() });
+    if (error) fail("Couldn't send that: " + error.message); else good("Sent. Check your email (and spam). Open the link on this same device and browser, since that is where it signs you in.");
   }
   b.disabled = false;
 });
+$("#showPw").addEventListener("change", e => { $("#password").type = e.target.checked ? "text" : "password"; });
+$("#pwSkip").addEventListener("click", () => $("#pwDlg").close());
 $("#pwForm").addEventListener("submit", async e => {
   e.preventDefault();
   $("#pwErr").hidden = true; $("#pwBtn").disabled = true;
