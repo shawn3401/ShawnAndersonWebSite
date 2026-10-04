@@ -102,9 +102,14 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .cats button small{font-weight:400;color:var(--ink-3);margin-left:5px}
 .cats button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .cats button.on small{color:var(--bg);opacity:.7}
-.recipe{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
-.recipe label{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-.recipe select{flex:1 1 220px;width:auto;min-width:0;font-weight:600;font-size:17px}
+.recipe{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.rlist{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 260px}
+.rlist button{font:inherit;font-size:16px;font-weight:600;text-align:left;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:999px;padding:7px 15px;cursor:pointer}
+.rlist button:hover{border-color:var(--accent);color:var(--accent)}
+.rlist button.on{background:var(--accent);border-color:var(--accent);color:#fff;cursor:default}
+:root[data-theme="dark"] .rlist button.on{color:#1B120E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rlist button.on{color:#1B120E}}
+.ract{display:flex;gap:6px;flex-wrap:wrap}
 .recipe .btn.ai{border-color:var(--accent);color:var(--accent);background:var(--soft)}
 .empty .acts{justify-content:center}
 .types{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
@@ -583,11 +588,10 @@ function renderTypes(){
   const empty = !mine.length && !orphan;
   $("#typeSmall").textContent = catLabel(cat);
   $("#typeBar").innerHTML = `<div class="cats" role="tablist">${CATS.map(([k, l]) => { const n = inCat(k).length; return `<button type="button" role="tab" data-cat="${k}" class="${k === cat ? "on" : ""}">${l}${session && n ? `<small>${n}</small>` : ""}</button>`; }).join("")}</div>`
-    + (empty ? "" : `<div class="recipe"><label for="recipePick">Recipe</label>
-        <select id="recipePick">${mine.map(x => `<option value="${x.id || ""}"${x.id === s.type_id ? " selected" : ""}>${esc(x.name)}</option>`).join("")}${mine.some(x => x.id === s.type_id) ? "" : `<option selected>${esc(s.name)} (not saved as a recipe)</option>`}</select>
-        ${mine.some(x => x.id === s.type_id && x.id) ? `<button type="button" class="btn" data-edittype>Edit</button>` : ""}
-        <button type="button" class="btn" data-newtype>＋ New recipe</button>
-        ${aiOK ? `<button type="button" class="btn ai" data-ai>Ask AI</button>` : ""}</div>`);
+    + (empty ? "" : `<div class="recipe">
+        <div class="rlist" role="group" aria-label="${esc(catLabel(cat))} recipes">${mine.map(x => `<button type="button" data-recipe="${x.id || ""}" class="${x.id === s.type_id ? "on" : ""}" aria-pressed="${x.id === s.type_id}">${esc(x.name)}</button>`).join("")}${mine.some(x => x.id === s.type_id) ? "" : `<button type="button" class="on" aria-pressed="true" disabled>${esc(s.name)} (not saved as a recipe)</button>`}</div>
+        <div class="ract">${mine.some(x => x.id === s.type_id && x.id) ? `<button type="button" class="btn" data-edittype>Edit</button>` : ""}<button type="button" class="btn" data-newtype>＋ New recipe</button>${aiOK ? `<button type="button" class="btn ai" data-ai>Ask AI</button>` : ""}</div>
+      </div>`);
   $("#calcBody").hidden = empty;
   const ec = $("#emptyCat"); ec.hidden = !empty;
   if (empty) ec.innerHTML = session
@@ -730,6 +734,7 @@ function wire(){
     else if (b.id === "useSug"){ setPct("yeast", suggestedYeast(s)); render(); }
     else if (d.ing){ checked.has(d.ing) ? checked.delete(d.ing) : checked.add(d.ing); keepAwake(); render(); }
     else if (d.cat){ if (d.cat !== cat) setCat(d.cat); }
+    else if (d.recipe !== undefined){ const t = types.find(x => (x.id || "") === d.recipe); if (t && t.id !== s.type_id) switchType(t); }
     else if (d.ai !== undefined) openAI();
     else if (d.newtype !== undefined) openType(null);
     else if (d.edittype !== undefined) openType(types.find(x => x.id === s.type_id) || null, true);
@@ -748,7 +753,6 @@ function wire(){
     else s.actual[k] = v;
     render();
   });
-  $("#typeBar").addEventListener("change", e => { if (e.target.id === "recipePick"){ const t = types.find(x => (x.id || "") === e.target.value); if (t) switchType(t); } });
   $("#ing").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.actual){ e.target.blur(); return; } if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
   $("#resetPct").addEventListener("click", () => { const t = types.find(x => x.id === s.type_id); if (t){ s.ings = clone(t.ingredients); buildControls(); render(); } });
   $("#editSteps").addEventListener("click", () => {
