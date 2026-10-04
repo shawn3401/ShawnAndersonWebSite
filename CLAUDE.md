@@ -1,11 +1,12 @@
 # ShawnAndersonWebSite
 
-Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Three live sub-sites are actively maintained:
+Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Four live sub-sites are actively maintained:
 
 - `rick/` Rick Saunders' Western Wildlands Route tracker (Canada to Mexico by bike, Sept 6 to Nov 7, 2026). Updated most days.
 - `danceflowers/` Dance Flowers, Leah's corsage, boutonnière, and bouquet business for school dances and weddings in Idaho Falls. Landing page plus order form. See "danceflowers/ page" below.
 
 - `dough/` Dough, Shawn's pizza dough calculator with saved bakes and reports, behind logins. See "dough/ app" at the bottom.
+- `yourturn/` Your Turn, a restaurant picker for Shawn, Leah, and friends, behind logins. See "yourturn/ app" at the bottom.
 
 Everything else at the root (`index.html`, etc.) is the personal landing site.
 
@@ -193,3 +194,48 @@ shawnandersonapps.com/dough/. Shawn is learning dough (pizza now; bread and cinn
 
 ### Shawn's bakes
 - Oct 2, 2026: 3 x 16 inch thick, Dough Guy ratios unchanged, 1,100 g King Arthur Bread Flour (12.7%), active dry yeast, cold ferment for Sunday Oct 4. He made pizza three times in the month before with different ratios and does not remember them. Never invent a bake or a result; ask.
+
+## yourturn/ app (started Oct 4, 2026)
+
+### What it is
+shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, also for double dates and business lunches. Named for "it's your turn to pick". It copies their real ritual: one person throws out options, the others rule some out, and whoever's turn it is decides. It may become a mobile app later, so it is phone-first (one 680px column) and everything lives behind Supabase, nothing in the page but display logic.
+
+### Files
+- `yourturn/index.html` the whole app, CSS and JS inline, supabase-js v2 from jsDelivr. Same sign-in code as Dough (`GOOGLE_ENABLED` false until the Google provider is set up). Teal and mustard palette, Fraunces and Source Sans 3.
+- `supabase/yourturn/001_schema.sql` tables, RLS, and functions. Safe to re-run.
+- `supabase/yourturn/functions/yourturn-search/index.ts` the Edge Function that talks to Google Places (deploy with the Supabase tools, `verify_jwt` on).
+- Not linked from the root landing page. Ask before adding it.
+
+### Decisions (Shawn, Oct 4, 2026)
+- Separate accounts with sharing, and separate ratings per person. Up to 6 at the table (`MAX_PARTY`), some with accounts and some guests. People are remembered in a list so adding them is one tap.
+- A round is played on ONE phone passed around. Joining from your own phone is a possible later step.
+- The app tracks whose turn it is. Everyone gets one rule-out; the person whose turn it is makes the final call; "Pass" hands the turn on.
+- Works anywhere, but NEVER bulk-loads an area. Searches are live and nothing is saved until someone touches a place (rates it, visits it, marks it want-to-try, or corrects a fact). That is why there is no separate travel mode.
+- Facts about a place are shared by everyone; opinions and history are personal.
+
+### Data (ShawnZapps project, tables prefixed `yourturn_`)
+- `yourturn_profiles` display name and a saved home spot (set from the phone's location on the People tab). Own row only.
+- `yourturn_people` each person's "people I eat with" list. A row is a guest (name only), an invite (`invite_email` set), or linked (`linked_user_id` set). The client cannot write `linked_user_id` (column grants); only `yourturn_accept()` sets it, so linking takes both sides. Invites send NO email: the other person sees the invite on their People tab when they sign in with that email (`yourturn_invites()`), and accepting adds each to the other's list. Deleting a linked row unlinks the other side (trigger).
+- `yourturn_places` one shared row per restaurant anyone has touched, keyed by Google place id. Shared facts anyone signed in can correct: `genre`, `style` (fast_food, fast_casual, sit_down, fine), `minutes` (typical time in and out), `waits` (rarely, peak, usually). `name`, `address`, `lat`, `lng` are a cache of Google's listing with `refreshed_at`. Google's rating, review count, price, and hours are never stored; they come live with each search.
+- `yourturn_ratings` per person per place: `rating` 1 to 5, `never_again`, `want_to_try`, `rest_days` (days before suggesting it again, null = `DEFAULT_REST` 14), `notes`. Readable by the owner and by linked people.
+- `yourturn_visits` where they went: `visited_on`, `party` (`[{key, name}]`, key is a user id or `g:name` for a guest), `user_ids` (the accounts present), `group_key` (sorted party keys), `picker_key`, `picker_name`. Visible to anyone in `user_ids` and to people linked with them. You can only put yourself and linked accounts on a visit (`yourturn_party_ok`).
+- `yourturn_usage` one row per search for the caps. Service role only.
+
+### How a round works (Pick tab)
+- Questions: who's eating, time available (door to door), how far to drive (5, 10, 15, 25 min one way), kind of place (any mix of the four styles, none = anything), what sounds good (tap once = want, twice = not that), willing to wait, starting from (where I am, Home, or a town looked up with Open-Meteo's free geocoder). Answers are remembered in localStorage.
+- "Find us a place" calls `yourturn-search`, which makes two Nearby Search calls (by popularity and by distance, 20 results each, merged). Places the table rated 4+ or wants to try are added from saved data if they are in range, tagged "Hours not checked".
+- `judge()` drops a place, with a reason shown under "left out, and why", when: anyone present said never again, the genre was ruled out, wrong style, closed, closing too soon, too long for the time (2 x drive + minutes), a wait they do not want (`usually`, or `peak` during 11:45 to 1 or 5:30 to 8), visited within its rest days by anyone present, or the same genre eaten in the last `GENRE_REST` (2) days. Otherwise score = the table's average rating (Google's minus 0.5 if nobody has rated it), plus a bump for want-to-try and wanted genres, plus some randomness. Top `DEAL` (5) are dealt; "Deal 5 more" shows the next ones without another Google call.
+- Drive time is a rough guess from straight-line miles (`driveMin`: 2 + 2.2 x miles). There is no routing API.
+- Turn order is derived from history, there is no groups table: among visits with the same `group_key`, whoever picked longest ago goes first, and someone who has never picked goes before that. "Go here" logs the visit (today, the party, the picker), which is what advances the turn. "We changed our minds" deletes it.
+- Style and genre start as guesses made in the Edge Function from Google's types. Google has no "fast casual" type, so `FAST_CASUAL` in the function is a list of chain names (Five Guys, Costa Vida, Café Rio...). A guess is replaced the moment anyone saves the place's Details. The genre list is in both the page and the function (`GENRES`); keep the keys matching.
+- Other tabs: Places (look up a place by name, my saved places with Favorites / Want to try / Never again, log a visit by hand), History, People (invites, the list, my name, Home).
+- After a meal the Pick tab asks "How was it?" with one-tap stars for the newest unrated visit in the last 14 days.
+
+### Google Places and cost
+- Places API (New), called only from the Edge Function with secret `GOOGLE_MAPS_API_KEY`. The key belongs to a "ShawnZapps" Google Cloud project that every hobby app can share; the same project holds the OAuth client for Google sign-in.
+- The fields requested (rating, price, opening hours, reservable) put each call in the Enterprise + Atmosphere tier: 1,000 free calls a month, then about $40 per 1,000 (checked Oct 4, 2026). Caps in the function keep it free: `USER_DAILY` 40 calls per person per 24 hours and `MONTHLY` 900 for everyone. A round costs 2 calls, a name lookup 1.
+- Signups are open (shared project), so the caps are the only cost guard. If strangers show up, add an allow-list like `dough_ai_access`.
+- Google's terms allow storing the place id indefinitely but limit caching other listing content (location for 30 days). Claude chose to cache name, address, and location with `refreshed_at` and store nothing else from Google; Shawn was told. A refresh job for stale rows is not built.
+
+### Not built yet
+- Joining a round from your own phone, a rating prompt for other people at the table, real drive times, reservations links, price as a question, "who's eating" presets for regular groups.
