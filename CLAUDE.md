@@ -29,6 +29,7 @@ Shawn bought shawnzapps.com on Oct 3, 2026 and will move the site there from sha
 - Dough share links: `/dough/?r=<token>` links people already sent use the old domain. They keep working only while the old domain redirects with the query string intact.
 - Supabase project Dance Flowers: Auth redirect URL for `/danceflowers/admin/`, the `settings` rows `admin_url` and `from_address`, and the Resend sending domain (currently shawnandersonapps.com, with DKIM, MX, and SPF records).
 - Hardcoded domain in pages: footers and home links in `dough/`, `danceflowers/`, and the root page; meta tags and share images in `danceflowers/`; GoatCounter site settings for the rick/ pages.
+- `privacy/index.html` (the privacy policy linked from Google's Branding page; written Oct 4, 2026 so the OAuth app could be published): its footer link, and the Branding page's privacy policy link.
 - This file: every "shawnandersonapps.com" mention.
 
 ## rick/ tracker
