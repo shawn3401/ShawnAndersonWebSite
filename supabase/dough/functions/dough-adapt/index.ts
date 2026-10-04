@@ -1,6 +1,7 @@
-// Dough app: rewrite a person's own steps for a different amount of time before baking.
-// Supabase Edge Function `dough-adapt` in the ShawnZapps project. Shares the access list,
-// daily cap, and usage log with `dough-ai`. Secret: ANTHROPIC_API_KEY.
+// Dough app: timing suggestions. A recipe is written for one timing; when the baker picks a different
+// one for today's bake, this returns a few concrete ways to speed the recipe up or slow it down.
+// It does NOT rewrite the recipe. Supabase Edge Function `dough-adapt` in the ShawnZapps project.
+// Shares the access list, daily cap, and usage log with `dough-ai`. Secret: ANTHROPIC_API_KEY.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import Anthropic from "npm:@anthropic-ai/sdk@0.110.0";
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -15,27 +16,37 @@ const cors = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
-const SYSTEM = `You adjust a home baker's dough method when the time they have before baking changes. You are given their ingredient percents (baker's percentages, flour is 100), their yeast type, the steps they wrote, the timing those steps were written for, and the new timing they want.
+const SYSTEM = `You help a home baker fit a dough recipe to the time they have today. You are given their recipe: ingredient percents (baker's percentages, flour is 100), yeast type, and the steps they wrote. The recipe is written for one timing. Today they picked a different timing.
 
-Rewrite the steps for the new timing and call the adapt_steps tool with the result. Rules:
-- Keep their voice, their order, and everything timing does not affect (mixing, kneading, shaping, baking temperature) as close to word for word as you can. Change only what the new timing requires: water or milk temperature, how long and where the dough rests or rises, whether it goes in the refrigerator, and when to take it out.
-- Shorter timings need more yeast and warmth. Longer timings need less yeast, cooler liquid, and time in the refrigerator. Give the new yeast percent for the same yeast type they are using. If the dough has no yeast, return 0.
-- Rich doughs with butter, sugar, milk, or eggs rise slower than lean ones. Account for that.
-- Times and temperatures in Fahrenheit. Refer to ingredients by name, not grams. One short step per item. Plain text, no markdown. Do not use em dashes or en dashes.
-- In changes, say in two or three plain sentences what you changed and why, and note that these are starting points to check against how the dough looks.`;
+Do not rewrite the recipe. Give two to four specific suggestions for how to speed it up or slow it down to fit the new timing, then call the timing_tips tool. Rules:
+- Point at their actual steps. Say which rest, rise, or temperature to change and to what, for example "Do the first rise in the refrigerator overnight, then shape while cold". Times and temperatures in Fahrenheit.
+- Each tip has a short title (a few words) and one or two plain sentences of detail.
+- Faster usually means more yeast, warmer liquid, and a warm place to rise, at some cost in flavor. Slower usually means less yeast, cooler liquid, and time in the refrigerator. Rich doughs with butter, sugar, milk, or eggs rise slower than lean ones.
+- yeast_pct is the yeast percent you would use for the new timing with the yeast type they have. Return 0 if the dough has no yeast or you would leave it unchanged.
+- note is one honest sentence: what they trade off, or, if this timing is a poor fit for this dough, say so plainly and name the closest timing that works.
+- Plain text, no markdown. Do not use em dashes or en dashes. These are starting points; tell them to trust how the dough looks over the clock only if it fits naturally in the note.`;
 
-const ADAPT_TOOL = {
-  name: "adapt_steps",
-  description: "Return the rewritten steps, the yeast percent for the new timing, and a short explanation.",
+const TIPS_TOOL = {
+  name: "timing_tips",
+  description: "Return the suggestions for fitting this recipe to the new timing.",
   strict: true,
   input_schema: {
     type: "object",
     additionalProperties: false,
-    required: ["steps", "yeast_pct", "changes"],
+    required: ["tips", "yeast_pct", "note"],
     properties: {
-      steps: { type: "array", items: { type: "string" }, description: "The full method for the new timing, in order." },
-      yeast_pct: { type: "number", description: "Yeast as a percent of flour for the new timing, for the person's yeast type. 0 if there is no yeast." },
-      changes: { type: "string", description: "Two or three plain sentences: what changed and why." },
+      tips: {
+        type: "array",
+        description: "Two to four suggestions, most useful first.",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          required: ["title", "detail"],
+          properties: { title: { type: "string" }, detail: { type: "string" } },
+        },
+      },
+      yeast_pct: { type: "number", description: "Suggested yeast percent of flour for the new timing, or 0 for no change or no yeast." },
+      note: { type: "string", description: "One sentence on the tradeoff, or a plain warning if this timing does not suit the dough." },
     },
   },
 };
@@ -58,26 +69,26 @@ Deno.serve(async (req: Request) => {
 
   let body: { from?: unknown; to?: unknown; context?: unknown };
   try { body = await req.json(); } catch { return json({ error: "Bad request." }, 400); }
-  const ask = JSON.stringify({ written_for: body.from, new_timing: body.to, dough: body.context ?? {} }).slice(0, 14000);
+  const ask = JSON.stringify({ recipe_is_written_for: body.from, timing_picked_today: body.to, recipe: body.context ?? {} }).slice(0, 14000);
 
   const client = new Anthropic({ apiKey: Deno.env.get("ANTHROPIC_API_KEY") });
   try {
     const res = await client.messages.stream({
       model: MODEL,
-      max_tokens: 8000,
+      max_tokens: 4000,
       output_config: { effort: "low" },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
-      tools: [ADAPT_TOOL],
-      messages: [{ role: "user", content: `Adapt my steps to the new timing and call adapt_steps.\n\n<request>\n${ask}\n</request>` }],
+      tools: [TIPS_TOOL],
+      messages: [{ role: "user", content: `Give me suggestions for today's timing and call timing_tips.\n\n<request>\n${ask}\n</request>` }],
     } as Anthropic.MessageStreamParams).finalMessage();
     await admin.from("dough_ai_usage").insert({
       user_id: userId,
       input_tokens: (res.usage.input_tokens ?? 0) + (res.usage.cache_read_input_tokens ?? 0) + (res.usage.cache_creation_input_tokens ?? 0),
       output_tokens: res.usage.output_tokens ?? 0,
     });
-    const call = res.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use" && b.name === "adapt_steps");
-    if (!call || res.stop_reason === "max_tokens") return json({ error: "I couldn't rewrite those steps. Try again." }, 502);
-    return json({ adapted: call.input });
+    const call = res.content.find((b): b is Anthropic.ToolUseBlock => b.type === "tool_use" && b.name === "timing_tips");
+    if (!call || res.stop_reason === "max_tokens") return json({ error: "I couldn't come up with suggestions. Try again." }, 502);
+    return json({ tips: call.input });
   } catch (err) {
     console.error("anthropic error", err);
     if (err instanceof Anthropic.RateLimitError) return json({ error: "The AI is busy right now. Try again in a minute." }, 503);
