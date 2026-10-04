@@ -226,6 +226,18 @@ dialog.wide{width:min(640px,calc(100vw - 24px))}
 .bake td{padding:5px 0;border-top:1px solid var(--line)}
 .bake td:nth-child(2),.bake td:nth-child(3){text-align:right}
 .bake td:nth-child(3){color:var(--ink-3);width:70px}
+.photos{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.photos button.ph{padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;background:var(--bg);width:96px;height:96px}
+.photos img{width:100%;height:100%;object-fit:cover;display:block}
+.photos .wait{font-size:14px;color:var(--ink-3);font-style:italic}
+#photoBig{display:block;max-width:100%;max-height:72vh;margin:0 auto;border-radius:6px}
+.rlinks{list-style:none;margin:10px 0 0;padding:0}
+.rlinks li{display:flex;gap:8px;align-items:baseline;padding:5px 0;border-top:1px solid var(--line)}
+.rlinks a{flex:1;overflow-wrap:anywhere;font-weight:600}
+.rlinks small{color:var(--ink-3);font-weight:400;margin-left:6px}
+.rlinks button{border:0;background:none;color:var(--ink-3);cursor:pointer;font-size:14px;padding:2px 6px}
+.linkform{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.linkform input{flex:1 1 150px;width:auto}
 .bake .log{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .bake .lh{color:var(--ink-2);font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:block}
 .bake .log ul{list-style:none;margin:6px 0 0;padding:0}
@@ -348,9 +360,10 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         </div>
 
         <div class="card" id="notesCard" hidden>
-          <h2>Recipe notes</h2>
+          <h2>Recipe notes and links</h2>
           <textarea id="recipeNotes" maxlength="4000" aria-label="Notes about this recipe" placeholder="Where this recipe came from, what makes it work, things to remember. These stay with the recipe, not with one bake."></textarea>
           <p class="note" id="notesState"></p>
+          <div id="recipeLinks"></div>
         </div>
 
         <div class="card" id="authorCard" hidden></div>
@@ -483,6 +496,12 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
   </form>
 </dialog>
 
+<!-- photo viewer -->
+<dialog id="photoDlg" class="wide">
+  <img id="photoBig" alt="">
+  <div class="row"><button type="button" class="btn" id="photoDel" hidden>Remove photo</button><button type="button" class="btn primary" id="photoClose">Close</button></div>
+</dialog>
+
 <!-- report -->
 <dialog id="repDlg">
   <form id="repForm">
@@ -495,6 +514,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <textarea id="wentPoorly" maxlength="2000"></textarea>
     <label class="f" for="nextTime">Next time, try</label>
     <textarea id="nextTime" maxlength="2000" placeholder="This shows up at the top of the calculator next time."></textarea>
+    <p class="note">Photos go on the bake's card in My bakes, with the Add photos button.</p>
     <div class="err" id="repErr" hidden></div>
     <div class="row"><button type="button" class="btn" id="repCancel">Cancel</button><button class="btn primary" id="repBtn">Save</button></div>
   </form>
@@ -567,7 +587,7 @@ function thickText(t){
 
 function stateFromType(t){
   const d = t.defaults || {};
-  const st = { type_id: t.id, name: t.name, category: t.category || guessCat(t.name, t.sizing), sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, tips: clone(t.tips || {}), notes: t.notes || "" };
+  const st = { type_id: t.id, name: t.name, category: t.category || guessCat(t.name, t.sizing), sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, tips: clone(t.tips || {}), notes: t.notes || "", links: clone(t.links || []) };
   if (t.sizing !== "pizza") st.count = 1;
   for (const k of ["count", "size", "thickness", "piece_g", "flour_g", "yeast_type"]) if (d[k] != null) st[k] = d[k];
   // base is the timing the recipe is written for; ferment is what is picked for today's bake
@@ -700,7 +720,7 @@ function renderTypes(){
 const shareURL = (tok) => location.origin + location.pathname + "?r=" + tok;
 function newToken(){ return [...crypto.getRandomValues(new Uint8Array(18))].map(b => (b % 36).toString(36)).join(""); }
 function clearShareLink(){ shareTok = ""; shared = null; try { history.replaceState(null, "", location.pathname); } catch (_) {} }
-const fromShared = (r) => ({ name: r.name, category: r.category, sizing: r.sizing, timing: r.timing, ingredients: r.ingredients || [], steps: r.steps ?? null, notes: r.notes || "", tips: r.tips || {} });
+const fromShared = (r) => ({ name: r.name, category: r.category, sizing: r.sizing, timing: r.timing, ingredients: r.ingredients || [], steps: r.steps ?? null, notes: r.notes || "", links: r.links || [], tips: r.tips || {} });
 // Called at the end of load(): show the recipe a share link points at, or jump to it if it is already theirs.
 async function applyShared(){
   if (!shareTok) return;
@@ -752,7 +772,7 @@ async function refreshFollowed(rows){
       x.copied_from = x.author_name; x.follows_token = null; return;
     }
     authorBakes[x.follows_token] = { author: data.author, bakes: data.bakes || [] };
-    const r = fromShared(data.recipe), next = { category: r.category, sizing: r.sizing, timing: r.timing, ingredients: r.ingredients, steps: r.steps, notes: r.notes, tips: r.tips, author_name: data.author };
+    const r = fromShared(data.recipe), next = { category: r.category, sizing: r.sizing, timing: r.timing, ingredients: r.ingredients, steps: r.steps, notes: r.notes, links: r.links, tips: r.tips, author_name: data.author };
     if (Object.keys(next).some(k => JSON.stringify(next[k]) !== JSON.stringify(x[k]))){ await sb.from("dough_types").update(next).eq("id", x.id); Object.assign(x, next); }
   }));
 }
@@ -764,6 +784,7 @@ function renderAuthor(){
       ${b.rating ? `<div class="stars" aria-label="${b.rating} of 5 stars">${stars(b.rating)}</div>` : ""}
       ${b.plan_notes ? `<p><b>Notes</b>${esc(b.plan_notes)}</p>` : ""}${b.went_well ? `<p><b>Went well</b>${esc(b.went_well)}</p>` : ""}${b.went_poorly ? `<p><b>Went poorly</b>${esc(b.went_poorly)}</p>` : ""}${b.next_time ? `<p><b>Next time, try</b>${esc(b.next_time)}</p>` : ""}
       ${bakeLog(b).length ? `<ul>${bakeLog(b).map(e => `<li>${esc(fmtStamp(e.at))}: ${esc(e.text)}</li>`).join("")}</ul>` : ""}
+      ${bakePhotos(b).length ? `<div class="photos">${bakePhotos(b).map((ph, i) => `<button type="button" class="ph" data-aphoto="${esc(photoURL(ph))}" aria-label="Open photo ${i + 1}"><img src="${esc(photoURL(ph))}" alt="Photo ${i + 1} of this bake" loading="lazy"></button>`).join("")}</div>` : ""}
     </div>`).join("");
   card.hidden = false;
 }
@@ -830,7 +851,9 @@ function render(){
   $("#basicSteps").hidden = locked || !(s.sizing === "pizza" && s.steps != null && ing(s, "yeast"));
 
   const hasRecipe = !s.sharedTok && !!session && !!curType(), nt = $("#recipeNotes"), nkey = s.sharedTok ? "shared:" + s.sharedTok : s.type_id;
-  $("#notesCard").hidden = !(hasRecipe || (s.sharedTok && s.notes));
+  $("#notesCard").hidden = !(hasRecipe || (s.sharedTok && (s.notes || (s.links || []).length)));
+  { const lk = $("#recipeLinks"), sig = String(nkey) + "|" + (!locked && hasRecipe) + "|" + JSON.stringify(s.links || []);
+    if (lk.dataset.for !== sig){ lk.dataset.for = sig; renderLinks(!locked && hasRecipe); } }
   nt.readOnly = locked;
   if (document.activeElement !== nt && (nt.dataset.for !== String(nkey) || locked)){
     nt.value = s.notes || ""; nt.dataset.for = String(nkey);
@@ -1377,6 +1400,10 @@ function renderBakes(){
       <p class="facts">${esc(facts)}</p>
       <table>${rows.map(([n, g, pc]) => `<tr><td>${esc(n)}</td><td>${grams(g)} g</td><td>${pctText(pc)}</td></tr>`).join("")}</table>
       ${st.length ? `<details><summary>Steps (${st.length})</summary><ol class="steps">${st.map(x => `<li>${esc(x)}</li>`).join("")}</ol></details>` : ""}
+      <div class="photos">
+        ${bakePhotos(b).map((ph, i) => `<button type="button" class="ph" data-photo="${b.id}" data-i="${i}" aria-label="Open photo ${i + 1}"><img src="${esc(photoURL(ph))}" alt="Photo ${i + 1} of this bake" loading="lazy"></button>`).join("")}
+        ${uploading === b.id ? `<span class="wait">Adding photos…</span>` : bakePhotos(b).length < MAX_PHOTOS ? `<label class="btn" style="cursor:pointer">＋ Add photos<input type="file" accept="image/*" multiple hidden data-photoadd="${b.id}"></label>` : ""}
+      </div>
       <div class="log">
         <b class="lh">Along the way</b>
         ${log.length ? `<ul>${log.map((e, i) => `<li><span class="lt">${esc(fmtStamp(e.at))}</span><span class="lx">${esc(e.text)}</span><button type="button" data-logdel="${b.id}" data-i="${i}" aria-label="Remove this update">✕</button></li>`).join("")}</ul>` : ""}
@@ -1407,7 +1434,7 @@ document.addEventListener("click", async e => {
   if (t.dataset.again){
     const ty = types.find(x => x.id && x.id === b.type_id) || types.find(x => x.name === b.type_name && x.sizing === b.sizing);
     const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, category: ty?.category || b.category || guessCat(b.type_name, b.sizing), sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
-      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {}, tips: clone(ty?.tips || {}), notes: ty?.notes || "", base: FERMENT[ty?.timing] ? ty.timing : b.ferment };
+      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {}, tips: clone(ty?.tips || {}), notes: ty?.notes || "", links: clone(ty?.links || []), base: FERMENT[ty?.timing] ? ty.timing : b.ferment };
     if (b.sizing === "pizza"){ st.size = +b.size_in; st.thickness = +b.thickness; }
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
     switchType(ty, st); showTab("calc");
@@ -1436,6 +1463,85 @@ $("#bakes").addEventListener("click", e => {
   const log = bakeLog(b), entry = log[+x.dataset.i];
   if (entry && confirm(`Remove this update?\n\n"${entry.text}"`)) saveLog(b, log.filter((_, i) => i !== +x.dataset.i));
 });
+// ---- photos on a bake --------------------------------------------------------------
+const PHOTO_BASE = SUPABASE_URL + "/storage/v1/object/public/dough-photos/", MAX_PHOTOS = 12;
+const bakePhotos = (b) => (Array.isArray(b.photos) ? b.photos : []).filter(x => typeof x === "string" && x);
+const photoURL = (path) => PHOTO_BASE + path.split("/").map(encodeURIComponent).join("/");
+let uploading = "";
+// Shrink in the browser to a 1600px JPEG so phone photos upload fast and take little room.
+async function shrink(file){
+  let src;
+  try { src = await createImageBitmap(file, { imageOrientation: "from-image" }); }
+  catch (_) {
+    src = await new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => no(new Error("unreadable")); im.src = URL.createObjectURL(file); });
+  }
+  const w0 = src.width || src.naturalWidth, h0 = src.height || src.naturalHeight, k = Math.min(1, 1600 / Math.max(w0, h0));
+  const c = document.createElement("canvas"); c.width = Math.round(w0 * k); c.height = Math.round(h0 * k);
+  c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+  return await new Promise((ok, no) => c.toBlob(bl => bl ? ok(bl) : no(new Error("could not convert")), "image/jpeg", 0.85));
+}
+$("#bakes").addEventListener("change", async e => {
+  const inp = e.target.closest("[data-photoadd]"); if (!inp || !session) return;
+  const b = bakes.find(x => x.id === inp.dataset.photoadd), files = [...inp.files]; if (!b || !files.length) return;
+  const room = MAX_PHOTOS - bakePhotos(b).length, failed = [];
+  uploading = b.id; renderBakes();
+  const added = [];
+  for (const f of files.slice(0, room)){
+    try {
+      const blob = await shrink(f), path = `${session.user.id}/${b.id}/${crypto.randomUUID()}.jpg`;
+      const { error } = await sb.storage.from("dough-photos").upload(path, blob, { contentType: "image/jpeg", cacheControl: "31536000" });
+      if (error) throw error;
+      added.push(path);
+    } catch (err){ failed.push(f.name); }
+  }
+  if (added.length){
+    const photos = bakePhotos(b).concat(added), { error } = await sb.from("dough_bakes").update({ photos }).eq("id", b.id);
+    if (error) failed.push("saving to the bake: " + error.message); else b.photos = photos;
+  }
+  uploading = ""; renderBakes();
+  if (files.length > room) alert(`A bake holds up to ${MAX_PHOTOS} photos, so only the first ${room} were added.`);
+  if (failed.length) alert("These didn't upload: " + failed.join(", ") + ". If it is an iPhone HEIC photo on a computer, try from the phone, or export it as JPEG first.");
+});
+let viewing = null;   // {bake, i} for one of my own photos, or null when looking at someone else's
+function openPhoto(url, mine){ viewing = mine || null; $("#photoBig").src = url; $("#photoDel").hidden = !mine; $("#photoDlg").showModal(); }
+document.addEventListener("click", e => {
+  const ph = e.target.closest("[data-photo],[data-aphoto]"); if (!ph) return;
+  if (ph.dataset.aphoto){ openPhoto(ph.dataset.aphoto, null); return; }
+  const b = bakes.find(x => x.id === ph.dataset.photo), path = b && bakePhotos(b)[+ph.dataset.i]; if (path) openPhoto(photoURL(path), { bake: b, i: +ph.dataset.i });
+});
+$("#photoClose").addEventListener("click", () => $("#photoDlg").close());
+$("#photoDlg").addEventListener("click", e => { if (e.target === $("#photoDlg")) $("#photoDlg").close(); });
+$("#photoDel").addEventListener("click", async () => {
+  if (!viewing || !confirm("Remove this photo from the bake?")) return;
+  const b = viewing.bake, all = bakePhotos(b), path = all[viewing.i], photos = all.filter((_, i) => i !== viewing.i);
+  const { error } = await sb.from("dough_bakes").update({ photos }).eq("id", b.id);
+  if (error){ alert("Couldn't remove it: " + error.message); return; }
+  b.photos = photos; sb.storage.from("dough-photos").remove([path]);   // the file itself; nothing depends on it now
+  $("#photoDlg").close(); renderBakes();
+});
+
+// ---- links on a recipe (the icing that goes with it, the video it came from) ---------
+const safeLink = (u) => { try { const x = new URL(/^https?:\/\//i.test(u) ? u : "https://" + u); return /^https?:$/.test(x.protocol) && x.hostname.includes(".") ? x.href : ""; } catch (_) { return ""; } };
+const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (_) { return ""; } };
+function renderLinks(canEdit){
+  const links = (s.links || []).filter(l => l && safeLink(l.url));
+  $("#recipeLinks").innerHTML = (links.length ? `<ul class="rlinks">${links.map((l, i) => `<li><a href="${esc(safeLink(l.url))}" target="_blank" rel="noopener">${esc(l.label || hostOf(l.url))}<small>${esc(hostOf(l.url))}</small></a>${canEdit ? `<button type="button" data-linkdel="${i}" aria-label="Remove this link">✕</button>` : ""}</li>`).join("")}</ul>` : "")
+    + (canEdit ? `<form class="linkform" id="linkForm"><input type="text" name="label" maxlength="60" placeholder="What it is, like Icing" aria-label="Link name"><input type="text" name="url" maxlength="500" placeholder="Paste the link" aria-label="Link address" inputmode="url" autocapitalize="off"><button class="btn">Add link</button></form>` : "");
+}
+async function saveLinks(links){
+  const ty = curType(); if (!ty) return;
+  const { error } = await sb.from("dough_types").update({ links }).eq("id", ty.id);
+  if (error){ alert("That didn't save: " + error.message); return; }
+  ty.links = clone(links); s.links = links; $("#recipeLinks").dataset.for = ""; render();
+}
+$("#recipeLinks").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = e.target, url = safeLink(f.elements.url.value.trim());
+  if (!url){ alert("That doesn't look like a web link. Paste the full address, like https://www.plantoeat.com/..."); return; }
+  saveLinks((s.links || []).concat([{ label: f.elements.label.value.trim() || hostOf(url), url }]));
+});
+$("#recipeLinks").addEventListener("click", e => { const x = e.target.closest("[data-linkdel]"); if (x && confirm("Remove this link?")) saveLinks((s.links || []).filter((_, i) => i !== +x.dataset.linkdel)); });
+
 function drawRate(){ $("#rate").innerHTML = [1,2,3,4,5].map(n => `<button type="button" data-rate="${n}" class="${n <= rating ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}" aria-pressed="${n === rating}">★</button>`).join(""); }
 $("#rate").addEventListener("click", e => { const b = e.target.closest("[data-rate]"); if (b){ rating = +b.dataset.rate; drawRate(); } });
 $("#repCancel").addEventListener("click", () => $("#repDlg").close());
