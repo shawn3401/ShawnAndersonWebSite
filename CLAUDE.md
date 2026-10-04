@@ -19,6 +19,18 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 - Writing style for anything shown on the site or sent to Shawn: no em dashes or en dashes used to set off phrases (use commas, parentheses, or a new sentence). Plain, warm, specific.
 - Render test before pushing a layout change: `npx playwright screenshot` is not installed; instead open `rick/index.html` in a headless Chromium (Playwright if available) at 1100px and 390px wide and eyeball the tiles, the daily log, and the segments table. Both tables turn into stacked cards under 720px.
 
+## Moving to shawnzapps.com (not started; checklist kept current)
+
+Shawn bought shawnzapps.com on Oct 3, 2026 and will move the site there from shawnandersonapps.com later. On Oct 4, 2026 he asked that everything tied to the old domain be remembered for that day. Add to this list whenever something new gets the domain baked in.
+
+- GitHub Pages: `CNAME` file at the repo root, the Pages custom domain setting, and DNS at GoDaddy. Keep shawnandersonapps.com redirecting so old links work.
+- Supabase project ShawnZapps, Authentication, URL Configuration: Site URL, and add `https://shawnzapps.com/**` to Redirect URLs (keep the old one until the move is done).
+- Google Cloud project "ShawnZapps", Google Auth Platform: Branding (application home page, authorized domains) and the OAuth client "ShawnZapps web" (Authorized JavaScript origins). The redirect URI points at Supabase, not the site, so it does not change.
+- Dough share links: `/dough/?r=<token>` links people already sent use the old domain. They keep working only while the old domain redirects with the query string intact.
+- Supabase project Dance Flowers: Auth redirect URL for `/danceflowers/admin/`, the `settings` rows `admin_url` and `from_address`, and the Resend sending domain (currently shawnandersonapps.com, with DKIM, MX, and SPF records).
+- Hardcoded domain in pages: footers and home links in `dough/`, `danceflowers/`, and the root page; meta tags and share images in `danceflowers/`; GoatCounter site settings for the rick/ pages.
+- This file: every "shawnandersonapps.com" mention.
+
 ## rick/ tracker
 
 ### Files
