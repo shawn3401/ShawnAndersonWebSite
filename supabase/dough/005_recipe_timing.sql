@@ -12,3 +12,6 @@ update public.dough_types set timing = coalesce(
   where timing is null;
 alter table public.dough_types alter column timing set default 'same_day';
 alter table public.dough_types alter column timing set not null;
+
+-- Notes about the recipe itself (where it came from, what to remember), not about one bake.
+alter table public.dough_types add column if not exists notes text not null default '';

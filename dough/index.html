@@ -123,6 +123,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .types button.on{color:#1B120E}}
 .ctl .val input.valin{width:96px;text-align:right;font-weight:700;font-size:20px;padding:3px 8px;font-variant-numeric:tabular-nums}
 #stepsEdit{min-height:230px}
+#recipeNotes{min-height:110px}
 .acts{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .adapt{margin-top:12px;padding:12px;border:1px solid var(--accent);border-left-width:5px;border-radius:8px;background:var(--soft)}
 .adapt p{margin:0 0 8px}
@@ -311,6 +312,12 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
           <div class="err" id="adaptErr" hidden></div>
         </div>
 
+        <div class="card" id="notesCard" hidden>
+          <h2>Recipe notes</h2>
+          <textarea id="recipeNotes" maxlength="4000" aria-label="Notes about this recipe" placeholder="Where this recipe came from, what makes it work, things to remember. These stay with the recipe, not with one bake."></textarea>
+          <p class="note" id="notesState"></p>
+        </div>
+
         <div class="card">
           <h2>Lock it in</h2>
           <label class="f" for="flourName" id="flourLab">Flour</label>
@@ -490,7 +497,7 @@ function thickText(t){
 
 function stateFromType(t){
   const d = t.defaults || {};
-  const st = { type_id: t.id, name: t.name, category: t.category || guessCat(t.name, t.sizing), sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, tips: clone(t.tips || {}) };
+  const st = { type_id: t.id, name: t.name, category: t.category || guessCat(t.name, t.sizing), sizing: t.sizing, ...BASE, ings: clone(t.ingredients || []), steps: t.steps ?? null, flour_fix: null, actual: {}, tips: clone(t.tips || {}), notes: t.notes || "" };
   if (t.sizing !== "pizza") st.count = 1;
   for (const k of ["count", "size", "thickness", "piece_g", "flour_g", "yeast_type"]) if (d[k] != null) st[k] = d[k];
   // base is the timing the recipe is written for; ferment is what is picked for today's bake
@@ -671,6 +678,10 @@ function render(){
   $("#editSteps").textContent = editingSteps ? "Done" : list.length ? "Edit steps" : "Add steps";
   $("#basicSteps").hidden = !(s.sizing === "pizza" && s.steps != null && ing(s, "yeast"));
 
+  const hasRecipe = !!session && types.some(x => x.id && x.id === s.type_id), nt = $("#recipeNotes");
+  $("#notesCard").hidden = !hasRecipe;
+  if (hasRecipe && document.activeElement !== nt && nt.dataset.for !== s.type_id){ nt.value = s.notes || ""; nt.dataset.for = s.type_id; $("#notesState").textContent = ""; }
+
   const ab = $("#adaptBox");
   if (s.ferment === s.base) ab.hidden = true;
   else {
@@ -794,6 +805,14 @@ function wire(){
       if (error){ $("#adaptErr").textContent = "That didn't save: " + error.message; $("#adaptErr").hidden = false; return; }
       ty.timing = s.base = s.ferment; s.yeastWas = null; render();
     }
+  });
+  $("#recipeNotes").addEventListener("input", () => { $("#notesState").textContent = "Not saved yet. It saves when you tap out of the box."; });
+  $("#recipeNotes").addEventListener("change", async e => {
+    const id = e.target.dataset.for, text = e.target.value.trim(); if (!id) return;
+    const { error } = await sb.from("dough_types").update({ notes: text }).eq("id", id);
+    const ty = types.find(x => x.id === id); if (!error && ty) ty.notes = text;
+    if (!error && s.type_id === id) s.notes = text;
+    if (s.type_id === id) $("#notesState").textContent = error ? "That didn't save: " + error.message : "Saved to this recipe.";
   });
   $("#basicSteps").addEventListener("click", () => { if (confirm("Replace your steps with the basic ones?")){ s.steps = null; editingSteps = false; render(); } });
   $("#flourName").addEventListener("input", () => { try { localStorage.setItem("dough.flour", $("#flourName").value); } catch (_) {} render(); });
@@ -924,6 +943,7 @@ function aiContext(){
     recipe_written_for: FERMENT[s.base].label + ", " + FERMENT[s.base].sub,
     timing_today: FERMENT[s.ferment].label + ", " + FERMENT[s.ferment].sub,
     steps: stepList(s, c),
+    recipe_notes: s.notes || "",
     recent_bakes_of_this_type: bakes.filter(b => sameType(b, s)).slice(0, 4).map(b => ({ made_on: b.made_on, size: bakeSize(b), rating_of_5: b.rating, flour: b.flour_name,
       ingredients: bakeIngs(b).map(g => ({ name: g.name, pct: g.pct })), notes: b.plan_notes, went_well: b.went_well, went_poorly: b.went_poorly, next_time: b.next_time })),
     category: catLabel(cat),
@@ -1132,7 +1152,7 @@ document.addEventListener("click", async e => {
   if (t.dataset.again){
     const ty = types.find(x => x.id && x.id === b.type_id) || types.find(x => x.name === b.type_name && x.sizing === b.sizing);
     const st = { ...BASE, type_id: ty ? ty.id : null, name: ty ? ty.name : b.type_name, category: ty?.category || b.category || guessCat(b.type_name, b.sizing), sizing: b.sizing, count: b.count, piece_g: +b.ball_g, flour_g: +b.flour_g,
-      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {}, tips: clone(ty?.tips || {}), base: FERMENT[ty?.timing] ? ty.timing : b.ferment };
+      ings: clone(bakeIngs(b)).map(({ plan_pct, ...g }) => g), yeast_type: b.yeast_type, ferment: b.ferment, steps: b.steps && b.steps.trim() ? b.steps : null, flour_fix: null, actual: {}, tips: clone(ty?.tips || {}), notes: ty?.notes || "", base: FERMENT[ty?.timing] ? ty.timing : b.ferment };
     if (b.sizing === "pizza"){ st.size = +b.size_in; st.thickness = +b.thickness; }
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
     switchType(ty, st); showTab("calc");
