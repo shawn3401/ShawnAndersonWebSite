@@ -96,6 +96,25 @@ select + input[type=text]{margin-top:8px}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+.sharebar{background:var(--paper);border:1px solid var(--accent);border-top-width:5px;border-radius:10px;padding:14px;margin-bottom:14px}
+.sharebar h2{font-size:22px;margin-bottom:4px}
+.sharebar p{margin:0 0 10px;color:var(--ink-2)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{font:inherit;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:12px;cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.opt b{display:block;font-size:17px;margin-bottom:3px}
+.opt span{display:block;font-size:14.5px;color:var(--ink-2)}
+.opt[disabled]{opacity:.6;cursor:default}
+dialog .opts{grid-template-columns:1fr;margin-top:6px}
+.rlist button small{font-weight:400;opacity:.8;margin-left:6px}
+.abake{padding:10px 0;border-top:1px solid var(--line)}
+.abake:first-of-type{border-top:0;padding-top:0}
+.abake .when{font-size:14px;color:var(--ink-3)}
+.abake .stars{color:var(--crust);letter-spacing:2px}
+.abake p{margin:4px 0}
+.abake p b{color:var(--ink-2);font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:block}
+.abake ul{margin:4px 0 0;padding-left:18px;color:var(--ink-2);font-size:15px}
+@media (max-width:620px){.opts{grid-template-columns:1fr}}
 .picker{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
 .cats{display:flex;flex-wrap:wrap;gap:6px}
 .cats button{flex:1 0 auto;font:inherit;font-size:15px;font-weight:600;white-space:nowrap;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:8px 12px;cursor:pointer}
@@ -275,6 +294,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 
   <!-- ================= calculator ================= -->
   <div id="calc">
+    <div class="sharebar" id="sharedBar" hidden></div>
     <div class="picker" id="typeBar"></div>
     <div class="card empty" id="emptyCat" hidden></div>
     <div id="calcBody">
@@ -330,6 +350,8 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
           <textarea id="recipeNotes" maxlength="4000" aria-label="Notes about this recipe" placeholder="Where this recipe came from, what makes it work, things to remember. These stay with the recipe, not with one bake."></textarea>
           <p class="note" id="notesState"></p>
         </div>
+
+        <div class="card" id="authorCard" hidden></div>
 
         <div class="card">
           <h2>Lock it in</h2>
@@ -392,6 +414,37 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <div class="err" id="pwErr" hidden></div>
     <div class="row"><button class="btn primary" id="pwBtn">Save password</button></div>
   </form>
+</dialog>
+
+<!-- share a recipe -->
+<dialog id="shareDlg">
+  <form id="shareForm">
+    <h2 id="shareTitle">Share this recipe</h2>
+    <p class="sub">Anyone with the link can open it, no account needed. They always see your current recipe: ingredients, steps, your recipe notes, your ratings and reports, and saved timing suggestions.</p>
+    <label class="f" for="shareName">Your name, shown as "Shared by ..."</label>
+    <input type="text" id="shareName" maxlength="40" placeholder="Shawn" required>
+    <div id="shareOn" hidden>
+      <label class="f" for="shareLink">The link</label>
+      <input type="text" id="shareLink" readonly>
+      <div class="acts"><button type="button" class="btn primary" id="shareCopy">Copy link</button><button type="button" class="btn" id="shareNative" hidden>Send it</button></div>
+      <p class="note">People who follow it get your changes. People who took a copy do not. <button type="button" class="btn link" id="shareStop">Stop sharing this recipe</button></p>
+    </div>
+    <div class="err" id="shareErr" hidden></div>
+    <div class="ok" id="shareOk" hidden></div>
+    <div class="row"><button type="button" class="btn" id="shareClose">Close</button><button class="btn primary" id="shareGo">Create the link</button></div>
+  </form>
+</dialog>
+
+<!-- a recipe you follow -->
+<dialog id="followDlg">
+  <h2 id="followTitle">Following</h2>
+  <p class="sub" id="followSub"></p>
+  <div class="opts">
+    <button type="button" class="opt" id="followCopy"><b>Make it my own copy</b><span id="followCopySub"></span></button>
+    <button type="button" class="opt" id="followDrop"><b>Remove it from my recipes</b><span>Bakes you already logged stay in your history.</span></button>
+  </div>
+  <div class="err" id="followErr" hidden></div>
+  <div class="row"><button type="button" class="btn" id="followClose">Close</button></div>
 </dialog>
 
 <!-- recipe -->
@@ -522,7 +575,12 @@ let types = [LOCAL_PIZZA];
 let s = stateFromType(LOCAL_PIZZA);
 try { const saved = JSON.parse(localStorage.getItem("dough.calc2") || "null"); if (saved && Array.isArray(saved.ings) && saved.sizing === "pizza" && saved.name === "Pizza") s = { ...s, ...saved, type_id: null, flour_fix: null, actual: {}, tips: {}, base: "cold_long" }; } catch (_) {}
 let checked = new Set(), ranges = {}, editingSteps = false;
-let cat = "pizza", lastIn = {}, catsOpen = false;   // the category on screen, and the recipe last opened in each one
+let cat = "pizza", lastIn = {}, catsOpen = false;
+// sharing: the link being looked at, the author's reported bakes per link, and this person's display name
+let shareTok = new URLSearchParams(location.search).get("r") || "", shared = null, sharedGone = false, authorBakes = {}, profileName = "", shareNotice = "";
+const curType = () => types.find(x => x.id && x.id === s.type_id) || null;
+const following = () => { const ty = curType(); return ty && ty.follows_token ? ty : null; };
+const isCur = (x) => !s.sharedTok && x.id === s.type_id;   // the category on screen, and the recipe last opened in each one
 let session = null, bakes = [], reporting = null, rating = 0, histFilter = "";
 
 const ing = (st, key) => st.ings.find(g => g.key === key);
@@ -616,21 +674,94 @@ function buildControls(){
 const inCat = (k) => types.filter(x => (x.category || guessCat(x.name, x.sizing)) === k);
 function renderTypes(){
   // "orphan": what is on screen came from an old bake whose recipe was deleted, so it is in no list
-  const mine = inCat(cat), orphan = s.category === cat && !types.some(x => x.id === s.type_id);
+  const mine = inCat(cat), orphan = s.category === cat && (!!s.sharedTok || !types.some(x => x.id === s.type_id));
+  const cur = s.sharedTok ? null : curType(), fol = cur && cur.follows_token ? cur : null;
   const empty = !mine.length && !orphan;
   $("#typeSmall").textContent = catLabel(cat);
   // wide screens show every category; phones show the current one and unfold the rest on a tap
   $("#typeBar").innerHTML = `<button type="button" class="catbtn" data-cats aria-expanded="${catsOpen}"><span>${esc(catLabel(cat))}</span><small>${catsOpen ? "Close" : "Change category"}</small></button>`
     + `<div class="cats${catsOpen ? " open" : ""}" role="tablist">${CATS.map(([k, l]) => { const n = inCat(k).length; return `<button type="button" role="tab" data-cat="${k}" class="${k === cat ? "on" : ""}">${l}${session && n ? `<small>${n}</small>` : ""}</button>`; }).join("")}</div>`
     + (empty ? "" : `<div class="recipe">
-        <div class="rlist" role="group" aria-label="${esc(catLabel(cat))} recipes">${mine.map(x => `<button type="button" data-recipe="${x.id || ""}" class="${x.id === s.type_id ? "on" : ""}" aria-pressed="${x.id === s.type_id}">${esc(x.name)}</button>`).join("")}${mine.some(x => x.id === s.type_id) ? "" : `<button type="button" class="on" aria-pressed="true" disabled>${esc(s.name)} (not saved as a recipe)</button>`}</div>
-        <div class="ract">${mine.some(x => x.id === s.type_id && x.id) ? `<button type="button" class="btn" data-edittype>Edit</button>` : ""}<button type="button" class="btn" data-newtype>＋ New recipe</button>${aiOK ? `<button type="button" class="btn ai" data-ai>Ask AI</button>` : ""}</div>
+        <div class="rlist" role="group" aria-label="${esc(catLabel(cat))} recipes">${mine.map(x => `<button type="button" data-recipe="${x.id || ""}" class="${isCur(x) ? "on" : ""}" aria-pressed="${isCur(x)}">${esc(x.name)}${x.follows_token ? `<small>by ${esc(x.author_name || "someone")}</small>` : ""}</button>`).join("")}${mine.some(isCur) ? "" : `<button type="button" class="on" aria-pressed="true" disabled>${esc(s.name)} ${s.sharedTok ? `<small>shared by ${esc(shared?.author || "someone")}</small>` : "(not saved as a recipe)"}</button>`}</div>
+        <div class="ract">${fol ? `<button type="button" class="btn" data-followmenu>Following ${esc(fol.author_name || "")}</button>` : cur ? `<button type="button" class="btn" data-edittype>Edit</button><button type="button" class="btn" data-share>${cur.share_token ? "Shared ✓" : "Share"}</button>` : ""}<button type="button" class="btn" data-newtype>＋ New recipe</button>${aiOK ? `<button type="button" class="btn ai" data-ai>Ask AI</button>` : ""}</div>
       </div>`);
   $("#calcBody").hidden = empty;
+  renderShared();
   const ec = $("#emptyCat"); ec.hidden = !empty;
   if (empty) ec.innerHTML = session
     ? `<p>You don't have a ${esc(catLabel(cat))} recipe yet.</p><div class="acts">${aiOK ? `<button type="button" class="btn primary" data-ai>Ask AI for a starting point</button>` : ""}<button type="button" class="btn${aiOK ? "" : " primary"}" data-newtype>Start one from scratch</button></div>`
     : `<p>Sign in to make your own ${esc(catLabel(cat))} recipes.</p><div class="acts"><button type="button" class="btn primary" data-open-auth>Sign in</button></div>`;
+}
+// ---- sharing ---------------------------------------------------------------------
+const shareURL = (tok) => location.origin + location.pathname + "?r=" + tok;
+function newToken(){ return [...crypto.getRandomValues(new Uint8Array(18))].map(b => (b % 36).toString(36)).join(""); }
+function clearShareLink(){ shareTok = ""; shared = null; try { history.replaceState(null, "", location.pathname); } catch (_) {} }
+const fromShared = (r) => ({ name: r.name, category: r.category, sizing: r.sizing, timing: r.timing, ingredients: r.ingredients || [], steps: r.steps ?? null, notes: r.notes || "", tips: r.tips || {} });
+// Called at the end of load(): show the recipe a share link points at, or jump to it if it is already theirs.
+async function applyShared(){
+  if (!shareTok) return;
+  if (!shared && !sharedGone){
+    const { data } = await sb.rpc("dough_shared", { p_token: shareTok });
+    if (data) shared = data; else sharedGone = true;
+  } else if (shared && session){ const { data } = await sb.rpc("dough_shared", { p_token: shareTok }); if (data) shared = data; }   // re-ask once signed in: is it mine?
+  if (!shared) return;
+  authorBakes[shareTok] = { author: shared.author, bakes: shared.bakes || [] };
+  const own = shared.own_id && types.find(x => x.id === shared.own_id), have = types.find(x => x.follows_token === shareTok);
+  if (own || have){ s = stateFromType(own || have); cat = s.category; clearShareLink(); return; }
+  s = stateFromType({ id: null, defaults: {}, ...fromShared(shared.recipe) }); s.sharedTok = shareTok; cat = s.category;
+}
+function renderShared(){
+  const bar = $("#sharedBar");
+  if (shareNotice){ bar.innerHTML = `<p style="margin:0">${esc(shareNotice)} <button type="button" class="btn link" data-sharedismiss>OK</button></p>`; bar.hidden = false; return; }
+  if (shareTok && sharedGone){ bar.innerHTML = `<h2>That link isn't active</h2><p>The person who shared it has stopped sharing, or the link is incomplete.</p><button type="button" class="btn" data-sharedismiss>OK</button>`; bar.hidden = false; return; }
+  if (!shared || !s.sharedTok){ bar.hidden = true; return; }
+  const a = esc(shared.author), n = esc(shared.recipe.name);
+  bar.innerHTML = `<h2>${n}</h2><p>Shared by ${a}. Use the calculator below to size a batch.${session ? " To keep it, pick one:" : ""}</p>`
+    + (session ? `<div class="opts">
+        <button type="button" class="opt" data-accept="follow"><b>Follow ${a}'s recipe</b><span>It stays ${a}'s. When ${a} changes it, yours changes too. You can size it and log your own bakes, but not edit it.</span></button>
+        <button type="button" class="opt" data-accept="copy"><b>Make my own copy</b><span>It becomes yours to change however you like. You will not get ${a}'s later changes.</span></button>
+      </div><p class="note" style="margin:10px 0 0">You can turn a followed recipe into your own copy later. <button type="button" class="btn link" data-sharedismiss>Not now</button></p>`
+      : `<div class="acts"><button type="button" class="btn primary" data-open-auth>Sign in to keep this recipe</button><button type="button" class="btn link" data-sharedismiss>Just looking</button></div>`);
+  bar.hidden = false;
+}
+async function acceptShared(how){
+  if (!shared || !session) return;
+  const r = fromShared(shared.recipe), tok = shareTok, author = shared.author;
+  let name = r.name, n = 2; const taken = (x) => types.some(y => y.name.toLowerCase() === x.toLowerCase());
+  if (taken(name)) name = (r.name + " (" + author + ")").slice(0, 40);
+  while (taken(name)) name = (r.name.slice(0, 34) + " " + n++);
+  const row = { ...r, name, defaults: {} };
+  if (how === "follow"){ row.follows_token = tok; row.author_name = author; } else row.copied_from = author;
+  const { data, error } = await sb.from("dough_types").insert(row).select().single();
+  if (error){ shareNotice = "That didn't save: " + error.message; renderShared(); return; }
+  clearShareLink(); if (how === "follow") authorBakes[tok] = authorBakes[tok] || { author, bakes: [] };
+  await loadTypes(); switchType(types.find(x => x.id === data.id) || data);
+}
+// Recipes this person follows mirror the author's current version. If the author stopped sharing, it becomes a plain copy.
+async function refreshFollowed(rows){
+  await Promise.all(rows.filter(x => x.follows_token).map(async x => {
+    const { data, error } = await sb.rpc("dough_shared", { p_token: x.follows_token });
+    if (error) return;   // offline or a hiccup: keep what we have
+    if (!data){
+      await sb.from("dough_types").update({ follows_token: null, copied_from: x.author_name }).eq("id", x.id);
+      shareNotice = `${x.author_name || "The author"} stopped sharing "${x.name}". It is now your own copy, and you can edit it.`;
+      x.copied_from = x.author_name; x.follows_token = null; return;
+    }
+    authorBakes[x.follows_token] = { author: data.author, bakes: data.bakes || [] };
+    const r = fromShared(data.recipe), next = { category: r.category, sizing: r.sizing, timing: r.timing, ingredients: r.ingredients, steps: r.steps, notes: r.notes, tips: r.tips, author_name: data.author };
+    if (Object.keys(next).some(k => JSON.stringify(next[k]) !== JSON.stringify(x[k]))){ await sb.from("dough_types").update(next).eq("id", x.id); Object.assign(x, next); }
+  }));
+}
+function renderAuthor(){
+  const card = $("#authorCard"), fol = following(), tok = s.sharedTok || (fol && fol.follows_token), info = tok && authorBakes[tok];
+  if (!info || !info.bakes.length){ card.hidden = true; return; }
+  card.innerHTML = `<h2>${esc(info.author)}'s bakes</h2>` + info.bakes.map(b => `<div class="abake">
+      <div class="when">${fmtDate(b.made_on)} · ${esc(bakeSize({ ...b, type_name: "" }))} · ${esc(FERMENT[b.ferment]?.label || "")}${b.flour_name ? " · " + esc(b.flour_name) : ""}</div>
+      ${b.rating ? `<div class="stars" aria-label="${b.rating} of 5 stars">${stars(b.rating)}</div>` : ""}
+      ${b.plan_notes ? `<p><b>Notes</b>${esc(b.plan_notes)}</p>` : ""}${b.went_well ? `<p><b>Went well</b>${esc(b.went_well)}</p>` : ""}${b.went_poorly ? `<p><b>Went poorly</b>${esc(b.went_poorly)}</p>` : ""}${b.next_time ? `<p><b>Next time, try</b>${esc(b.next_time)}</p>` : ""}
+      ${bakeLog(b).length ? `<ul>${bakeLog(b).map(e => `<li>${esc(fmtStamp(e.at))}: ${esc(e.text)}</li>`).join("")}</ul>` : ""}
+    </div>`).join("");
+  card.hidden = false;
 }
 function setCat(k){
   cat = k;
@@ -689,18 +820,27 @@ function render(){
     : basic ? "Basic steps to get you started. Edit them to match how you actually make it." : "";
   $("#stepsNote").hidden = !$("#stepsNote").textContent;
   $("#editSteps").textContent = editingSteps ? "Done" : list.length ? "Edit steps" : "Add steps";
-  $("#basicSteps").hidden = !(s.sizing === "pizza" && s.steps != null && ing(s, "yeast"));
+  const fol = following(), locked = !!fol || !!s.sharedTok, who = fol ? fol.author_name : shared?.author;
+  $("#editSteps").hidden = locked;
+  if (locked){ $("#stepsNote").textContent = `These are ${who || "the author"}'s steps. To change them, make your own copy.`; $("#stepsNote").hidden = false; }
+  $("#basicSteps").hidden = locked || !(s.sizing === "pizza" && s.steps != null && ing(s, "yeast"));
 
-  const hasRecipe = !!session && types.some(x => x.id && x.id === s.type_id), nt = $("#recipeNotes");
-  $("#notesCard").hidden = !hasRecipe;
-  if (hasRecipe && document.activeElement !== nt && nt.dataset.for !== s.type_id){ nt.value = s.notes || ""; nt.dataset.for = s.type_id; $("#notesState").textContent = ""; }
+  const hasRecipe = !s.sharedTok && !!session && !!curType(), nt = $("#recipeNotes"), nkey = s.sharedTok ? "shared:" + s.sharedTok : s.type_id;
+  $("#notesCard").hidden = !(hasRecipe || (s.sharedTok && s.notes));
+  nt.readOnly = locked;
+  if (document.activeElement !== nt && (nt.dataset.for !== String(nkey) || locked)){
+    nt.value = s.notes || ""; nt.dataset.for = String(nkey);
+    const ct = curType();
+    $("#notesState").textContent = locked ? `${who || "The author"}'s notes.` : ct && ct.copied_from ? `Copied from ${ct.copied_from}'s recipe.` : "";
+  }
+  renderAuthor();
 
   const ab = $("#adaptBox");
   if (s.ferment === s.base) ab.hidden = true;
   else {
     const toL = FERMENT[s.ferment].label, baseL = FERMENT[s.base].label, faster = FKEYS.indexOf(s.ferment) < FKEYS.indexOf(s.base);
     const tip = s.tips[s.ferment], fresh = tip && tip.sig === tipSig(), y = ing(s, "yeast");
-    const saved = types.some(x => x.id && x.id === s.type_id);
+    const saved = !locked && !!curType();
     let body;
     if (tipsBusy === s.ferment) body = `<p class="wait">Working out how to ${faster ? "speed this up" : "slow this down"}. About 15 seconds.</p>`;
     else if (fresh) body = `<ul class="tips">${(tip.tips || []).map(x => `<li><b>${esc(x.title)}</b>${esc(x.detail)}</li>`).join("")}</ul>`
@@ -708,14 +848,14 @@ function render(){
       + (tip.note ? `<p class="tnote">${esc(tip.note)}</p>` : "");
     else body = `<p>${faster ? "To go faster, bakers usually use more yeast, warmer liquid (about 105°F), and a warm spot for the rises. You give up some flavor."
         : "To go slower, bakers usually use less yeast and cooler liquid, and let the dough rest in the refrigerator. Take it out an hour or two before shaping or baking."}</p>`
-      + (aiOK && list.length ? `<div class="acts"><button type="button" class="btn primary" id="tipGo">Get suggestions for this recipe</button></div>` : "");
+      + (aiOK && list.length && !s.sharedTok ? `<div class="acts"><button type="button" class="btn primary" id="tipGo">Get suggestions for this recipe</button></div>` : "");
     ab.innerHTML = `<h3>Suggestions based on your timing</h3><p class="tsub">Written for ${esc(baseL)}, baking ${esc(toL)}. Your recipe and steps stay as they are.</p>` + body
       + (saved && tipsBusy !== s.ferment ? `<p class="tfoot"><button type="button" class="btn link" id="tipBase">Make ${esc(toL)} this recipe's timing</button></p>` : "");
     ab.hidden = false;
   }
 
   $("#lock").textContent = session ? "Lock it in" : "Sign in to lock it in";
-  try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {}
+  if (!s.sharedTok) try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {}
 }
 
 function setPct(k, v){ const g = ing(s, k), [min, max] = ranges[k]; g.pct = clamp(r2(v), min, max); if (s.actual) delete s.actual[k]; }
@@ -733,7 +873,7 @@ function setFerment(k){
   if (k === s.base && s.yeastWas != null){ const y = ing(s, "yeast"); if (y) y.pct = s.yeastWas; s.yeastWas = null; buildControls(); }
   render();
   const tip = s.tips[k];
-  if (k !== s.base && aiOK && session && stepList(s, compute(s)).length && !(tip && tip.sig === tipSig())) fetchTips(k);
+  if (k !== s.base && aiOK && session && !s.sharedTok && stepList(s, compute(s)).length && !(tip && tip.sig === tipSig())) fetchTips(k);
 }
 async function fetchTips(k){
   if (tipsBusy) return;
@@ -747,7 +887,7 @@ async function fetchTips(k){
     $("#adaptErr").textContent = msg || "The suggestions didn't come through. Try again in a moment."; $("#adaptErr").hidden = false;
   } else if (typeId === s.type_id){
     s.tips[k] = { sig, tips: data.tips.tips || [], yeast_pct: +data.tips.yeast_pct || 0, note: data.tips.note || "" };
-    if (typeId) sb.from("dough_types").update({ tips: s.tips }).eq("id", typeId).then(() => { const ty = types.find(x => x.id === typeId); if (ty) ty.tips = clone(s.tips); });   // paid for once, kept
+    if (typeId && !following()) sb.from("dough_types").update({ tips: s.tips }).eq("id", typeId).then(() => { const ty = types.find(x => x.id === typeId); if (ty) ty.tips = clone(s.tips); });   // paid for once, kept
   }
   render();
 }
@@ -781,6 +921,13 @@ function wire(){
     else if (d.pct){ setPct(d.pct, pctOf(s, d.pct) + +d.d); render(); }
     else if (b.id === "useSug"){ setPct("yeast", suggestedYeast(s)); render(); }
     else if (d.ing){ checked.has(d.ing) ? checked.delete(d.ing) : checked.add(d.ing); keepAwake(); render(); }
+    else if (d.accept){ b.disabled = true; acceptShared(d.accept); }
+    else if (d.sharedismiss !== undefined){
+      shareNotice = ""; const was = !!s.sharedTok; clearShareLink(); sharedGone = false;
+      if (was){ const t0 = types[0]; if (t0) switchType(t0); } else renderTypes();
+    }
+    else if (d.share !== undefined) openShare();
+    else if (d.followmenu !== undefined) openFollow();
     else if (d.cats !== undefined){ catsOpen = !catsOpen; renderTypes(); }
     else if (d.cat){ catsOpen = false; if (d.cat !== cat) setCat(d.cat); else renderTypes(); }
     else if (d.recipe !== undefined){ const t = types.find(x => (x.id || "") === d.recipe); if (t && t.id !== s.type_id) switchType(t); }
@@ -821,7 +968,7 @@ function wire(){
   });
   $("#recipeNotes").addEventListener("input", () => { $("#notesState").textContent = "Not saved yet. It saves when you tap out of the box."; });
   $("#recipeNotes").addEventListener("change", async e => {
-    const id = e.target.dataset.for, text = e.target.value.trim(); if (!id) return;
+    const id = e.target.dataset.for, text = e.target.value.trim(); if (!id || e.target.readOnly || id.startsWith("shared:")) return;
     const { error } = await sb.from("dough_types").update({ notes: text }).eq("id", id);
     const ty = types.find(x => x.id === id); if (!error && ty) ty.notes = text;
     if (!error && s.type_id === id) s.notes = text;
@@ -932,6 +1079,7 @@ async function loadTypes(){
     data = r.data || [];
     if (data[0]) await sb.from("dough_bakes").update({ type_id: data[0].id }).is("type_id", null);
   }
+  await refreshFollowed(data);
   types = data.length ? data : [LOCAL_PIZZA];
 }
 
@@ -1038,6 +1186,74 @@ $("#aiLog").addEventListener("click", async e => {
   await loadTypes(); switchType(data); $("#aiDlg").close(); showTab("calc");
 });
 
+// ---- share dialog (author) and follow dialog (receiver) --------------------------
+function drawShare(){
+  const ty = curType(); if (!ty) return;
+  $("#shareTitle").textContent = "Share " + ty.name;
+  const on = !!ty.share_token;
+  $("#shareOn").hidden = !on; $("#shareGo").textContent = on ? "Save name" : "Create the link";
+  if (on) $("#shareLink").value = shareURL(ty.share_token);
+  $("#shareNative").hidden = !on || !navigator.share;
+}
+function openShare(){
+  if (!curType()) return;
+  $("#shareName").value = profileName; $("#shareErr").hidden = $("#shareOk").hidden = true;
+  drawShare(); $("#shareDlg").showModal();
+}
+$("#shareClose").addEventListener("click", () => $("#shareDlg").close());
+$("#shareForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const ty = curType(), name = $("#shareName").value.trim(); if (!ty) return;
+  const fail = (m) => { $("#shareErr").textContent = m; $("#shareErr").hidden = false; };
+  $("#shareErr").hidden = $("#shareOk").hidden = true;
+  if (!name) return fail("Add the name people will see.");
+  $("#shareGo").disabled = true;
+  const p = await sb.from("dough_profiles").upsert({ user_id: session.user.id, display_name: name, updated_at: new Date().toISOString() });
+  if (p.error){ $("#shareGo").disabled = false; return fail("Couldn't save your name: " + p.error.message); }
+  profileName = name;
+  if (!ty.share_token){
+    const tok = newToken(), r = await sb.from("dough_types").update({ share_token: tok }).eq("id", ty.id);
+    if (r.error){ $("#shareGo").disabled = false; return fail("Couldn't create the link: " + r.error.message); }
+    ty.share_token = tok;
+  }
+  $("#shareGo").disabled = false; $("#shareOk").textContent = "Your link is ready."; $("#shareOk").hidden = false;
+  drawShare(); renderTypes();
+});
+$("#shareCopy").addEventListener("click", async () => {
+  const el = $("#shareLink");
+  try { await navigator.clipboard.writeText(el.value); } catch (_) { el.select(); document.execCommand && document.execCommand("copy"); }
+  $("#shareOk").textContent = "Copied. Paste it into a text or email."; $("#shareOk").hidden = false;
+});
+$("#shareNative").addEventListener("click", () => { const ty = curType(); if (ty) navigator.share({ title: ty.name, text: `${profileName || "I"} shared a recipe with you: ${ty.name}`, url: $("#shareLink").value }).catch(() => {}); });
+$("#shareStop").addEventListener("click", async () => {
+  const ty = curType(); if (!ty || !confirm(`Stop sharing "${ty.name}"? The link will stop working. People following it keep it as their own copy.`)) return;
+  const { error } = await sb.from("dough_types").update({ share_token: null }).eq("id", ty.id);
+  if (error){ $("#shareErr").textContent = "Couldn't stop sharing: " + error.message; $("#shareErr").hidden = false; return; }
+  ty.share_token = null; $("#shareOk").textContent = "Sharing is off for this recipe."; $("#shareOk").hidden = false; drawShare(); renderTypes();
+});
+function openFollow(){
+  const ty = following(); if (!ty) return;
+  const a = ty.author_name || "the author";
+  $("#followTitle").textContent = "Following " + a;
+  $("#followSub").textContent = `"${ty.name}" is ${a}'s recipe. It updates whenever ${a} changes it, and you can size it and log bakes but not edit it.`;
+  $("#followCopySub").textContent = `It becomes yours to edit. You will stop getting ${a}'s changes.`;
+  $("#followErr").hidden = true; $("#followDlg").showModal();
+}
+$("#followClose").addEventListener("click", () => $("#followDlg").close());
+$("#followCopy").addEventListener("click", async () => {
+  const ty = following(); if (!ty) return;
+  const { error } = await sb.from("dough_types").update({ follows_token: null, copied_from: ty.author_name }).eq("id", ty.id);
+  if (error){ $("#followErr").textContent = "That didn't save: " + error.message; $("#followErr").hidden = false; return; }
+  ty.copied_from = ty.author_name; ty.follows_token = null; $("#followDlg").close(); $("#recipeNotes").dataset.for = ""; renderTypes(); render();
+});
+$("#followDrop").addEventListener("click", async () => {
+  const ty = following(); if (!ty || !confirm(`Remove "${ty.name}" from your recipes?`)) return;
+  const { error } = await sb.from("dough_types").delete().eq("id", ty.id);
+  if (error){ $("#followErr").textContent = "Couldn't remove it: " + error.message; $("#followErr").hidden = false; return; }
+  $("#followDlg").close(); await loadTypes();
+  const next = inCat(cat)[0] || types[0]; if (next) switchType(next);
+});
+
 // ---- flour picker ------------------------------------------------------------
 // The list is every flour this person has locked in before, newest first. Typing is only for a new one.
 let addingFlour = false;
@@ -1079,7 +1295,8 @@ async function lockIn(){
   });
   if (error){ b.disabled = false; $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
   // what you just made becomes this type's starting point next time
-  if (s.type_id){
+  if (s.type_id && following()) await sb.from("dough_types").update({ defaults: planOf(s) }).eq("id", s.type_id);
+  else if (s.type_id){
     const ty = types.find(x => x.id === s.type_id), keepYeast = s.ferment !== s.base && ty ? (ty.ingredients || []).find(g => g.key === "yeast") : null;
     await sb.from("dough_types").update({ ingredients: s.ings.map(g => g.key === "yeast" && keepYeast ? { ...g, pct: keepYeast.pct } : g), steps: s.steps, defaults: planOf(s) }).eq("id", s.type_id);
   }
@@ -1092,8 +1309,8 @@ async function lockIn(){
 // ---- history -----------------------------------------------------------------
 async function load(){
   await loadTypes(); await loadAI();
-  if (!types.some(t => t.id === s.type_id)){
-    const t = types.find(x => x.name === s.name && x.sizing === s.sizing);
+  if (s.sharedTok || !types.some(t => t.id === s.type_id)){
+    const t = s.sharedTok ? null : types.find(x => x.name === s.name && x.sizing === s.sizing);
     s = t ? { ...s, type_id: t.id, category: t.category || s.category } : stateFromType(types[0]);
     cat = s.category || "pizza";
   }
@@ -1103,6 +1320,9 @@ async function load(){
     if (error){ $("#bakes").innerHTML = `<div class="err">Couldn't load your bakes: ${esc(error.message)}</div>`; return; }
     bakes = data || [];
   }
+  if (session && !profileName){ const { data: pr } = await sb.from("dough_profiles").select("display_name").maybeSingle(); profileName = pr?.display_name || ""; }
+  if (!session) profileName = "";
+  await applyShared();
   buildControls(); renderTypes(); renderBakes();
 }
 const bakeIngs = (b) => Array.isArray(b.ingredients) ? b.ingredients : PIZZA_INGS.filter(g => b.pct && b.pct[g.key] != null).map(g => ({ ...g, pct: +b.pct[g.key] }));
