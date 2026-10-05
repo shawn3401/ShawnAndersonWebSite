@@ -392,7 +392,8 @@ function setMode(m){ R.mode = m; store.set("mode", m); const pl = party(); if (p
 function turnOrder(pl, mode = modeOf(pl)){
   const last = {};
   for (const v of groupVisits(pl)) if (v.picker_key && (v.mode || "turns") === mode){ const t = v.visited_on + " " + v.created_at; if (!last[v.picker_key] || t > last[v.picker_key]) last[v.picker_key] = t; }
-  return pl.map((p, i) => ({ p, i, t: last[p.key] || "" })).sort((a, b) => a.t < b.t ? -1 : a.t > b.t ? 1 : a.i - b.i).map((x) => x.p);
+  // Among people who have never picked, the phone's owner goes last: whoever suggests the app should not get the first pick.
+  return pl.map((p, i) => ({ p, i: i || pl.length, t: last[p.key] || "" })).sort((a, b) => a.t < b.t ? -1 : a.t > b.t ? 1 : a.i - b.i).map((x) => x.p);
 }
 function picker(pl = party()){ const o = turnOrder(pl); return o[R.passed % o.length]; }
 // Elimination: everyone but the picker eliminates R.game.per places in one go, one person after another, then the picker chooses from what is left.
