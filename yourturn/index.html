@@ -636,7 +636,7 @@ function renderSetup(pl){
     const p = picker(pl), whose = p.key === myId() ? "your" : esc(p.name) + "'s", past = groupVisits(pl).slice(0, 5);
     const others = turnOrder(pl).filter((x) => x !== p).map((x) => x.key === myId() ? "you" : x.name);
     grp = `<div class="grp"><b>${R.mode === "elim" ? `${p.key === myId() ? "You get" : esc(p.name) + " gets"} the final pick.` : `It's ${whose} turn to pick.`}</b>
-      ${R.mode === "elim" ? `<div class="hint">${esc(list(others))} ${others.length === 1 && others[0] !== "you" ? "eliminates" : "eliminate"} first.</div>` : ""}
+      ${R.mode === "elim" ? `<div class="hint">${esc(list(others).replace(/^you/, "You"))} ${others.length === 1 && others[0] !== "you" ? "eliminates" : "eliminate"} first.</div>` : ""}
       ${past.length ? `<div class="hint" style="margin-top:6px">This group's last ${past.length === 1 ? "meal" : past.length + " meals"}:</div>` + past.map((v) => `<div class="gv">${fmtDate(v.visited_on)} · ${esc(places.get(v.place_id)?.name || "A place")}${v.picker_name ? " · " + pickedText(v) : ""}</div>`).join("")
         : `<div class="hint">First time out with this group.</div>`}</div>`;
   }
