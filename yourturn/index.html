@@ -641,13 +641,12 @@ function renderSetup(pl){
         : `<div class="hint">First time out with this group.</div>`}</div>`;
   }
   return `<div class="card">
-    <div class="q"><div class="lab">How are you deciding?</div>${seg("mode", [["turns", "Take turns", "one person picks"], ["elim", "Elimination", "narrow it down together"]], R.mode)}
-      ${pl.length < 2 ? `<div class="hint" style="margin-top:6px">This kicks in once someone else is at the table.</div>` : ""}</div>
     <div class="q"><div class="lab">Who's eating?</div>
       <div class="chips"><button type="button" class="on me">${esc(me?.display_name || "Me")}</button>${chips}
         ${full ? "" : `<button type="button" class="ghost" data-act="addWho">+ Someone new</button>`}</div>
       ${R.adding ? `<div class="inline"><input type="text" id="newWho" maxlength="40" placeholder="Their first name"><button type="button" class="btn primary" data-act="addWhoSave">Add</button><button type="button" class="btn" data-act="addWho">Cancel</button></div>` : ""}
-      ${full ? `<div class="hint">That's a full table of ${MAX_PARTY}.</div>` : ""}${grp}</div>
+      ${full ? `<div class="hint">That's a full table of ${MAX_PARTY}.</div>` : ""}</div>
+    ${pl.length < 2 ? "" : `<div class="q"><div class="lab">How are you deciding?</div>${seg("mode", [["turns", "Take turns", "one person picks"], ["elim", "Elimination", "narrow it down together"]], R.mode)}${grp}</div>`}
     <div class="q"><div class="lab">How much time do you have?</div><div class="hint">Door to door, drive included.</div>${seg("time", TIMES, R.time)}</div>
     <div class="q"><div class="lab">How far will you drive?</div><div class="hint">One way, roughly.</div>${seg("far", FARS, R.far)}</div>
     <div class="q"><div class="lab">What kind of place?</div><div class="hint">Tap any that work. None tapped means anything goes.</div><div class="seg">${styles}</div></div>
