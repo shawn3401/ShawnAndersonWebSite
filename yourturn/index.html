@@ -77,6 +77,7 @@ h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;margin:0;line-heig
 .q:first-child{border-top:0;padding-top:0}
 .q:last-child{padding-bottom:0}
 .q .lab{font-weight:700}
+.q .allnone{float:right;font-weight:400;font-size:15px}
 .q .hint{font-size:14px;color:var(--ink-3)}
 .seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .seg button{flex:1 1 0;min-width:76px;font:inherit;font-size:15px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:9px 6px;cursor:pointer;line-height:1.2}
@@ -470,7 +471,8 @@ async function findPlaces(){
   R.busy = true; R.err = ""; render();
   try {
     R.origin = await getOrigin();
-    const want = Object.keys(R.genres).filter((g) => R.genres[g] === "want" && g !== "other");
+    let want = Object.keys(R.genres).filter((g) => R.genres[g] === "want" && g !== "other");
+    if (want.length === Object.keys(GENRES).length - 1) want = [];   // every genre wanted is the same as no preference
     const avoid = Object.keys(R.genres).filter((g) => R.genres[g] === "avoid" && g !== "other");
     const radiusMi = milesFor(R.far);
     const got = await callSearch({ lat: R.origin.lat, lng: R.origin.lng, radius_m: Math.round(radiusMi * 1609), want, avoid, styles: [...R.styles] });
@@ -603,7 +605,7 @@ function renderSetup(pl){
     <div class="q"><div class="lab">How much time do you have?</div><div class="hint">Door to door, drive included.</div>${seg("time", TIMES, R.time)}</div>
     <div class="q"><div class="lab">How far will you drive?</div><div class="hint">One way, roughly.</div>${seg("far", FARS, R.far)}</div>
     <div class="q"><div class="lab">What kind of place?</div><div class="hint">Tap any that work. None tapped means anything goes.</div><div class="seg">${styles}</div></div>
-    <div class="q"><div class="lab">What sounds good?</div><div class="hint">Tap once for "yes, that". Tap twice for "not that".</div><div class="chips">${genres}</div></div>
+    <div class="q"><div class="lab">What sounds good? <span class="allnone"><button type="button" class="btn link" data-act="genreAll">All</button> · <button type="button" class="btn link" data-act="genreNone">None</button></span></div><div class="hint">Tap once for "yes, that". Tap twice for "not that".</div><div class="chips">${genres}</div></div>
     <div class="q"><div class="lab">Willing to wait for a table?</div>${seg("wait", [["yes", "Sure"], ["no", "No waiting"]], R.waitOk ? "yes" : "no")}</div>
     <div class="q"><div class="lab">Starting from</div>${seg("from", [["here", "Where I am"], ["home", "Home"], ["town", "A town"]], R.from)}${from}</div>
     <div class="q"><label class="ck" style="margin-top:0"><input type="checkbox" data-act="anyHours" ${R.anyHours ? "checked" : ""}> Ignore opening hours</label>
@@ -846,6 +848,8 @@ const ACTS = {
   style: (d) => { R.styles.has(d.v) ? R.styles.delete(d.v) : R.styles.add(d.v); remember(); render(); },
   genre: (d) => { const cur = R.genres[d.v]; if (!cur) R.genres[d.v] = "want"; else if (cur === "want") R.genres[d.v] = "avoid"; else delete R.genres[d.v]; remember(); render(); },
   anyHours: (d, b) => { R.anyHours = b.checked; },
+  genreAll: () => { R.genres = Object.fromEntries(Object.keys(GENRES).filter((g) => g !== "other").map((g) => [g, "want"])); remember(); render(); },
+  genreNone: () => { R.genres = {}; remember(); render(); },
   wait: (d) => { R.waitOk = d.v === "yes"; remember(); render(); },
   from: (d) => { R.from = d.v; R.err = ""; remember(); render(); },
   townGo: async () => { const q = $("#townQ").value.trim(); if (!q) return; try { R.towns = await townSearch(q); if (R.towns.length === 1) R.town = R.towns[0]; } catch (_) { R.towns = []; } remember(); render(); },
