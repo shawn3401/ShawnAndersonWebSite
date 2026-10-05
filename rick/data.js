@@ -134,14 +134,18 @@ const LOG = [
     {time:"5:16 pm", text:"Arizona state line. State number five."},
     {time:"5:50 pm", miles:66.6, gain:1995, text:"Done for the day at the Country Rose RV Park in Fredonia after 66.6 miles, +1,995 / -4,580 ft."},
   ]},
+  {day:28, date:"2026-10-03", end:"Vermilion Cliffs, AZ (near Lee's Ferry Lodge)", miles:68.5, gain:2789, loss:3695, high:6665, low:3761, lat:36.789091, lng:-111.683269, notes:"Fredonia to the Vermilion Cliffs. First full day in Arizona and the first of segment 7. Dirt roads out of Fredonia, up to a 6,665 ft high point, past the Vermilion Cliffs National Monument sign, then a long run down a dead-straight highway along the cliffs to 3,761 ft. Camped on red dirt near Lee's Ferry Lodge with the cliffs glowing at sunset. 68.5 miles with 2,789 ft of climbing and 3,695 ft of descent.", updates:[
+    {time:"1:39 pm", text:"At the Vermilion Cliffs National Monument sign."},
+    {time:"6:45 pm", miles:68.5, gain:2789, text:"Camped under the Vermilion Cliffs near Lee's Ferry Lodge after 68.5 miles, +2,789 / -3,695 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:36.942163, lng:-112.524443, town:"Fredonia", state:"AZ", label:"At the Country Rose RV Park after 66.6 miles on day 27, just over the Arizona line", asOf:"Oct 2, 5:50 pm MT", approx:false};
+const LOCATION = {lat:36.789091, lng:-111.683269, town:"Vermilion Cliffs", state:"AZ", label:"Camped under the cliffs near Lee's Ferry Lodge after 68.5 miles on day 28", asOf:"Oct 3, 6:45 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is in Arizona, his fifth state. Day 26 was a steady climb from Otter Creek Reservoir into Bryce Canyon country, and day 27 was the payoff: 66.6 miles, most of it downhill, off the plateau through Kanab and across the state line to Fredonia, where segment 6 now ends. That closes it out four days ahead of plan. Next up is segment 7, the Kaibab Plateau and the Grand Canyon.";
+const STATUS = "Catching up. Day 28, his first full day in Arizona, took Rick 68.5 miles from Fredonia over a 6,665 ft high point and down along the Vermilion Cliffs to camp on the red dirt near Lee's Ferry Lodge. Day 29, on to Cameron by way of Navajo Bridge, is coming next.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 4, 2026, end of day 29", caption:"Blue and green is Rick's track so far, Roosville to Cameron in northern Arizona, with day 29 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
@@ -282,5 +286,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 5, 2026, 9:35 am MT";
+const LAST_UPDATED = "Oct 5, 2026, 9:50 am MT";
 // ===== END DATA =====
