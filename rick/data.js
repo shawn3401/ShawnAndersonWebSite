@@ -144,13 +144,13 @@ const LOCATION = {lat:36.942163, lng:-112.524443, town:"Fredonia", state:"AZ", l
 const STATUS = "Rick is in Arizona, his fifth state. Day 26 was a steady climb from Otter Creek Reservoir into Bryce Canyon country, and day 27 was the payoff: 66.6 miles, most of it downhill, off the plateau through Kanab and across the state line to Fredonia, where segment 6 now ends. That closes it out four days ahead of plan. Next up is segment 7, the Kaibab Plateau and the Grand Canyon.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 2, 2026, end of day 27", caption:"Blue and green is Rick's track so far, Roosville to Fredonia on the Utah and Arizona line, with day 27 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 4, 2026, end of day 29", caption:"Blue and green is Rick's track so far, Roosville to Cameron in northern Arizona, with day 29 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
   {file:"2026-10-04-salt-stained-hoodie", date:"2026-10-04", time:"17:48", caption:"Day 29. The day's work, written in salt on his sun hoodie."},
-  {file:"2026-10-04-old-suspension-bridge", date:"2026-10-04", time:"16:39", caption:"Day 29. An old suspension bridge over a muddy desert river."},
+  {file:"2026-10-04-old-suspension-bridge", date:"2026-10-04", time:"16:39", caption:"Day 29. The old suspension bridge over the Little Colorado River at Cameron."},
   {file:"2026-10-04-navajo-bridge", date:"2026-10-04", time:"08:51", caption:"Day 29. Navajo Bridge, the steel arch over the Colorado."},
   {file:"2026-10-04-colorado-river-marble-canyon", date:"2026-10-04", time:"08:50", caption:"Day 29. The Colorado River down in Marble Canyon, from Navajo Bridge."},
   {file:"2026-10-04-morning-cliffs", date:"2026-10-04", time:"08:00", caption:"Day 29. Morning sun on the cliffs from the highway."},
@@ -282,5 +282,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 5, 2026, 9:20 am MT";
+const LAST_UPDATED = "Oct 5, 2026, 9:35 am MT";
 // ===== END DATA =====
