@@ -387,17 +387,22 @@ function facts(c){
   const s = places.get(c.id), style = s?.style || c.style || "sit_down";
   return { genre: s?.genre || c.genre || "other", style, minutes: s?.minutes || STYLES[style].minutes, waits: s?.waits || null, guessed: !s };
 }
-function lastVisit(id, uids){ let best = null; for (const v of visits) if (v.place_id === id && v.user_ids.some((u) => uids.has(u)) && (!best || v.visited_on > best)) best = v.visited_on; return best; }
+// Locations of a chain count as one brand: same name once case, accents, and punctuation are dropped.
+const brandOf = (name) => String(name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+function brandIds(c){ const k = brandOf(c.name), ids = new Set([c.id]); for (const p of places.values()) if (brandOf(p.name) === k) ids.add(p.place_id); return ids; }
+function lastVisit(id, uids){ const ids = typeof id === "string" ? new Set([id]) : id; let best = null; for (const v of visits) if (ids.has(v.place_id) && v.user_ids.some((u) => uids.has(u)) && (!best || v.visited_on > best)) best = v.visited_on; return best; }
 function judge(c, pl){
   const f = facts(c), uids = new Set(pl.filter((p) => p.uid).map((p) => p.uid));
-  const mine = ratings.filter((r) => r.place_id === c.id && uids.has(r.user_id));
+  // Ratings, never again, and recent visits carry across a brand's locations. One rating per person: this location's if they have one.
+  const ids = brandIds(c), all = ratings.filter((r) => ids.has(r.place_id) && uids.has(r.user_id));
+  const mine = [...uids].map((u) => all.find((r) => r.user_id === u && r.place_id === c.id) || all.find((r) => r.user_id === u)).filter(Boolean);
   const nameOf = (uid) => pl.find((p) => p.uid === uid)?.name || "Someone";
   const mi = R.origin && c.lat != null ? milesBetween(R.origin, c) : null, drive = mi == null ? 0 : driveMin(mi);
-  const info = { f, mi, drive, mine, last: lastVisit(c.id, uids) };
+  const info = { f, mi, drive, mine, last: lastVisit(ids, uids) };
   const out = (why) => ({ ...info, out: why });
 
   if (places.get(c.id)?.not_food) return out("Marked as not a restaurant");
-  const never = mine.find((r) => r.never_again);
+  const never = all.find((r) => r.never_again);
   if (never) return out(never.user_id === myId() ? "You said never again" : `${nameOf(never.user_id)} said never again`);
   if (R.genres[f.genre] === "avoid") return out(`No ${GENRES[f.genre]} this time`);
   if (R.styles.size && !R.styles.has(f.style)) return out(`${STYLES[f.style].label}, not what you picked`);
@@ -410,7 +415,7 @@ function judge(c, pl){
     if (n < (rest >= 0 ? rest : DEFAULT_REST)) return out(`You were there ${agoText(n)}`);
   }
   if (f.genre !== "other" && R.genres[f.genre] !== "want"){
-    const recent = visits.find((v) => v.place_id !== c.id && daysAgo(v.visited_on) < GENRE_REST && daysAgo(v.visited_on) >= 0 && v.user_ids.some((u) => uids.has(u)) && places.get(v.place_id)?.genre === f.genre);
+    const recent = visits.find((v) => !ids.has(v.place_id) && daysAgo(v.visited_on) < GENRE_REST && daysAgo(v.visited_on) >= 0 && v.user_ids.some((u) => uids.has(u)) && places.get(v.place_id)?.genre === f.genre);
     if (recent) return out(`You had ${GENRES[f.genre]} ${agoText(daysAgo(recent.visited_on))}`);
   }
   // Score: the table's own ratings when there are any, Google's otherwise, with a little luck to keep it fresh.
@@ -420,8 +425,19 @@ function judge(c, pl){
   if (R.genres[f.genre] === "want") score += 0.5;
   return { ...info, out: null, score: score + Math.random() * 1.3 };
 }
+// Judge the whole pool, then keep only the closest location of each brand (Shawn's first deals had three McDonald's).
+function judgeAll(pl = party()){
+  const all = R.pool.map((c) => ({ c, j: judge(c, pl) })), best = new Map();
+  for (const x of all){
+    if (x.j.out) continue;
+    const k = brandOf(x.c.name), b = best.get(k);
+    if (!b || (x.j.mi ?? 1e9) < (b.j.mi ?? 1e9)) best.set(k, x);
+  }
+  for (const x of all) if (!x.j.out && best.get(brandOf(x.c.name)) !== x) x.j.out = `Another ${x.c.name} is closer`;
+  return all;
+}
 function deal(){
-  const pl = party(), judged = R.pool.map((c) => ({ c, j: judge(c, pl) }));
+  const judged = judgeAll();
   R.out = judged.filter((x) => x.j.out);
   const fresh = judged.filter((x) => !x.j.out && !R.shown.has(x.c.id)).sort((a, b) => b.j.score - a.j.score).slice(0, DEAL);
   R.dealt = fresh.map((x) => x.c); R.dealt.forEach((c) => R.shown.add(c.id));
@@ -743,7 +759,7 @@ $("#placeForm").addEventListener("submit", async (e) => {
     places.set(c.id, data);
     const rest = $("#plRest").value.trim();
     await saveRating(c.id, { rating: dlgStars || null, want_to_try: $("#plWant").checked, never_again: $("#plNever").checked, rest_days: rest === "" ? null : Math.min(365, Math.max(0, +rest)), notes: $("#plNotes").value.trim() || null });
-    if (R.pool && !R.done) R.out = R.pool.map((x) => ({ c: x, j: judge(x, party()) })).filter((x) => x.j.out);
+    if (R.pool && !R.done) R.out = judgeAll().filter((x) => x.j.out);
     $("#placeDlg").close(); render();
   } catch (err){ $("#plErr").textContent = "That didn't save: " + err.message; $("#plErr").hidden = false; }
   b.disabled = false;
@@ -805,10 +821,11 @@ async function hidePlace(id, mark){
   const c = candOf(id);
   try { await keepPlace(c); await mark(c); } catch (e){ return fail(e); }
   const pl = party(), at = R.dealt.findIndex((x) => x.id === id);
-  const next = R.pool.map((x) => ({ c: x, j: judge(x, pl) })).filter((x) => !x.j.out && !R.shown.has(x.c.id)).sort((a, b) => b.j.score - a.j.score)[0];
+  const judged = judgeAll(pl), next = judged.filter((x) => !x.j.out && !R.shown.has(x.c.id)).sort((a, b) => b.j.score - a.j.score)[0];
   if (next){ R.dealt[at] = next.c; R.shown.add(next.c.id); } else R.dealt.splice(at, 1);
   delete R.vetoes[id]; R.hiding = null;
-  R.out = R.pool.map((x) => ({ c: x, j: judge(x, pl) })).filter((x) => x.j.out);
+  R.dealt = R.dealt.filter((x) => !judged.find((y) => y.c.id === x.id)?.j.out);   // other locations of a brand just ruled out
+  R.out = judged.filter((x) => x.j.out);
   toast(`${c.name} won't come up again.`); render();
 }
 const ACTS = {

@@ -264,6 +264,8 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - Every dealt card has "Don't show this again", which asks why: "It's not a restaurant" sets `yourturn_places.not_food` (shared, hides it for everyone; `002_not_food.sql`) and "Never again for me" sets that person's `never_again`. The next best place is dealt into the gap. Both can be undone from "left out, and why" or the place's Details.
 - After a search the page loads whatever anyone has saved about the returned places (`knownPlaces`), so shared corrections and `not_food` apply to places this person has never touched. "My places" lists only places with the person's own rating or a visit they can see.
 
+- One location per brand (Shawn, Oct 4, 2026, after three McDonald's in one deal): `judgeAll()` keeps only the closest location of each name that survives the other rules; the rest are left out as "Another X is closer". A brand is the name with case, accents, and punctuation dropped (`brandOf`), so two unrelated restaurants with the same name would be treated as one. A person's rating, never again, and recent visits carry across all of a brand's saved locations.
+
 ### Google Places and cost
 - Places API (New), called only from the Edge Function with secret `GOOGLE_MAPS_API_KEY`. The key belongs to a "ShawnZapps" Google Cloud project that every hobby app can share; the same project holds the OAuth client for Google sign-in.
 - The fields requested (rating, price, opening hours, reservable) put each call in the Enterprise + Atmosphere tier: 1,000 free calls a month, then about $40 per 1,000 (checked Oct 4, 2026). Caps in the function keep it free: `USER_DAILY` 40 calls per person per 24 hours and `MONTHLY` 900 for everyone. A round costs 2 calls, a name lookup 1.
