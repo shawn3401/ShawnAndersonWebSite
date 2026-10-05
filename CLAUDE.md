@@ -232,7 +232,7 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - `yourturn/index.html` the whole app, CSS and JS inline, supabase-js v2 from jsDelivr. Same sign-in code as Dough (`GOOGLE_ENABLED` false until the Google provider is set up). Teal and mustard palette, Fraunces and Source Sans 3.
 - `supabase/yourturn/001_schema.sql` tables, RLS, and functions. Safe to re-run.
 - `supabase/yourturn/functions/yourturn-search/index.ts` the Edge Function that talks to Google Places (deploy with the Supabase tools, `verify_jwt` on).
-- Not linked from the root landing page. Ask before adding it.
+- Linked from the root landing page under "Live now", along with Dough (Shawn asked, Oct 5, 2026).
 
 ### Decisions (Shawn, Oct 4, 2026)
 - Separate accounts with sharing, and separate ratings per person. Up to 6 at the table (`MAX_PARTY`), some with accounts and some guests. People are remembered in a list so adding them is one tap.
