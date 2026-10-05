@@ -259,6 +259,11 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - Other tabs: Places (look up a place by name, my saved places with Favorites / Want to try / Never again, log a visit by hand), History, People (invites, the list, my name, Home).
 - After a meal the Pick tab asks "How was it?" with one-tap stars for the newest unrated visit in the last 14 days.
 
+### Keeping junk out of the deal (Shawn, Oct 4, 2026, after two Maverik gas stations in his first five)
+- The function drops anything Google also types as a gas station, convenience store, grocery store, or supermarket (`NOT_FOOD`), both in the request and in the results. Name lookups on the Places tab are not filtered.
+- Every dealt card has "Don't show this again", which asks why: "It's not a restaurant" sets `yourturn_places.not_food` (shared, hides it for everyone; `002_not_food.sql`) and "Never again for me" sets that person's `never_again`. The next best place is dealt into the gap. Both can be undone from "left out, and why" or the place's Details.
+- After a search the page loads whatever anyone has saved about the returned places (`knownPlaces`), so shared corrections and `not_food` apply to places this person has never touched. "My places" lists only places with the person's own rating or a visit they can see.
+
 ### Google Places and cost
 - Places API (New), called only from the Edge Function with secret `GOOGLE_MAPS_API_KEY`. The key belongs to a "ShawnZapps" Google Cloud project that every hobby app can share; the same project holds the OAuth client for Google sign-in.
 - The fields requested (rating, price, opening hours, reservable) put each call in the Enterprise + Atmosphere tier: 1,000 free calls a month, then about $40 per 1,000 (checked Oct 4, 2026). Caps in the function keep it free: `USER_DAILY` 40 calls per person per 24 hours and `MONTHLY` 900 for everyone. A round costs 2 calls, a name lookup 1.

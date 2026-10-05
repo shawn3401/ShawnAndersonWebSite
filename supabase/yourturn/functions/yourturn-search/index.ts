@@ -50,6 +50,10 @@ const FAST_CASUAL = ["five guys", "costa vida", "cafe rio", "café rio", "chipot
   "rumbi", "mo' bettahs", "mo bettahs", "freddy's", "culver's", "raising cane", "slim chickens", "cava", "sweetgreen", "teriyaki madness",
   "pita pit", "moe's southwest", "jason's deli", "schlotzsky", "tropical smoothie", "einstein bros", "great harvest", "papa murphy"];
 
+// Places that sell food but are not somewhere you go out to eat (Shawn's first deal had two Maverik gas stations).
+const NOT_FOOD = ["gas_station", "convenience_store", "grocery_store", "supermarket"];
+const isFood = (p: GPlace) => !(p.types ?? []).some((t) => NOT_FOOD.includes(t));
+
 const PRICE: Record<string, number> = {
   PRICE_LEVEL_FREE: 0, PRICE_LEVEL_INEXPENSIVE: 1, PRICE_LEVEL_MODERATE: 2, PRICE_LEVEL_EXPENSIVE: 3, PRICE_LEVEL_VERY_EXPENSIVE: 4,
 };
@@ -168,6 +172,7 @@ Deno.serve(async (req: Request) => {
     else if (onlyFast) included = ["fast_food_restaurant"];
     const excluded = avoid.flatMap((g) => GENRES[g].ask).filter((t) => !included.includes(t));
     if (noFast && !included.includes("fast_food_restaurant")) excluded.push("fast_food_restaurant");
+    excluded.push(...NOT_FOOD);
 
     const base = {
       includedTypes: included, excludedTypes: excluded, maxResultCount: 20,
@@ -181,7 +186,7 @@ Deno.serve(async (req: Request) => {
     ]);
     await admin.from("yourturn_usage").insert({ user_id: userId, kind: "search", calls });
     const seen = new Set<string>();
-    const places = [...popular, ...near].filter((p) => !seen.has(p.id) && seen.add(p.id)).map(trim);
+    const places = [...popular, ...near].filter((p) => !seen.has(p.id) && seen.add(p.id)).filter(isFood).map(trim);
     return json({ places });
   } catch (err) {
     console.error("google error", err);
