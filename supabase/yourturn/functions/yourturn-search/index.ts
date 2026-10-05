@@ -6,7 +6,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const USER_DAILY = 40;       // Google calls per person per 24 hours
+const USER_DAILY = 40;       // Google calls per person per 24 hours, unless yourturn_limits has a row for them
 const MONTHLY = 900;         // Google calls for everyone per calendar month (the free allowance is 1,000)
 const MAX_RADIUS = 40000;    // meters
 
@@ -138,11 +138,12 @@ Deno.serve(async (req: Request) => {
   const day = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
   const now = new Date();
   const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
-  const [mine, all] = await Promise.all([
+  const [mine, all, own] = await Promise.all([
     admin.from("yourturn_usage").select("calls").eq("user_id", userId).gte("created_at", day),
     admin.from("yourturn_usage").select("calls").gte("created_at", month),
+    admin.from("yourturn_limits").select("daily_limit").eq("user_id", userId).maybeSingle(),
   ]);
-  if (sum(mine.data) >= USER_DAILY) return json({ error: "You've reached today's search limit. It resets over the next 24 hours." }, 429);
+  if (sum(mine.data) >= (own.data?.daily_limit ?? USER_DAILY)) return json({ error: "You've reached today's search limit. It resets over the next 24 hours." }, 429);
   if (sum(all.data) >= MONTHLY) return json({ error: "Your Turn has used its Google searches for the month. Saved places still work." }, 429);
 
   const known = (list: unknown) => (Array.isArray(list) ? list : []).filter((g): g is string => typeof g === "string" && g in GENRES);

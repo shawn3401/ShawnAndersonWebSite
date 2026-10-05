@@ -288,6 +288,8 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 ### Google Places and cost
 - Places API (New), called only from the Edge Function with secret `GOOGLE_MAPS_API_KEY`. The key belongs to a "ShawnZapps" Google Cloud project that every hobby app can share; the same project holds the OAuth client for Google sign-in.
 - The fields requested (rating, price, opening hours, reservable) put each call in the Enterprise + Atmosphere tier: 1,000 free calls a month, then about $40 per 1,000 (checked Oct 4, 2026). Caps in the function keep it free: `USER_DAILY` 40 calls per person per 24 hours and `MONTHLY` 900 for everyone. A round costs 2 calls, a name lookup 1.
+- `yourturn_limits` (user_id, daily_limit; `004_limits.sql`) overrides the daily cap for one person. Shawn's row is 200 since Oct 5, 2026, when a day of testing hit the default 40. The monthly cap still applies to everyone.
+- The page reuses Google's answer for 15 minutes when the same search is asked again (same start, distance, food types, kinds of place), so going Back and changing the time, the table, or the mode makes no call (`lastSearch`).
 - Signups are open (shared project), so the caps are the only cost guard. If strangers show up, add an allow-list like `dough_ai_access`.
 - Google's terms allow storing the place id indefinitely but limit caching other listing content (location for 30 days). Claude chose to cache name, address, and location with `refreshed_at` and store nothing else from Google; Shawn was told. A refresh job for stale rows is not built.
 

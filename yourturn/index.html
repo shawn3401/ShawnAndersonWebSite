@@ -502,6 +502,7 @@ async function getOrigin(){
   if (R.from === "town"){ if (!R.town) throw new Error("Pick a town first."); return R.town; }
   return whereAmI();
 }
+let lastSearch = null;
 async function findPlaces(){
   R.busy = true; R.err = ""; render();
   try {
@@ -510,7 +511,11 @@ async function findPlaces(){
     if (want.length === Object.keys(GENRES).length - 1) want = [];   // every genre wanted is the same as no preference
     const avoid = Object.keys(R.genres).filter((g) => R.genres[g] === "avoid" && g !== "other");
     const radiusMi = milesFor(R.far);
-    const got = await callSearch({ lat: R.origin.lat, lng: R.origin.lng, radius_m: Math.round(radiusMi * 1609), want, avoid, styles: [...R.styles] });
+    // The same search within 15 minutes reuses Google's answer, so changing only the time, the table, or the mode costs nothing.
+    const ask = { lat: +R.origin.lat.toFixed(3), lng: +R.origin.lng.toFixed(3), radius_m: Math.round(radiusMi * 1609), want, avoid, styles: [...R.styles].sort() };
+    const key = JSON.stringify(ask);
+    if (!lastSearch || lastSearch.key !== key || Date.now() - lastSearch.at > 15 * 60000) lastSearch = { key, at: Date.now(), places: await callSearch(ask) };
+    const got = lastSearch.places.slice();
     await knownPlaces(got.map((c) => c.id));
     // Places the table already likes or wants to try are always in the running when they are close enough, even if Google's list missed them.
     const have = new Set(got.map((c) => c.id)), uids = new Set(party().map((p) => p.uid).filter(Boolean));
