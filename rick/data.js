@@ -149,6 +149,19 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-10-04-salt-stained-hoodie", date:"2026-10-04", time:"17:48", caption:"Day 29. The day's work, written in salt on his sun hoodie."},
+  {file:"2026-10-04-old-suspension-bridge", date:"2026-10-04", time:"16:39", caption:"Day 29. An old suspension bridge over a muddy desert river."},
+  {file:"2026-10-04-navajo-bridge", date:"2026-10-04", time:"08:51", caption:"Day 29. Navajo Bridge, the steel arch over the Colorado."},
+  {file:"2026-10-04-colorado-river-marble-canyon", date:"2026-10-04", time:"08:50", caption:"Day 29. The Colorado River down in Marble Canyon, from Navajo Bridge."},
+  {file:"2026-10-04-morning-cliffs", date:"2026-10-04", time:"08:00", caption:"Day 29. Morning sun on the cliffs from the highway."},
+  {file:"2026-10-04-desert-dawn", date:"2026-10-04", time:"06:56", caption:"Day 29, dawn. First light behind the tent and the bike."},
+  {file:"2026-10-03-vermilion-cliffs-camp", date:"2026-10-03", time:"18:45", caption:"Day 28, sunset. Camp on the red dirt with the Vermilion Cliffs glowing."},
+  {file:"2026-10-03-cliffs-and-boulders", date:"2026-10-03", time:"17:57", caption:"Day 28. Red boulders by the road and the cliffs lit up behind."},
+  {file:"2026-10-03-road-to-the-cliffs", date:"2026-10-03", time:"16:15", caption:"Day 28. A dead-straight highway running at the Vermilion Cliffs."},
+  {file:"2026-10-03-vermilion-cliffs-sign", date:"2026-10-03", time:"13:39", caption:"Day 28. The bike at the Vermilion Cliffs National Monument sign."},
+  {file:"2026-10-03-high-desert-overlook", date:"2026-10-03", time:"12:06", caption:"Day 28. The bike on a rocky rise with the whole desert laid out below."},
+  {file:"2026-10-03-cattle-guard", date:"2026-10-03", time:"10:03", caption:"Day 28. Over the handlebars at a cattle guard, a dirt road winding off toward the cliffs."},
+  {file:"2026-10-03-country-rose-camp", date:"2026-10-03", time:"06:53", by:"rick", caption:"Day 28. Country Rose RV park in Fredonia"},
   {file:"2026-10-02-country-rose-rv-park", date:"2026-10-02", time:"17:50", caption:"Day 27. Rick at the Country Rose RV Park sign at the end of the day."},
   {file:"2026-10-02-arizona-state-line", date:"2026-10-02", time:"17:16", caption:"Day 27. Arizona! Rick at the state line sign, his fifth state."},
   {file:"2026-10-02-crossbedded-sandstone", date:"2026-10-02", time:"13:48", caption:"Day 27. The bike below a wall of swirled white sandstone."},
@@ -269,5 +282,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 3, 2026, 9:20 am MT";
+const LAST_UPDATED = "Oct 5, 2026, 9:20 am MT";
 // ===== END DATA =====
