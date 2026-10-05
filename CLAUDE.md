@@ -259,6 +259,8 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - Other tabs: Places (look up a place by name, my saved places with Favorites / Want to try / Never again, log a visit by hand), History, People (invites, the list, my name, Home).
 - After a meal the Pick tab asks "How was it?" with one-tap stars for the newest unrated visit in the last 14 days.
 
+- "Ignore opening hours" checkbox at the bottom of the questions (Shawn, Oct 4, 2026: he could not test on a Sunday night with everything closed). It skips the closed and closing-soon rules, cards for closed places get a red "Closed right now" tag, and it is not remembered, so a reload turns it off. Chosen over faking the time of day, which would need each place's full weekly hours from Google.
+
 ### Keeping junk out of the deal (Shawn, Oct 4, 2026, after two Maverik gas stations in his first five)
 - The function drops anything Google also types as a gas station, convenience store, grocery store, or supermarket (`NOT_FOOD`), both in the request and in the results. Name lookups on the Places tab are not filtered.
 - Every dealt card has "Don't show this again", which asks why: "It's not a restaurant" sets `yourturn_places.not_food` (shared, hides it for everyone; `002_not_food.sql`) and "Never again for me" sets that person's `never_again`. The next best place is dealt into the gap. Both can be undone from "left out, and why" or the place's Details.
