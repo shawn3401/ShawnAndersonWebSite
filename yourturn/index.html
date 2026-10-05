@@ -579,7 +579,7 @@ function renderPick(){
   if (u && !R.pool) h += `<div class="rate"><b>How was ${esc(places.get(u.place_id).name)}?</b> <span class="sub">${fmtDate(u.visited_on)}</span>
     <div class="row"><span class="stars">${[1, 2, 3, 4, 5].map((n) => `<button type="button" data-act="quickRate" data-id="${esc(u.place_id)}" data-v="${n}" aria-label="${n} star${n > 1 ? "s" : ""}">★</button>`).join("")}</span>
     <button type="button" class="btn link" data-act="skipRate" data-id="${u.id}">Skip</button></div></div>`;
-  if (pl.length > 1){
+  if (R.pool && pl.length > 1){
     const p = picker(pl);
     h += `<div class="turn"><div><b>${p.key === myId() ? "It's your turn to pick" : `It's ${esc(p.name)}'s turn to pick`}</b>
       <small>Everyone can rule one out. ${p.key === myId() ? "You make" : esc(p.name) + " makes"} the final call.</small></div>
@@ -646,11 +646,11 @@ function renderCards(pl){
       <div>${R.shown.size ? `<button type="button" class="btn" data-act="reshuffle">Go through them again</button> ` : ""}<button type="button" class="btn primary" data-act="back">Change answers</button></div></div>`;
   } else {
     if (!solo) h += `<div class="vetoes">${pl.map((p) => `<span class="tag ${used.has(p.key) ? "" : "good"}">${esc(p.name)}: ${used.has(p.key) ? "used" : "1 rule-out"}</span>`).join("")}</div>`;
-    for (const c of R.dealt){
-      const j = judge(c, pl), by = R.vetoes[c.id];
-      h += `<div class="pc ${by ? "out" : ""} ${R.lit === c.id ? "lit" : ""}" data-pc="${esc(c.id)}"><h3>${esc(c.name)}</h3><div class="meta">${esc(placeMeta(c, j))}</div>`;
-      if (by) h += `<div class="whoveto">Ruled out by ${esc(pl.find((p) => p.key === by)?.name || "someone")}. <button type="button" class="btn link" data-act="unveto" data-id="${esc(c.id)}">Undo</button></div>`;
-      else {
+    // A ruled-out place drops off the list, so the next person sees a shorter one.
+    for (const c of live){
+      const j = judge(c, pl);
+      h += `<div class="pc ${R.lit === c.id ? "lit" : ""}" data-pc="${esc(c.id)}"><h3>${esc(c.name)}</h3><div class="meta">${esc(placeMeta(c, j))}</div>`;
+      {
         h += `<div class="facts">${placeTags(c, j, pl)}</div>
           <div class="acts"><button type="button" class="btn primary" data-act="go" data-id="${esc(c.id)}" ${R.busy ? "disabled" : ""}>Go here</button>
           ${solo || !can.length ? "" : `<button type="button" class="btn warn" data-act="veto" data-id="${esc(c.id)}">Rule out</button>`}
@@ -662,6 +662,9 @@ function renderCards(pl){
       }
       h += `</div>`;
     }
+    if (!live.length) h += `<div class="card empty">Everything here got ruled out.</div>`;
+    const gone = R.dealt.filter((c) => R.vetoes[c.id]);
+    if (gone.length) h += `<div class="left" style="margin:12px 0">${gone.map((c) => `<div><b>${esc(c.name)}</b> ruled out by ${esc(pl.find((p) => p.key === R.vetoes[c.id])?.name || "someone")}. <button type="button" class="btn link" data-act="unveto" data-id="${esc(c.id)}">Undo</button></div>`).join("")}</div>`;
     h += `<div class="pc" style="display:flex;gap:8px;flex-wrap:wrap">
       ${live.length > 1 ? `<button type="button" class="btn" data-act="spin" style="flex:1">Can't decide? Spin for it</button>` : ""}
       <button type="button" class="btn" data-act="again" style="flex:1">Deal ${DEAL} more</button></div>`;

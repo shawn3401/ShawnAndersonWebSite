@@ -259,6 +259,7 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - Other tabs: Places (look up a place by name, my saved places with Favorites / Want to try / Never again, log a visit by hand), History, People (invites, the list, my name, Home).
 - After a meal the Pick tab asks "How was it?" with one-tap stars for the newest unrated visit in the last 14 days.
 
+- Shawn, Oct 4, 2026: the "whose turn" banner shows only once places are dealt, not over the questions. A ruled-out place disappears from the cards (the point is a shorter list for the next person) and becomes a one-line "ruled out by X, Undo" under them.
 - "What sounds good?" has All and None links (Shawn, Oct 4, 2026). All turns every genre green so he can tap off the ones he does not want; every genre wanted is sent to the search as no preference, so places Google has not given a cuisine still show.
 - "Ignore opening hours" checkbox at the bottom of the questions (Shawn, Oct 4, 2026: he could not test on a Sunday night with everything closed). It skips the closed and closing-soon rules, cards for closed places get a red "Closed right now" tag, and it is not remembered, so a reload turns it off. Chosen over faking the time of day, which would need each place's full weekly hours from Google.
 
