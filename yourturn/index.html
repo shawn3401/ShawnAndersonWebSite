@@ -764,8 +764,13 @@ function renderPlaces(){
   return h;
 }
 function renderHistory(){
-  if (!visits.length) return `<div class="card empty">No meals yet. Your first pick will show up here.</div>`;
-  return `<div class="card"><h2>Where we've been</h2>${visits.map((v) => {
+  // Adding a meal after the fact: look the place up by name, then "Log a visit" asks when, who was there, and who picked.
+  const add = `<div class="card"><h2>Add a meal you already had</h2><p class="sub">Look up the place, then say when, who was there, and who picked. It counts toward whose turn it is.</p>
+    <div class="inline" style="margin-top:0"><input type="search" id="histQ" placeholder="Restaurant name"><button type="button" class="btn primary" data-act="findName" ${R.busy ? "disabled" : ""}>${R.busy ? "Looking…" : "Look up"}</button></div>
+    ${R.err ? `<div class="err">${esc(R.err)}</div>` : ""}
+    ${found ? (found.length ? found.map((c) => placeLine({ place_id: c.id, ...placeRow(c) }, c)).join("") : `<p class="note">Nothing by that name nearby.</p>`) : ""}</div>`;
+  if (!visits.length) return add + `<div class="card empty">No meals yet. Your first pick will show up here.</div>`;
+  return add + `<div class="card"><h2>Where we've been</h2>${visits.map((v) => {
     const p = places.get(v.place_id), names = (v.party || []).map((x) => x.key === myId() ? "you" : x.name), r = myRating(v.place_id);
     return `<div class="li"><div><div class="t">${esc(p?.name || "A place")} ${r?.rating ? starsText(r.rating) : ""}</div>
       <div class="d">${fmtDate(v.visited_on)} · ${esc(list(names))}${v.picker_name ? " · " + pickedText(v) : ""}</div></div>
@@ -849,7 +854,7 @@ $("#visitForm").addEventListener("submit", async (e) => {
   try {
     const pl = party(viParty);
     await logVisit(dlgVisit, pl, pl.find((p) => p.key === $("#viPicker").value) || null, $("#viDate").value);
-    $("#visitDlg").close(); toast("Saved to your history."); render();
+    $("#visitDlg").close(); toast("Saved to your history."); if (tab === "history") found = null; render();
   } catch (err){ $("#viErr").textContent = "That didn't save: " + err.message; $("#viErr").hidden = false; }
   b.disabled = false;
 });
@@ -964,14 +969,14 @@ const ACTS = {
   // places and history
   pfilter: (d) => { placeFilter = d.v; render(); },
   findName: async () => {
-    const q = $("#findQ").value.trim(); if (q.length < 2) return;
+    const box = () => $("#findQ") || $("#histQ"), q = box().value.trim(); if (q.length < 2) return;
     R.busy = true; R.err = ""; render();
     try {
       const at = R.origin || (me?.home_lat != null ? { lat: me.home_lat, lng: me.home_lng } : await whereAmI());
       found = await callSearch({ action: "find", query: q, lat: at.lat, lng: at.lng });
       await knownPlaces(found.map((c) => c.id));
     } catch (e){ R.err = e.message; }
-    R.busy = false; render(); if ($("#findQ")) $("#findQ").value = q;
+    R.busy = false; render(); if (box()) box().value = q;
   },
   visit: (d) => openVisit(d.id),
   viWho: (d) => { if (viParty.has(d.id)) viParty.delete(d.id); else if (viParty.size + 1 < MAX_PARTY) viParty.add(d.id); drawVisitParty(); },
@@ -1015,7 +1020,7 @@ document.addEventListener("click", (e) => { const b = e.target.closest("[data-ac
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && e.target.id === "newWho"){ R.adding = false; render(); return; }
   if (e.key !== "Enter") return;
-  const go = { newWho: "addWhoSave", townQ: "townGo", findQ: "findName", addName: "addPerson" }[e.target.id];
+  const go = { newWho: "addWhoSave", townQ: "townGo", findQ: "findName", histQ: "findName", addName: "addPerson" }[e.target.id];
   if (go){ e.preventDefault(); ACTS[go]({}); }
 });
 

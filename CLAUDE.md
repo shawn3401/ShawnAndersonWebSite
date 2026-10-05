@@ -267,6 +267,7 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - Drive time is a rough guess from straight-line miles (`driveMin`: 2 + 2.2 x miles). There is no routing API.
 - Turn order is derived from history, there is no groups table: among visits with the same `group_key` and mode, whoever picked longest ago goes first, and someone who has never picked goes before that. "Go here" logs the visit (today, the party, the picker), which is what advances the turn. "We changed our minds" deletes it.
 - Style and genre start as guesses made in the Edge Function from Google's types. Google has no "fast casual" type, so `FAST_CASUAL` in the function is a list of chain names (Five Guys, Costa Vida, Café Rio...). A guess is replaced the moment anyone saves the place's Details. The genre list is in both the page and the function (`GENRES`); keep the keys matching.
+- Adding a meal after the fact (Shawn, Oct 5, 2026): the History tab has "Add a meal you already had" at the top, the same name lookup as the Places tab, then "Log a visit" asks the date, who was there, and who picked. A hand-logged pick counts toward the Take turns rotation.
 - Other tabs: Places (look up a place by name, my saved places with Favorites / Want to try / Never again, log a visit by hand), History, People (invites, the list, my name, Home).
 - After a meal the Pick tab asks "How was it?" with one-tap stars for the newest unrated visit in the last 14 days.
 
