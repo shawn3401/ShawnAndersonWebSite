@@ -105,7 +105,8 @@ label.ck{display:flex;gap:9px;align-items:center;margin-top:10px;font-size:16px}
 label.ck input{width:20px;height:20px;accent-color:var(--accent)}
 
 /* place cards */
-.sum{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px;font-size:15px;color:var(--ink-2)}
+.sum .btn{flex:none;font-size:14px;padding:6px 12px}
+.sum{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:15px;color:var(--ink-2)}
 .pc{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;position:relative}
 .pc h3{font-size:22px}
 .pc .meta{color:var(--ink-2);font-size:15px;margin-top:3px}
@@ -319,7 +320,9 @@ const GENRES = { american: "American", burgers: "Burgers", pizza: "Pizza", mexic
   breakfast: "Breakfast", mediterranean: "Mediterranean", asian: "Other Asian", other: "Other" };
 // minutes = typical time in and out, the starting guess until someone corrects a place.
 const STYLES = { fast_food: { label: "Fast food", minutes: 20 }, fast_casual: { label: "Fast casual", hint: "order at the counter", minutes: 35 },
-  sit_down: { label: "Sit-down", minutes: 70 }, fine: { label: "Nice night out", minutes: 100 } };
+  sit_down: { label: "Sit-down", minutes: 70 } };
+// "Nice night out" was a fourth style until Oct 5, 2026 (Shawn: fewer options). Anything still marked that way counts as sit-down.
+const styleOf = (v) => STYLES[v] ? v : "sit_down";
 const TIMES = [[30, "30 min"], [45, "45 min"], [60, "1 hour"], [90, "1.5 hours"], [999, "No rush"]];
 const FARS = [[5, "5 min"], [10, "10 min"], [15, "15 min"], [25, "25 min"]];   // drive, one way
 const MAX_PARTY = 6;
@@ -360,7 +363,7 @@ const places = new Map();          // saved places by Google place id
 let tab = "pick", placeFilter = "all", found = null;
 // The round on screen. Answers are remembered on this phone as a convenience.
 const saved = store.get("round", {});
-const R = { party: new Set(saved.party || []), passed: 0, time: saved.time || 60, far: saved.far || 10, styles: new Set(saved.styles || []),
+const R = { party: new Set(saved.party || []), passed: 0, time: saved.time || 60, far: saved.far || 10, styles: new Set((saved.styles || []).filter((k) => STYLES[k])),
   genres: saved.genres || {}, waitOk: saved.waitOk !== false, from: saved.from || "here", town: saved.town || null,
   origin: null, pool: null, dealt: [], shown: new Set(), out: [], elims: [], game: null, short: null, hiding: null, lit: null, done: null, busy: false, err: "", adding: false, towns: null, anyHours: false };
 // How a group decides: "turns" (one person picks) or "elim" (everyone eliminates, the last person picks).
@@ -412,7 +415,7 @@ function fromSaved(p){ return { id: p.place_id, name: p.name, address: p.address
   style: p.style || "sit_down", rating: null, count: 0, price: null, open: null, closes: null, reservable: p.reservable, saved: true }; }
 // Saved facts win over Google's guess.
 function facts(c){
-  const s = places.get(c.id), style = s?.style || c.style || "sit_down";
+  const s = places.get(c.id), style = styleOf(s?.style || c.style);
   return { genre: s?.genre || c.genre || "other", style, minutes: s?.minutes || STYLES[style].minutes, waits: s?.waits || null, guessed: !s };
 }
 // Locations of a chain count as one brand: same name once case, accents, and punctuation are dropped.
@@ -521,6 +524,7 @@ async function findPlaces(){
       got.push(fromSaved(p)); have.add(p.place_id);
     }
     R.pool = got; R.shown = new Set(); R.done = null; deal();
+    if (history.state?.yt !== "cards") history.pushState({ yt: "cards" }, "");   // so the phone's back button returns to the questions
   } catch (e){ R.err = e.message; }
   R.busy = false; render(); window.scrollTo(0, 0);
 }
@@ -674,16 +678,26 @@ function placeTags(c, j, pl){
   if (c.open === false) t.push(`<span class="tag bad">Closed right now</span>`);
   return t.join("");
 }
+// When nothing can be dealt, sum up the reasons so the fix is obvious without opening the full list.
+function whyNot(){
+  if (!R.out.length || R.shown.size) return "";
+  const kinds = [[/not what you picked$/, "the wrong kind of place"], [/^About \d+ min/, "too long for your time"], [/^Closed|^Closes/, "closed"],
+    [/^No .* this time$/, "a food type you ruled out"], [/wait/i, "likely a wait"], [/were there|You had/, "too recent"], [/never again|not a restaurant/, "hidden"], [/is closer$/, "another location of a chain"]];
+  const tally = new Map();
+  for (const x of R.out){ const k = (kinds.find(([re]) => re.test(x.j.out)) || [0, "left out for other reasons"])[1]; tally.set(k, (tally.get(k) || 0) + 1); }
+  const top = [...tally].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, n]) => `${n} ${k}`);
+  return `<p class="sub">Google found ${R.pool.length} nearby: ${esc(list(top))}.</p>`;
+}
 function renderCards(pl){
   const solo = pl.length === 1, elim = !solo && modeOf(pl) === "elim";
   const gone = new Set(R.elims.map((e) => e.id)), live = R.dealt.filter((c) => !gone.has(c.id));
   const nm = (p) => p.key === myId() ? "you" : esc(p.name);
   const answers = [TIMES.find((t) => t[0] === R.time)[1], `${R.far} min away`, R.origin ? "from " + R.origin.label : ""].filter(Boolean).join(" · ");
-  let h = `<div class="sum"><span>${esc(list(pl.map((p) => p.name)))} · ${esc(answers)}${R.anyHours ? " · ignoring opening hours" : ""}</span><button type="button" class="btn link" data-act="back">Change answers</button></div>`;
+  let h = `<div class="sum"><span>${esc(list(pl.map((p) => p.name)))} · ${esc(answers)}${R.anyHours ? " · ignoring opening hours" : ""}</span><button type="button" class="btn" data-act="back">‹ Back</button></div>`;
   if (!R.dealt.length){
     const why = R.short ? `Elimination with ${pl.length} of you needs at least ${R.short.need} places, and only ${R.short.have} ${R.short.have === 1 ? "fits" : "fit"}${R.shown.size ? " that you haven't seen" : ""}.`
       : R.shown.size ? "That's everything that fits." : R.pool.length ? "Nothing fits those answers right now." : "Google didn't find any restaurants in that range.";
-    h += `<div class="card empty"><p>${why}</p>
+    h += `<div class="card empty"><p>${why}</p>${whyNot()}
       <div>${R.shown.size ? `<button type="button" class="btn" data-act="reshuffle">Go through them again</button> ` : ""}${R.short && R.short.have ? `<button type="button" class="btn" data-act="mode" data-v="turns">Take turns instead</button> ` : ""}<button type="button" class="btn primary" data-act="back">Change answers</button></div></div>`;
   } else {
     const g = elim ? gameState(pl, live) : null, pk = solo ? null : picker(pl);
@@ -731,7 +745,7 @@ function renderDone(){
 // ---- render: Places, History, People ---------------------------------------------------------
 function placeLine(p, c){
   const r = myRating(p.place_id), last = lastVisit(p.place_id, new Set([myId()]));
-  const bits = [GENRES[p.genre] || "Other", STYLES[p.style]?.label].filter(Boolean);
+  const bits = [GENRES[p.genre] || "Other", STYLES[styleOf(p.style)].label];
   const mine = [r?.rating ? starsText(r.rating) : "", r?.want_to_try ? "Want to try" : "", r?.never_again ? "Never again" : "", last ? "Last here " + fmtDate(last) : ""].filter(Boolean);
   return `<div class="li"><div><div class="t">${esc(p.name)}</div><div class="d">${esc(bits.join(" · "))}${p.address ? " · " + esc(p.address) : ""}</div>${mine.length ? `<div class="d">${mine.join(" · ")}</div>` : ""}</div>
     <div class="a"><button type="button" class="btn" data-act="details" data-id="${esc(p.place_id)}">${c ? "Rate or save" : "Details"}</button><button type="button" class="btn" data-act="visit" data-id="${esc(p.place_id)}">Log a visit</button></div></div>`;
@@ -868,6 +882,8 @@ async function addPerson(name){
   people.push(data); return data;
 }
 const fail = (e) => toast(e.message || "Something went wrong.");
+function toQuestions(){ R.pool = null; R.err = ""; tab = "pick"; render(); window.scrollTo(0, 0); }
+window.addEventListener("popstate", () => { if (R.pool && !R.done) toQuestions(); });
 // Take a dealt place out for good, then deal the next best one into its spot.
 async function hidePlace(id, mark){
   const c = candOf(id);
@@ -903,7 +919,7 @@ const ACTS = {
   townPick: (d) => { R.town = R.towns[+d.v]; remember(); render(); },
   find: () => findPlaces(),
   // cards
-  back: () => { R.pool = null; R.err = ""; render(); },
+  back: () => { if (history.state?.yt === "cards") history.back(); else toQuestions(); },
   again: () => { deal(); render(); window.scrollTo(0, 0); },
   reshuffle: () => { R.shown = new Set(); deal(); render(); },
   elim: (d) => {
