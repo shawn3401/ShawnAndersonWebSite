@@ -134,14 +134,14 @@ const LOG = [
     {time:"5:16 pm", text:"Arizona state line. State number five."},
     {time:"5:50 pm", miles:66.6, gain:1995, text:"Done for the day at the Country Rose RV Park in Fredonia after 66.6 miles, +1,995 / -4,580 ft."},
   ]},
-  {day:28, date:"2026-10-03", end:"Vermilion Cliffs, AZ (near Lee's Ferry Lodge)", miles:68.5, gain:2789, loss:3695, high:6665, low:3761, lat:36.789091, lng:-111.683269, notes:"Fredonia to the Vermilion Cliffs. First full day in Arizona and the first of segment 7. Dirt roads out of Fredonia, up to a 6,665 ft high point, past the Vermilion Cliffs National Monument sign, then a long run down a dead-straight highway along the cliffs to 3,761 ft. Camped on red dirt near Lee's Ferry Lodge with the cliffs glowing at sunset. 68.5 miles with 2,789 ft of climbing and 3,695 ft of descent.", updates:[
+  {day:28, date:"2026-10-03", end:"Vermilion Cliffs, AZ (near Lee's Ferry Lodge)", miles:68.5, gain:3314, loss:3695, high:6665, low:3761, lat:36.789091, lng:-111.683269, notes:"Fredonia to the Vermilion Cliffs. First full day in Arizona and the first of segment 7. Dirt roads out of Fredonia, up to a 6,665 ft high point, past the Vermilion Cliffs National Monument sign, then a long run down a dead-straight highway along the cliffs to 3,761 ft. Camped on red dirt near Lee's Ferry Lodge with the cliffs glowing at sunset. 68.5 miles with 3,314 ft of climbing and 3,695 ft of descent.", updates:[
     {time:"1:39 pm", text:"At the Vermilion Cliffs National Monument sign."},
-    {time:"6:45 pm", miles:68.5, gain:2789, text:"Camped under the Vermilion Cliffs near Lee's Ferry Lodge after 68.5 miles, +2,789 / -3,695 ft."},
+    {time:"6:45 pm", miles:68.5, gain:3314, text:"Camped under the Vermilion Cliffs near Lee's Ferry Lodge after 68.5 miles, +3,314 / -3,695 ft."},
   ]},
-  {day:29, date:"2026-10-04", end:"Cameron, AZ", miles:74.9, gain:3049, loss:2660, high:5923, low:3530, lat:35.873895, lng:-111.411144, notes:"Vermilion Cliffs to Cameron. Down to the Colorado River first thing, crossing Marble Canyon on Navajo Bridge at 3,530 ft, then a long steady climb south to a 5,923 ft high point and a gentle descent to Cameron and the old suspension bridge over the Little Colorado. 74.9 miles, his second-longest day of the trip, with 3,049 ft of climbing.", updates:[
+  {day:29, date:"2026-10-04", end:"Cameron, AZ", miles:74.9, gain:2687, loss:2660, high:5923, low:3530, lat:35.873895, lng:-111.411144, notes:"Vermilion Cliffs to Cameron. Down to the Colorado River first thing, crossing Marble Canyon on Navajo Bridge at 3,530 ft, then a long steady climb south to a 5,923 ft high point and a gentle descent to Cameron and the old suspension bridge over the Little Colorado. 74.9 miles, his second-longest day of the trip, with 2,687 ft of climbing.", updates:[
     {time:"8:50 am", text:"Crossing the Colorado River at Navajo Bridge, Marble Canyon far below."},
     {time:"4:39 pm", text:"Into Cameron at the old suspension bridge over the Little Colorado."},
-    {time:"Evening", miles:74.9, gain:3049, text:"Done for the day in Cameron after 74.9 miles, +3,049 / -2,660 ft."},
+    {time:"Evening", miles:74.9, gain:2687, text:"Done for the day in Cameron after 74.9 miles, +2,687 / -2,660 ft."},
   ]},
 ];
 
@@ -291,5 +291,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 5, 2026, 10:00 am MT";
+const LAST_UPDATED = "Oct 5, 2026, 10:15 am MT";
 // ===== END DATA =====
