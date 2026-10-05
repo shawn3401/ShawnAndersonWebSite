@@ -138,14 +138,19 @@ const LOG = [
     {time:"1:39 pm", text:"At the Vermilion Cliffs National Monument sign."},
     {time:"6:45 pm", miles:68.5, gain:2789, text:"Camped under the Vermilion Cliffs near Lee's Ferry Lodge after 68.5 miles, +2,789 / -3,695 ft."},
   ]},
+  {day:29, date:"2026-10-04", end:"Cameron, AZ", miles:74.9, gain:3049, loss:2660, high:5923, low:3530, lat:35.873895, lng:-111.411144, notes:"Vermilion Cliffs to Cameron. Down to the Colorado River first thing, crossing Marble Canyon on Navajo Bridge at 3,530 ft, then a long steady climb south to a 5,923 ft high point and a gentle descent to Cameron and the old suspension bridge over the Little Colorado. 74.9 miles, his second-longest day of the trip, with 3,049 ft of climbing.", updates:[
+    {time:"8:50 am", text:"Crossing the Colorado River at Navajo Bridge, Marble Canyon far below."},
+    {time:"4:39 pm", text:"Into Cameron at the old suspension bridge over the Little Colorado."},
+    {time:"Evening", miles:74.9, gain:3049, text:"Done for the day in Cameron after 74.9 miles, +3,049 / -2,660 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:36.789091, lng:-111.683269, town:"Vermilion Cliffs", state:"AZ", label:"Camped under the cliffs near Lee's Ferry Lodge after 68.5 miles on day 28", asOf:"Oct 3, 6:45 pm MT", approx:false};
+const LOCATION = {lat:35.873895, lng:-111.411144, town:"Cameron", state:"AZ", label:"In Cameron after 74.9 miles on day 29, his second-longest day of the trip", asOf:"Oct 4, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Catching up. Day 28, his first full day in Arizona, took Rick 68.5 miles from Fredonia over a 6,665 ft high point and down along the Vermilion Cliffs to camp on the red dirt near Lee's Ferry Lodge. Day 29, on to Cameron by way of Navajo Bridge, is coming next.";
+const STATUS = "Two big days across northern Arizona. Day 28 took Rick 68.5 miles from Fredonia down along the Vermilion Cliffs. Day 29 was 74.9 miles, his second-longest day of the trip: across the Colorado River on Navajo Bridge, then south to Cameron on the Little Colorado. The Grand Canyon, the end of segment 7, is close now.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 4, 2026, end of day 29", caption:"Blue and green is Rick's track so far, Roosville to Cameron in northern Arizona, with day 29 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
@@ -286,5 +291,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 5, 2026, 9:50 am MT";
+const LAST_UPDATED = "Oct 5, 2026, 10:00 am MT";
 // ===== END DATA =====
