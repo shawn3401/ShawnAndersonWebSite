@@ -393,13 +393,15 @@ function turnOrder(pl, mode = modeOf(pl)){
   return pl.map((p, i) => ({ p, i, t: last[p.key] || "" })).sort((a, b) => a.t < b.t ? -1 : a.t > b.t ? 1 : a.i - b.i).map((x) => x.p);
 }
 function picker(pl = party()){ const o = turnOrder(pl); return o[R.passed % o.length]; }
-// Elimination: everyone but the picker takes turns eliminating, R.game.per each, then the picker chooses from what is left.
+// Elimination: everyone but the picker eliminates R.game.per places in one go, one person after another, then the picker chooses from what is left.
 function gameState(pl, live){
   const fin = picker(pl), order = turnOrder(pl), at = order.indexOf(fin);
   const elimers = order.slice(at + 1).concat(order.slice(0, at));
-  const seq = []; for (let lap = 0; lap < (R.game?.per || 1); lap++) seq.push(...elimers);
+  const per = R.game?.per || 1, seq = elimers.flatMap((p) => Array(per).fill(p));
   const n = R.elims.length, final = n >= seq.length || live.length <= 2;
-  return { fin, final, current: final ? fin : seq[n], next: final ? null : n + 1 >= seq.length ? fin : seq[n + 1], left: Math.max(0, live.length - 2) };
+  if (final) return { fin, final, current: fin, next: null, mine: 0, done: 0 };
+  const mine = Math.min(per - (n % per), live.length - 2);   // how many this person still has to eliminate
+  return { fin, final, current: seq[n], next: seq[n + mine] || fin, mine, done: n % per };
 }
 
 // ---- judging a place -----------------------------------------------------------------
@@ -682,8 +684,8 @@ function renderCards(pl){
       <div>${R.shown.size ? `<button type="button" class="btn" data-act="reshuffle">Go through them again</button> ` : ""}${R.short && R.short.have ? `<button type="button" class="btn" data-act="mode" data-v="turns">Take turns instead</button> ` : ""}<button type="button" class="btn primary" data-act="back">Change answers</button></div></div>`;
   } else {
     const g = elim ? gameState(pl, live) : null, pk = solo ? null : picker(pl);
-    if (g && !g.final) h += `<div class="turn"><div><b>${g.current.key === myId() ? "You eliminate one" : esc(g.current.name) + ", eliminate one"}</b>
-      <small>${g.left} to go${R.game?.per === 1 ? " (one each, not many places fit)" : ""}. Then pass to ${nm(g.next)}${g.next === g.fin ? " for the final pick" : ""}.</small></div>
+    if (g && !g.final) h += `<div class="turn"><div><b>${g.current.key === myId() ? "You" : esc(g.current.name) + ","} eliminate ${g.mine > 1 ? "two" : g.done ? "one more" : "one"}</b>
+      <small>${R.game?.per === 1 ? "One each this time, not many places fit. " : ""}Then pass to ${nm(g.next)}${g.next === g.fin ? " for the final pick" : ""}.</small></div>
       ${R.elims.length ? "" : `<button type="button" class="btn" data-act="pass" title="Give the final pick to the next person">Pass</button>`}</div>`;
     else if (g) h += `<div class="turn"><div><b>${g.fin.key === myId() ? "Your pick" : esc(g.fin.name) + ", your pick"}</b><small>Choose from what's left.</small></div></div>`;
     else if (pk) h += `<div class="turn"><div><b>${pk.key === myId() ? "It's your turn to pick" : `It's ${esc(pk.name)}'s turn to pick`}</b>
