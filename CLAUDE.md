@@ -237,7 +237,7 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 ### Decisions (Shawn, Oct 4, 2026)
 - Separate accounts with sharing, and separate ratings per person. Up to 6 at the table (`MAX_PARTY`), some with accounts and some guests. People are remembered in a list so adding them is one tap.
 - A round is played on ONE phone passed around. Joining from your own phone is a possible later step.
-- The app tracks whose turn it is. Everyone gets one rule-out; the person whose turn it is makes the final call; "Pass" hands the turn on.
+- Two ways to play, chosen at the top of the Pick tab (Shawn, Oct 4, 2026; this replaced the first version's "everyone gets one rule-out"). See "Two ways to play" below.
 - Works anywhere, but NEVER bulk-loads an area. Searches are live and nothing is saved until someone touches a place (rates it, visits it, marks it want-to-try, or corrects a fact). That is why there is no separate travel mode.
 - Facts about a place are shared by everyone; opinions and history are personal.
 
@@ -249,17 +249,26 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 - `yourturn_visits` where they went: `visited_on`, `party` (`[{key, name}]`, key is a user id or `g:name` for a guest), `user_ids` (the accounts present), `group_key` (sorted party keys), `picker_key`, `picker_name`. Visible to anyone in `user_ids` and to people linked with them. You can only put yourself and linked accounts on a visit (`yourturn_party_ok`).
 - `yourturn_usage` one row per search for the caps. Service role only.
 
+### Two ways to play (Shawn, Oct 4, 2026)
+- "How are you deciding?" is the first question: Take turns or Elimination (`R.mode`). Each group remembers the way it last played (`modes` in localStorage, falling back to its newest visit's `mode`), and tapping people in or out switches to that group's way (`recallMode`). It can always be changed. With one person there is no mode.
+- A group is the exact set of people at the table (`group_key`). Shawn and Leah are one group; Shawn, Leah, Natalie, and Evan are another with its own rotation. Under "Who's eating?" a panel shows whose turn it is for that group and its last five meals with who picked, or "First time out with this group."
+- Rotations are SEPARATE per mode (Shawn's call): `yourturn_visits.mode` is 'turns' or 'elim' (`003_visit_mode.sql`), and `turnOrder(pl, mode)` only counts that mode's visits. Visits with no mode count as turns.
+- Take turns: the app deals 5 ideas and the person whose turn it is picks. No rule-outs. Pass gives this pick to the next person and the passer KEEPS their turn for next time (it falls out of the rotation rule: only an actual pick moves you to the back).
+- Elimination: deal twice the number of diners. Everyone except the person with the final pick takes turns eliminating one, two laps, and the last person picks from the two left (Shawn's design; 4 diners = 8 places, 3 people x 2 eliminations, pick from 2). The banner directs the phone: "Brandon, eliminate one. 5 to go. Then pass to Netty." Eliminated cards disappear; only the newest elimination can be undone. The final-pick seat is what rotates, and Pass (before the first elimination only) hands it on.
+- Not enough places for two each: everyone eliminates one (diners + 1 places) and the banner says so. Fewer than that: no game, with "Take turns instead" and "Change answers".
+- "Don't show this again" during a game swaps in a new place and costs nobody an elimination.
+
 ### How a round works (Pick tab)
 - Questions: who's eating, time available (door to door), how far to drive (5, 10, 15, 25 min one way), kind of place (any mix of the four styles, none = anything), what sounds good (tap once = want, twice = not that), willing to wait, starting from (where I am, Home, or a town looked up with Open-Meteo's free geocoder). Answers are remembered in localStorage.
 - "Find us a place" calls `yourturn-search`, which makes two Nearby Search calls (by popularity and by distance, 20 results each, merged). Places the table rated 4+ or wants to try are added from saved data if they are in range, tagged "Hours not checked".
 - `judge()` drops a place, with a reason shown under "left out, and why", when: anyone present said never again, the genre was ruled out, wrong style, closed, closing too soon, too long for the time (2 x drive + minutes), a wait they do not want (`usually`, or `peak` during 11:45 to 1 or 5:30 to 8), visited within its rest days by anyone present, or the same genre eaten in the last `GENRE_REST` (2) days. Otherwise score = the table's average rating (Google's minus 0.5 if nobody has rated it), plus a bump for want-to-try and wanted genres, plus some randomness. Top `DEAL` (5) are dealt; "Deal 5 more" shows the next ones without another Google call.
 - Drive time is a rough guess from straight-line miles (`driveMin`: 2 + 2.2 x miles). There is no routing API.
-- Turn order is derived from history, there is no groups table: among visits with the same `group_key`, whoever picked longest ago goes first, and someone who has never picked goes before that. "Go here" logs the visit (today, the party, the picker), which is what advances the turn. "We changed our minds" deletes it.
+- Turn order is derived from history, there is no groups table: among visits with the same `group_key` and mode, whoever picked longest ago goes first, and someone who has never picked goes before that. "Go here" logs the visit (today, the party, the picker), which is what advances the turn. "We changed our minds" deletes it.
 - Style and genre start as guesses made in the Edge Function from Google's types. Google has no "fast casual" type, so `FAST_CASUAL` in the function is a list of chain names (Five Guys, Costa Vida, Café Rio...). A guess is replaced the moment anyone saves the place's Details. The genre list is in both the page and the function (`GENRES`); keep the keys matching.
 - Other tabs: Places (look up a place by name, my saved places with Favorites / Want to try / Never again, log a visit by hand), History, People (invites, the list, my name, Home).
 - After a meal the Pick tab asks "How was it?" with one-tap stars for the newest unrated visit in the last 14 days.
 
-- Shawn, Oct 4, 2026: the "whose turn" banner shows only once places are dealt, not over the questions. A ruled-out place disappears from the cards (the point is a shorter list for the next person) and becomes a one-line "ruled out by X, Undo" under them.
+- Shawn, Oct 4, 2026: the big "whose turn" banner shows only once places are dealt, not over the questions (the group panel under "Who's eating?" carries it there).
 - "What sounds good?" has All and None links (Shawn, Oct 4, 2026). All turns every genre green so he can tap off the ones he does not want; every genre wanted is sent to the search as no preference, so places Google has not given a cuisine still show.
 - "Ignore opening hours" checkbox at the bottom of the questions (Shawn, Oct 4, 2026: he could not test on a Sunday night with everything closed). It skips the closed and closing-soon rules, cards for closed places get a red "Closed right now" tag, and it is not remembered, so a reload turns it off. Chosen over faking the time of day, which would need each place's full weekly hours from Google.
 

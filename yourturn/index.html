@@ -46,6 +46,7 @@ h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;margin:0;line-heig
 .btn.big{width:100%;padding:14px;font-size:18px;text-align:center}
 .btn.link{border:0;background:none;color:var(--accent);padding:0;text-decoration:underline;font-weight:400}
 .btn.warn{color:var(--bad)}
+.btn.primary.cut, .btn.primary.cut:hover{background:var(--bad);border-color:var(--bad)}
 .btn[disabled]{opacity:.6;cursor:default}
 
 /* tabs */
@@ -77,6 +78,8 @@ h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;margin:0;line-heig
 .q:first-child{border-top:0;padding-top:0}
 .q:last-child{padding-bottom:0}
 .q .lab{font-weight:700}
+.grp{margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--pop-soft);border-left:5px solid var(--pop)}
+.grp .gv{font-size:14.5px;color:var(--ink-2)}
 .q .allnone{float:right;font-weight:400;font-size:15px}
 .q .hint{font-size:14px;color:var(--ink-3)}
 .seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -359,7 +362,11 @@ let tab = "pick", placeFilter = "all", found = null;
 const saved = store.get("round", {});
 const R = { party: new Set(saved.party || []), passed: 0, time: saved.time || 60, far: saved.far || 10, styles: new Set(saved.styles || []),
   genres: saved.genres || {}, waitOk: saved.waitOk !== false, from: saved.from || "here", town: saved.town || null,
-  origin: null, pool: null, dealt: [], shown: new Set(), out: [], vetoes: {}, asking: null, hiding: null, lit: null, done: null, busy: false, err: "", adding: false, towns: null, anyHours: false };
+  origin: null, pool: null, dealt: [], shown: new Set(), out: [], elims: [], game: null, short: null, hiding: null, lit: null, done: null, busy: false, err: "", adding: false, towns: null, anyHours: false };
+// How a group decides: "turns" (one person picks) or "elim" (everyone eliminates, the last person picks).
+// Each group remembers the way it last played; R.mode is what is on screen.
+const modes = store.get("modes", {});
+R.mode = store.get("mode", "turns");
 function remember(){ store.set("round", { party: [...R.party], time: R.time, far: R.far, styles: [...R.styles], genres: R.genres, waitOk: R.waitOk, from: R.from, town: R.town }); }
 
 // ---- people and turns --------------------------------------------------------------
@@ -373,13 +380,27 @@ function party(ids = R.party){
   return out;
 }
 const groupKey = (pl) => pl.map((p) => p.key).sort().join("|");
+const groupVisits = (pl) => { const gk = groupKey(pl); return visits.filter((v) => v.group_key === gk); };
+const modeOf = (pl = party()) => pl.length < 2 ? "turns" : R.mode;
+// When the people at the table change, switch to the way that group played last time, if it has played.
+function recallMode(){ const pl = party(); if (pl.length < 2) return; const m = modes[groupKey(pl)] || groupVisits(pl)[0]?.mode; if (m) R.mode = m; }
+function setMode(m){ R.mode = m; store.set("mode", m); const pl = party(); if (pl.length > 1){ modes[groupKey(pl)] = m; store.set("modes", modes); } }
 // Whoever picked longest ago with this same group goes first; someone who has never picked goes before that.
-function turnOrder(pl){
-  const gk = groupKey(pl), last = {};
-  for (const v of visits) if (v.group_key === gk && v.picker_key){ const t = v.visited_on + " " + v.created_at; if (!last[v.picker_key] || t > last[v.picker_key]) last[v.picker_key] = t; }
+// Each way of playing keeps its own rotation (Shawn, Oct 4, 2026). Meals from before modes existed count as taking turns.
+function turnOrder(pl, mode = modeOf(pl)){
+  const last = {};
+  for (const v of groupVisits(pl)) if (v.picker_key && (v.mode || "turns") === mode){ const t = v.visited_on + " " + v.created_at; if (!last[v.picker_key] || t > last[v.picker_key]) last[v.picker_key] = t; }
   return pl.map((p, i) => ({ p, i, t: last[p.key] || "" })).sort((a, b) => a.t < b.t ? -1 : a.t > b.t ? 1 : a.i - b.i).map((x) => x.p);
 }
 function picker(pl = party()){ const o = turnOrder(pl); return o[R.passed % o.length]; }
+// Elimination: everyone but the picker takes turns eliminating, R.game.per each, then the picker chooses from what is left.
+function gameState(pl, live){
+  const fin = picker(pl), order = turnOrder(pl), at = order.indexOf(fin);
+  const elimers = order.slice(at + 1).concat(order.slice(0, at));
+  const seq = []; for (let lap = 0; lap < (R.game?.per || 1); lap++) seq.push(...elimers);
+  const n = R.elims.length, final = n >= seq.length || live.length <= 2;
+  return { fin, final, current: final ? fin : seq[n], next: final ? null : n + 1 >= seq.length ? fin : seq[n + 1], left: Math.max(0, live.length - 2) };
+}
 
 // ---- judging a place -----------------------------------------------------------------
 function fromSaved(p){ return { id: p.place_id, name: p.name, address: p.address, lat: p.lat, lng: p.lng, maps: p.maps_url, genre: p.genre || "other",
@@ -439,11 +460,19 @@ function judgeAll(pl = party()){
   return all;
 }
 function deal(){
-  const judged = judgeAll();
+  const pl = party(), judged = judgeAll(pl);
   R.out = judged.filter((x) => x.j.out);
-  const fresh = judged.filter((x) => !x.j.out && !R.shown.has(x.c.id)).sort((a, b) => b.j.score - a.j.score).slice(0, DEAL);
-  R.dealt = fresh.map((x) => x.c); R.dealt.forEach((c) => R.shown.add(c.id));
-  R.vetoes = {}; R.asking = null; R.hiding = null; R.lit = null;
+  const fresh = judged.filter((x) => !x.j.out && !R.shown.has(x.c.id)).sort((a, b) => b.j.score - a.j.score);
+  let n = DEAL; R.game = null; R.short = null;
+  if (modeOf(pl) === "elim"){
+    // Two eliminations each needs twice the table; with fewer places everyone gets one; below that there is no game.
+    const full = pl.length * 2, min = pl.length + 1;
+    if (fresh.length >= full){ n = full; R.game = { per: 2 }; }
+    else if (fresh.length >= min){ n = min; R.game = { per: 1 }; }
+    else { n = 0; R.short = { have: fresh.length, need: min }; }
+  }
+  R.dealt = fresh.slice(0, n).map((x) => x.c); R.dealt.forEach((c) => R.shown.add(c.id));
+  R.elims = []; R.hiding = null; R.lit = null;
 }
 
 // ---- finding places --------------------------------------------------------------------
@@ -521,11 +550,11 @@ async function keepPlace(c){
   const { data } = await sb.from("yourturn_places").select("*").eq("place_id", c.id).maybeSingle();
   places.set(c.id, data || row);
 }
-async function logVisit(c, pl, pick, date){
+async function logVisit(c, pl, pick, date, mode = "turns"){
   await keepPlace(c);
   const { data, error } = await sb.from("yourturn_visits").insert({
     place_id: c.id, visited_on: date, party: pl.map((p) => ({ key: p.key, name: p.name })), user_ids: pl.filter((p) => p.uid).map((p) => p.uid),
-    group_key: groupKey(pl), picker_key: pick?.key || null, picker_name: pick?.name || null,
+    group_key: groupKey(pl), picker_key: pick?.key || null, picker_name: pick?.name || null, mode: pick ? mode : null,
   }).select().single();
   if (error) throw error;
   visits.unshift(data); visits.sort((a, b) => (b.visited_on + b.created_at).localeCompare(a.visited_on + a.created_at));
@@ -560,7 +589,7 @@ async function load(){
     (data || []).forEach((p) => places.set(p.place_id, p));
   }
   R.party = new Set([...R.party].filter((id) => people.some((p) => p.id === id)));
-  loaded = true; render();
+  recallMode(); loaded = true; render();
   if (!me && !$("#nameDlg").open) $("#nameDlg").showModal();
 }
 
@@ -579,12 +608,6 @@ function renderPick(){
   if (u && !R.pool) h += `<div class="rate"><b>How was ${esc(places.get(u.place_id).name)}?</b> <span class="sub">${fmtDate(u.visited_on)}</span>
     <div class="row"><span class="stars">${[1, 2, 3, 4, 5].map((n) => `<button type="button" data-act="quickRate" data-id="${esc(u.place_id)}" data-v="${n}" aria-label="${n} star${n > 1 ? "s" : ""}">★</button>`).join("")}</span>
     <button type="button" class="btn link" data-act="skipRate" data-id="${u.id}">Skip</button></div></div>`;
-  if (R.pool && pl.length > 1){
-    const p = picker(pl);
-    h += `<div class="turn"><div><b>${p.key === myId() ? "It's your turn to pick" : `It's ${esc(p.name)}'s turn to pick`}</b>
-      <small>Everyone can rule one out. ${p.key === myId() ? "You make" : esc(p.name) + " makes"} the final call.</small></div>
-      <button type="button" class="btn" data-act="pass">Pass</button></div>`;
-  }
   return h + (R.pool ? renderCards(pl) : renderSetup(pl));
 }
 function renderSetup(pl){
@@ -596,12 +619,23 @@ function renderSetup(pl){
   if (R.from === "town") from = `<div class="inline"><input type="search" id="townQ" placeholder="Town, like Oak Ridge, TN" value="${esc(R.town?.label || "")}"><button type="button" class="btn" data-act="townGo">Look up</button></div>`
     + (R.towns ? `<div class="chips">${R.towns.length ? R.towns.map((t, i) => `<button type="button" data-act="townPick" data-v="${i}" class="${R.town?.label === t.label ? "on" : ""}">${esc(t.label)}</button>`).join("") : `<span class="hint">No town by that name. Try "Town, ST".</span>`}</div>` : "");
   if (R.from === "home" && me?.home_lat == null) from = `<p class="note">Home isn't set yet. When you're at home, set it on the People tab.</p>`;
+  let grp = "";
+  if (pl.length > 1){
+    const p = picker(pl), whose = p.key === myId() ? "your" : esc(p.name) + "'s", past = groupVisits(pl).slice(0, 5);
+    const others = turnOrder(pl).filter((x) => x !== p).map((x) => x.key === myId() ? "you" : x.name);
+    grp = `<div class="grp"><b>${R.mode === "elim" ? `${p.key === myId() ? "You get" : esc(p.name) + " gets"} the final pick.` : `It's ${whose} turn to pick.`}</b>
+      ${R.mode === "elim" ? `<div class="hint">${esc(list(others))} eliminate first.</div>` : ""}
+      ${past.length ? `<div class="hint" style="margin-top:6px">This group's last ${past.length === 1 ? "meal" : past.length + " meals"}:</div>` + past.map((v) => `<div class="gv">${fmtDate(v.visited_on)} · ${esc(places.get(v.place_id)?.name || "A place")}${v.picker_name ? ` · ${v.picker_key === myId() ? "you" : esc(v.picker_name)} picked` : ""}</div>`).join("")
+        : `<div class="hint">First time out with this group.</div>`}</div>`;
+  }
   return `<div class="card">
+    <div class="q"><div class="lab">How are you deciding?</div>${seg("mode", [["turns", "Take turns", "one person picks"], ["elim", "Elimination", "narrow it down together"]], R.mode)}
+      ${pl.length < 2 ? `<div class="hint" style="margin-top:6px">This kicks in once someone else is at the table.</div>` : ""}</div>
     <div class="q"><div class="lab">Who's eating?</div>
       <div class="chips"><button type="button" class="on me">${esc(me?.display_name || "Me")}</button>${chips}
         ${full ? "" : `<button type="button" class="ghost" data-act="addWho">+ Someone new</button>`}</div>
       ${R.adding ? `<div class="inline"><input type="text" id="newWho" maxlength="40" placeholder="Their first name"><button type="button" class="btn primary" data-act="addWhoSave">Add</button></div>` : ""}
-      ${full ? `<div class="hint">That's a full table of ${MAX_PARTY}.</div>` : ""}</div>
+      ${full ? `<div class="hint">That's a full table of ${MAX_PARTY}.</div>` : ""}${grp}</div>
     <div class="q"><div class="lab">How much time do you have?</div><div class="hint">Door to door, drive included.</div>${seg("time", TIMES, R.time)}</div>
     <div class="q"><div class="lab">How far will you drive?</div><div class="hint">One way, roughly.</div>${seg("far", FARS, R.far)}</div>
     <div class="q"><div class="lab">What kind of place?</div><div class="hint">Tap any that work. None tapped means anything goes.</div><div class="seg">${styles}</div></div>
@@ -636,49 +670,53 @@ function placeTags(c, j, pl){
   return t.join("");
 }
 function renderCards(pl){
-  const solo = pl.length === 1;
-  const used = new Set(Object.values(R.vetoes)), can = pl.filter((p) => !used.has(p.key));
-  const live = R.dealt.filter((c) => !R.vetoes[c.id]);
+  const solo = pl.length === 1, elim = !solo && modeOf(pl) === "elim";
+  const gone = new Set(R.elims.map((e) => e.id)), live = R.dealt.filter((c) => !gone.has(c.id));
+  const nm = (p) => p.key === myId() ? "you" : esc(p.name);
   const answers = [TIMES.find((t) => t[0] === R.time)[1], `${R.far} min away`, R.origin ? "from " + R.origin.label : ""].filter(Boolean).join(" · ");
   let h = `<div class="sum"><span>${esc(list(pl.map((p) => p.name)))} · ${esc(answers)}${R.anyHours ? " · ignoring opening hours" : ""}</span><button type="button" class="btn link" data-act="back">Change answers</button></div>`;
   if (!R.dealt.length){
-    h += `<div class="card empty"><p>${R.shown.size ? "That's everything that fits." : R.pool.length ? "Nothing fits those answers right now." : "Google didn't find any restaurants in that range."}</p>
-      <div>${R.shown.size ? `<button type="button" class="btn" data-act="reshuffle">Go through them again</button> ` : ""}<button type="button" class="btn primary" data-act="back">Change answers</button></div></div>`;
+    const why = R.short ? `Elimination with ${pl.length} of you needs at least ${R.short.need} places, and only ${R.short.have} ${R.short.have === 1 ? "fits" : "fit"}${R.shown.size ? " that you haven't seen" : ""}.`
+      : R.shown.size ? "That's everything that fits." : R.pool.length ? "Nothing fits those answers right now." : "Google didn't find any restaurants in that range.";
+    h += `<div class="card empty"><p>${why}</p>
+      <div>${R.shown.size ? `<button type="button" class="btn" data-act="reshuffle">Go through them again</button> ` : ""}${R.short && R.short.have ? `<button type="button" class="btn" data-act="mode" data-v="turns">Take turns instead</button> ` : ""}<button type="button" class="btn primary" data-act="back">Change answers</button></div></div>`;
   } else {
-    if (!solo) h += `<div class="vetoes">${pl.map((p) => `<span class="tag ${used.has(p.key) ? "" : "good"}">${esc(p.name)}: ${used.has(p.key) ? "used" : "1 rule-out"}</span>`).join("")}</div>`;
-    // A ruled-out place drops off the list, so the next person sees a shorter one.
+    const g = elim ? gameState(pl, live) : null, pk = solo ? null : picker(pl);
+    if (g && !g.final) h += `<div class="turn"><div><b>${g.current.key === myId() ? "You eliminate one" : esc(g.current.name) + ", eliminate one"}</b>
+      <small>${g.left} to go${R.game?.per === 1 ? " (one each, not many places fit)" : ""}. Then pass to ${nm(g.next)}${g.next === g.fin ? " for the final pick" : ""}.</small></div>
+      ${R.elims.length ? "" : `<button type="button" class="btn" data-act="pass" title="Give the final pick to the next person">Pass</button>`}</div>`;
+    else if (g) h += `<div class="turn"><div><b>${g.fin.key === myId() ? "Your pick" : esc(g.fin.name) + ", your pick"}</b><small>Choose from what's left.</small></div></div>`;
+    else if (pk) h += `<div class="turn"><div><b>${pk.key === myId() ? "It's your turn to pick" : `It's ${esc(pk.name)}'s turn to pick`}</b>
+      <small>Pass and you keep your turn for next time.</small></div><button type="button" class="btn" data-act="pass">Pass</button></div>`;
+    const cutting = g && !g.final;
     for (const c of live){
       const j = judge(c, pl);
-      h += `<div class="pc ${R.lit === c.id ? "lit" : ""}" data-pc="${esc(c.id)}"><h3>${esc(c.name)}</h3><div class="meta">${esc(placeMeta(c, j))}</div>`;
-      {
-        h += `<div class="facts">${placeTags(c, j, pl)}</div>
-          <div class="acts"><button type="button" class="btn primary" data-act="go" data-id="${esc(c.id)}" ${R.busy ? "disabled" : ""}>Go here</button>
-          ${solo || !can.length ? "" : `<button type="button" class="btn warn" data-act="veto" data-id="${esc(c.id)}">Rule out</button>`}
+      h += `<div class="pc ${R.lit === c.id ? "lit" : ""}" data-pc="${esc(c.id)}"><h3>${esc(c.name)}</h3><div class="meta">${esc(placeMeta(c, j))}</div>
+        <div class="facts">${placeTags(c, j, pl)}</div>
+        <div class="acts">${cutting ? `<button type="button" class="btn primary cut" data-act="elim" data-id="${esc(c.id)}">Eliminate</button>`
+          : `<button type="button" class="btn primary" data-act="go" data-id="${esc(c.id)}" ${R.busy ? "disabled" : ""}>Go here</button>`}
           <button type="button" class="btn" data-act="details" data-id="${esc(c.id)}">Details</button></div>
-          <div class="hide"><button type="button" class="btn link" data-act="hide" data-id="${esc(c.id)}">Don't show this again</button></div>`;
-        if (R.hiding === c.id) h += `<div class="whoveto">Why not? <span class="chips" style="display:inline-flex;margin:0 0 0 6px"><button type="button" data-act="hideNotFood" data-id="${esc(c.id)}">It's not a restaurant</button><button type="button" data-act="hideNever" data-id="${esc(c.id)}">Never again for me</button></span>
-          <div class="note">"Not a restaurant" hides it for everyone. "Never again" is yours, and counts whenever you're at the table.</div></div>`;
-        if (R.asking === c.id) h += `<div class="whoveto">Who's ruling it out? <span class="chips" style="display:inline-flex;margin:0 0 0 6px">${can.map((p) => `<button type="button" data-act="vetoBy" data-id="${esc(c.id)}" data-v="${esc(p.key)}">${esc(p.name)}</button>`).join("")}</span></div>`;
-      }
+        <div class="hide"><button type="button" class="btn link" data-act="hide" data-id="${esc(c.id)}">Don't show this again</button></div>`;
+      if (R.hiding === c.id) h += `<div class="whoveto">Why not? <span class="chips" style="display:inline-flex;margin:0 0 0 6px"><button type="button" data-act="hideNotFood" data-id="${esc(c.id)}">It's not a restaurant</button><button type="button" data-act="hideNever" data-id="${esc(c.id)}">Never again for me</button></span>
+        <div class="note">"Not a restaurant" hides it for everyone. "Never again" is yours, and counts whenever you're at the table.${elim ? " A new place takes its spot and nobody loses an elimination." : ""}</div></div>`;
       h += `</div>`;
     }
-    if (!live.length) h += `<div class="card empty">Everything here got ruled out.</div>`;
-    const gone = R.dealt.filter((c) => R.vetoes[c.id]);
-    if (gone.length) h += `<div class="left" style="margin:12px 0">${gone.map((c) => `<div><b>${esc(c.name)}</b> ruled out by ${esc(pl.find((p) => p.key === R.vetoes[c.id])?.name || "someone")}. <button type="button" class="btn link" data-act="unveto" data-id="${esc(c.id)}">Undo</button></div>`).join("")}</div>`;
-    h += `<div class="pc" style="display:flex;gap:8px;flex-wrap:wrap">
-      ${live.length > 1 ? `<button type="button" class="btn" data-act="spin" style="flex:1">Can't decide? Spin for it</button>` : ""}
-      <button type="button" class="btn" data-act="again" style="flex:1">Deal ${DEAL} more</button></div>`;
+    // Eliminated places drop off the list so the next person sees a shorter one. Only the newest can be undone, to keep the order straight.
+    if (R.elims.length) h += `<div class="left" style="margin:12px 0">${R.elims.map((e, i) => `<div><b>${esc(R.dealt.find((c) => c.id === e.id)?.name || "")}</b> eliminated by ${esc(pl.find((p) => p.key === e.key)?.name || "someone")}.${i === R.elims.length - 1 ? ` <button type="button" class="btn link" data-act="undoElim">Undo</button>` : ""}</div>`).join("")}</div>`;
+    h += `<div class="pc" style="display:flex;gap:8px;flex-wrap:wrap">${elim ? `<button type="button" class="btn" data-act="again" style="flex:1">Start over with new places</button>`
+      : `${live.length > 1 ? `<button type="button" class="btn" data-act="spin" style="flex:1">Can't decide? Spin for it</button>` : ""}
+      <button type="button" class="btn" data-act="again" style="flex:1">Deal ${DEAL} more</button>`}</div>`;
   }
   if (R.err) h += `<div class="err">${esc(R.err)}</div>`;
   if (R.out.length) h += `<details class="left"><summary>${R.out.length} left out, and why</summary><ul>${R.out.map((x) => `<li><b>${esc(x.c.name)}</b>: ${esc(x.j.out)} <button type="button" class="btn link" data-act="details" data-id="${esc(x.c.id)}">details</button></li>`).join("")}</ul></details>`;
   return h;
 }
 function renderDone(){
-  const d = R.done, pl = party(), next = turnOrder(pl)[0];
+  const d = R.done, pl = party(), next = turnOrder(pl)[0], elim = modeOf(pl) === "elim";
   const maps = d.c.maps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.c.name)}&query_place_id=${encodeURIComponent(d.c.id)}`;
   return `<div class="card done"><div class="sub">You're going to</div><div class="big">${esc(d.c.name)}</div>
     <div class="sub">${esc(d.c.address || "")}</div>
-    ${pl.length > 1 ? `<p style="margin-top:12px">${d.pick.key === myId() ? "You" : esc(d.pick.name)} picked. Next time with this group, it's ${next.key === myId() ? "your" : esc(next.name) + "'s"} turn.</p>` : ""}
+    ${pl.length > 1 ? `<p style="margin-top:12px">${d.pick.key === myId() ? "You" : esc(d.pick.name)} picked. ${elim ? `Next time this group plays Elimination, ${next.key === myId() ? "you get" : esc(next.name) + " gets"} the final pick.` : `Next time this group takes turns, it's ${next.key === myId() ? "your" : esc(next.name) + "'s"} turn.`}</p>` : ""}
     <div class="acts"><a class="btn primary" href="${esc(maps)}" target="_blank" rel="noopener">Directions</a>
       <button type="button" class="btn" data-act="undoGo">We changed our minds</button>
       <button type="button" class="btn" data-act="newRound">Done</button></div>
@@ -832,7 +870,7 @@ async function hidePlace(id, mark){
   const pl = party(), at = R.dealt.findIndex((x) => x.id === id);
   const judged = judgeAll(pl), next = judged.filter((x) => !x.j.out && !R.shown.has(x.c.id)).sort((a, b) => b.j.score - a.j.score)[0];
   if (next){ R.dealt[at] = next.c; R.shown.add(next.c.id); } else R.dealt.splice(at, 1);
-  delete R.vetoes[id]; R.hiding = null;
+  R.hiding = null;
   R.dealt = R.dealt.filter((x) => !judged.find((y) => y.c.id === x.id)?.j.out);   // other locations of a brand just ruled out
   R.out = judged.filter((x) => x.j.out);
   toast(`${c.name} won't come up again.`); render();
@@ -842,9 +880,10 @@ const ACTS = {
   closeDlg: (d, b) => b.closest("dialog").close(),
   tab: (d) => { tab = d.v; R.err = ""; render(); window.scrollTo(0, 0); },
   // setup
-  who: (d) => { if (R.party.has(d.id)) R.party.delete(d.id); else if (R.party.size + 1 < MAX_PARTY) R.party.add(d.id); R.passed = 0; remember(); render(); },
+  who: (d) => { if (R.party.has(d.id)) R.party.delete(d.id); else if (R.party.size + 1 < MAX_PARTY) R.party.add(d.id); R.passed = 0; recallMode(); remember(); render(); },
+  mode: (d) => { setMode(d.v); R.passed = 0; if (R.pool){ R.shown = new Set(); deal(); } render(); },
   addWho: () => { R.adding = !R.adding; render(); $("#newWho")?.focus(); },
-  addWhoSave: async () => { try { const p = await addPerson($("#newWho").value.trim()); if (R.party.size + 1 < MAX_PARTY) R.party.add(p.id); R.adding = false; R.passed = 0; remember(); render(); } catch (e){ fail(e); } },
+  addWhoSave: async () => { try { const p = await addPerson($("#newWho").value.trim()); if (R.party.size + 1 < MAX_PARTY) R.party.add(p.id); R.adding = false; R.passed = 0; recallMode(); remember(); render(); } catch (e){ fail(e); } },
   pass: () => { R.passed++; render(); },
   time: (d) => { R.time = +d.v; remember(); render(); },
   far: (d) => { R.far = +d.v; remember(); render(); },
@@ -862,21 +901,20 @@ const ACTS = {
   back: () => { R.pool = null; R.err = ""; render(); },
   again: () => { deal(); render(); window.scrollTo(0, 0); },
   reshuffle: () => { R.shown = new Set(); deal(); render(); },
-  veto: (d) => {
-    const pl = party(), used = new Set(Object.values(R.vetoes)), can = pl.filter((p) => !used.has(p.key));
-    if (can.length === 1) R.vetoes[d.id] = can[0].key; else R.asking = R.asking === d.id ? null : d.id;
-    R.lit = null; render();
+  elim: (d) => {
+    const pl = party(), gone = new Set(R.elims.map((e) => e.id)), g = gameState(pl, R.dealt.filter((c) => !gone.has(c.id)));
+    if (g.final) return;
+    R.elims.push({ id: d.id, key: g.current.key }); R.hiding = null; render(); window.scrollTo(0, 0);
   },
-  vetoBy: (d) => { R.vetoes[d.id] = d.v; R.asking = null; render(); },
-  unveto: (d) => { delete R.vetoes[d.id]; render(); },
-  hide: (d) => { R.hiding = R.hiding === d.id ? null : d.id; R.asking = null; render(); },
+  undoElim: () => { R.elims.pop(); render(); },
+  hide: (d) => { R.hiding = R.hiding === d.id ? null : d.id; render(); },
   hideNotFood: (d) => hidePlace(d.id, async (c) => {
     const { data, error } = await sb.from("yourturn_places").update({ not_food: true, edited_by: myId() }).eq("place_id", c.id).select().single();
     if (error) throw error; places.set(c.id, data);
   }),
   hideNever: (d) => hidePlace(d.id, (c) => saveRating(c.id, { never_again: true })),
   spin: () => {
-    const live = R.dealt.filter((c) => !R.vetoes[c.id]); if (live.length < 2) return;
+    const live = R.dealt; if (live.length < 2) return;
     const win = live[Math.floor(Math.random() * live.length)], hops = 10 + live.indexOf(win) + live.length;
     let i = 0; const hop = () => {
       document.querySelectorAll(".pc.lit").forEach((el) => el.classList.remove("lit"));
@@ -887,7 +925,7 @@ const ACTS = {
   go: async (d) => {
     const c = candOf(d.id), pl = party(), pick = picker(pl);
     R.busy = true; R.err = ""; render();
-    try { const visit = await logVisit(c, pl, pl.length > 1 ? pick : null, todayISO()); R.passed = 0; R.done = { c, visit, pick }; }
+    try { const visit = await logVisit(c, pl, pl.length > 1 ? pick : null, todayISO(), modeOf(pl)); R.passed = 0; if (pl.length > 1) setMode(R.mode); R.done = { c, visit, pick }; }
     catch (e){ R.err = "That didn't save: " + e.message; }
     R.busy = false; render(); window.scrollTo(0, 0);
   },
