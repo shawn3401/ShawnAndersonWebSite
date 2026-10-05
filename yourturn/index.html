@@ -94,6 +94,8 @@ h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;margin:0;line-heig
 .chips button.avoid{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
 .chips button.ghost{border-style:dashed;background:none;color:var(--ink-3);font-weight:400}
 .chips button.me{cursor:default}
+.pick{margin-top:0}
+#plWaits button{flex:1 1 45%}
 .inline{display:flex;gap:8px;margin-top:8px}
 .inline input{flex:1;min-width:0}
 label.f{display:block;font-size:14px;font-weight:600;color:var(--ink-2);margin:12px 0 4px}
@@ -264,15 +266,11 @@ footer{text-align:center;color:var(--ink-3);font-size:14px;margin-top:30px}
   <form id="placeForm">
     <h2 id="plName"></h2>
     <p class="sub" id="plAddr"></p>
-    <div class="two">
-      <div><label class="f" for="plStyle">Kind of place</label><select id="plStyle"></select></div>
-      <div><label class="f" for="plGenre">Genre</label><select id="plGenre"></select></div>
-    </div>
-    <div class="two">
-      <div><label class="f" for="plMinutes">Minutes, in and out</label><input type="number" id="plMinutes" min="5" max="240" step="5" inputmode="numeric"></div>
-      <div><label class="f" for="plWaits">Wait for a table</label>
-        <select id="plWaits"><option value="">Not sure</option><option value="rarely">Rarely a wait</option><option value="peak">A wait at busy times</option><option value="usually">Usually a wait</option></select></div>
-    </div>
+    <label class="f">Kind of place</label><div class="seg pick" id="plStyle"></div>
+    <label class="f">Food type</label><div class="chips pick" id="plGenre"></div>
+    <label class="f">Wait for a table</label><div class="seg pick" id="plWaits"></div>
+    <label class="f" for="plMinutes">Minutes, in and out</label>
+    <input type="number" id="plMinutes" min="5" max="240" step="5" inputmode="numeric">
     <label class="ck"><input type="checkbox" id="plNotFood"> This isn't a restaurant (hide it for everyone)</label>
     <p class="note">These are shared: everyone using Your Turn sees them, and anyone can fix them.</p>
     <h3>Just me <small>Only you and the people you've linked with see these.</small></h3>
@@ -298,8 +296,8 @@ footer{text-align:center;color:var(--ink-3);font-size:14px;margin-top:30px}
     <input type="date" id="viDate" required>
     <label class="f">Who was there</label>
     <div class="chips" id="viParty" style="margin-top:0"></div>
-    <label class="f" for="viPicker">Who picked</label>
-    <select id="viPicker"></select>
+    <label class="f">Who picked</label>
+    <div class="chips pick" id="viPicker"></div>
     <div class="err" id="viErr" hidden></div>
     <div class="row"><button type="button" class="btn" data-act="closeDlg">Cancel</button><button class="btn primary" id="viBtn">Save</button></div>
   </form>
@@ -806,14 +804,21 @@ function render(){
 // ---- dialogs -------------------------------------------------------------------------------------
 let dlgPlace = null, dlgStars = 0, dlgVisit = null, viParty = new Set(), askDone = null;
 function candOf(id){ return R.pool?.find((c) => c.id === id) || found?.find((c) => c.id === id) || (places.has(id) ? fromSaved(places.get(id)) : null); }
+// Tap-to-choose rows used where a dropdown would go (Shawn dislikes the phone's native dropdown menu, as he did the Mac one in Dough).
+function setPick(id, opts, value){
+  const el = $("#" + id); el.dataset.value = value ?? "";
+  el.innerHTML = opts.map(([v, l]) => `<button type="button" data-act="pick" data-g="${id}" data-v="${esc(v)}" class="${String(v) === el.dataset.value ? "on" : ""}">${esc(l)}</button>`).join("");
+}
+const picked = (id) => $("#" + id).dataset.value || "";
 function drawStars(){ $("#plStars").innerHTML = [1, 2, 3, 4, 5].map((n) => `<button type="button" data-act="star" data-v="${n}" class="${n <= dlgStars ? "on" : ""}" aria-label="${n} star${n > 1 ? "s" : ""}">★</button>`).join(""); }
 function openPlace(id){
   const c = candOf(id); if (!c) return;
   dlgPlace = c; const f = facts(c), r = myRating(id);
   $("#plName").textContent = c.name; $("#plAddr").textContent = c.address || "";
-  $("#plStyle").innerHTML = Object.entries(STYLES).map(([k, s]) => `<option value="${k}">${s.label}</option>`).join(""); $("#plStyle").value = f.style;
-  $("#plGenre").innerHTML = Object.entries(GENRES).map(([k, l]) => `<option value="${k}">${l}</option>`).join(""); $("#plGenre").value = f.genre;
-  $("#plMinutes").value = f.minutes; $("#plWaits").value = f.waits || ""; $("#plNotFood").checked = !!places.get(id)?.not_food;
+  setPick("plStyle", Object.entries(STYLES).map(([k, s]) => [k, s.label]), f.style);
+  setPick("plGenre", Object.entries(GENRES), f.genre);
+  setPick("plWaits", [["", "Not sure"], ["rarely", "Rarely"], ["peak", "At busy times"], ["usually", "Usually"]], f.waits || "");
+  $("#plMinutes").value = f.minutes; $("#plNotFood").checked = !!places.get(id)?.not_food;
   dlgStars = r?.rating || 0; drawStars();
   $("#plWant").checked = !!r?.want_to_try; $("#plNever").checked = !!r?.never_again;
   $("#plRest").value = r?.rest_days ?? ""; $("#plNotes").value = r?.notes || "";
@@ -823,8 +828,8 @@ $("#placeForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const c = dlgPlace, b = $("#plBtn"); b.disabled = true; $("#plErr").hidden = true;
   try {
-    const row = { ...placeRow(c), style: $("#plStyle").value, genre: $("#plGenre").value, minutes: Math.min(240, Math.max(5, +$("#plMinutes").value || STYLES[$("#plStyle").value].minutes)),
-      waits: $("#plWaits").value || null, not_food: $("#plNotFood").checked, edited_by: myId() };
+    const row = { ...placeRow(c), style: picked("plStyle"), genre: picked("plGenre"), minutes: Math.min(240, Math.max(5, +$("#plMinutes").value || STYLES[picked("plStyle")].minutes)),
+      waits: picked("plWaits") || null, not_food: $("#plNotFood").checked, edited_by: myId() };
     const { data, error } = await sb.from("yourturn_places").upsert(row, { onConflict: "place_id" }).select().single();
     if (error) throw error;
     places.set(c.id, data);
@@ -838,22 +843,21 @@ $("#placeForm").addEventListener("submit", async (e) => {
 function drawVisitParty(){
   const pl = party(viParty);
   $("#viParty").innerHTML = `<button type="button" class="on me">${esc(me.display_name)}</button>` + sortedPeople().map((p) => `<button type="button" data-act="viWho" data-id="${p.id}" class="${viParty.has(p.id) ? "on" : ""}">${esc(p.name)}</button>`).join("");
-  const cur = $("#viPicker").value;
-  $("#viPicker").innerHTML = `<option value="">Nobody in particular</option>` + pl.map((p) => `<option value="${esc(p.key)}">${esc(p.name)}</option>`).join("");
-  if (pl.some((p) => p.key === cur)) $("#viPicker").value = cur;
+  const cur = picked("viPicker");
+  setPick("viPicker", [["", "Nobody in particular"], ...pl.map((p) => [p.key, p.name])], pl.some((p) => p.key === cur) ? cur : "");
 }
 function openVisit(id){
   const c = candOf(id); if (!c) return;
   dlgVisit = c; viParty = new Set(R.party);
   $("#viName").textContent = c.name; $("#viDate").value = todayISO(); $("#viDate").max = todayISO();
-  $("#viPicker").innerHTML = ""; drawVisitParty(); $("#viErr").hidden = true; $("#visitDlg").showModal();
+  $("#viPicker").dataset.value = ""; drawVisitParty(); $("#viErr").hidden = true; $("#visitDlg").showModal();
 }
 $("#visitForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const b = $("#viBtn"); b.disabled = true; $("#viErr").hidden = true;
   try {
     const pl = party(viParty);
-    await logVisit(dlgVisit, pl, pl.find((p) => p.key === $("#viPicker").value) || null, $("#viDate").value);
+    await logVisit(dlgVisit, pl, pl.find((p) => p.key === picked("viPicker")) || null, $("#viDate").value);
     $("#visitDlg").close(); toast("Saved to your history."); if (tab === "history") found = null; render();
   } catch (err){ $("#viErr").textContent = "That didn't save: " + err.message; $("#viErr").hidden = false; }
   b.disabled = false;
@@ -962,6 +966,7 @@ const ACTS = {
   },
   newRound: () => { R.done = null; R.pool = null; render(); },
   details: (d) => openPlace(d.id),
+  pick: (d, b) => { const el = $("#" + d.g); el.dataset.value = d.v; el.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b)); },
   star: (d) => { dlgStars = +d.v; drawStars(); },
   clearStars: () => { dlgStars = 0; drawStars(); },
   quickRate: async (d) => { try { await saveRating(d.id, { rating: +d.v }); toast("Rated. Thanks."); render(); } catch (e){ fail(e); } },
