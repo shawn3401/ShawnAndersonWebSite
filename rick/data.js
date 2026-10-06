@@ -143,17 +143,21 @@ const LOG = [
     {time:"4:39 pm", text:"Into Cameron at the old suspension bridge over the Little Colorado."},
     {time:"Evening", miles:74.9, gain:2687, text:"Done for the day in Cameron after 74.9 miles, +2,687 / -2,660 ft."},
   ]},
+  {day:30, date:"2026-10-05", end:"Russell Tank, AZ (Kaibab National Forest)", miles:53, gain:4462, loss:1467, high:7533, low:4250, lat:35.872101, lng:-111.879384, course:0.7, notes:"Cameron to Russell Tank, by way of the Grand Canyon. The morning was one long climb, 32.5 miles and about 3,400 ft from Cameron at 4,250 ft up to Desert View on the South Rim at 7,406 ft, which closes out segment 7 five days ahead of its Oct 10 plan date. Then 20.5 more miles south through the forest, over a 7,533 ft high point, to camp at Russell Tank, the first miles of segment 8. 53 miles with 4,462 ft of climbing. His Garmin ran 0.7 miles long through segment 7, booked as a detour so his position lands on the segment end.", updates:[
+    {time:"Midday", miles:32.5, text:"Desert View on the South Rim of the Grand Canyon. Segment 7 is done."},
+    {time:"Evening", miles:53, gain:4462, text:"Camped at Russell Tank in the Kaibab National Forest after 53 miles, +4,462 / -1,467 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:35.873895, lng:-111.411144, town:"Cameron", state:"AZ", label:"In Cameron after 74.9 miles on day 29, his second-longest day of the trip", asOf:"Oct 4, evening MT", approx:false};
+const LOCATION = {lat:35.872101, lng:-111.879384, town:"Russell Tank", state:"AZ", label:"Camped in the Kaibab National Forest south of the Grand Canyon after 53 miles on day 30", asOf:"Oct 5, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Two big days across northern Arizona. Day 28 took Rick 68.5 miles from Fredonia down along the Vermilion Cliffs. Day 29 was 74.9 miles, his second-longest day of the trip: across the Colorado River on Navajo Bridge, then south to Cameron on the Little Colorado. The Grand Canyon, the end of segment 7, is close now.";
+const STATUS = "Rick reached the Grand Canyon. Day 30 started with a 3,400 ft climb from Cameron up to Desert View on the South Rim, which closes out segment 7 five days ahead of plan, and he kept going: 20 more miles south through the forest to camp at Russell Tank. 53 miles and 4,462 ft of climbing on the day. Two segments to go, Globe and then the Mexican border.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 4, 2026, end of day 29", caption:"Blue and green is Rick's track so far, Roosville to Cameron in northern Arizona, with day 29 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 5, 2026, end of day 30", caption:"Blue and green is Rick's track so far, Roosville to Russell Tank just south of the Grand Canyon, with day 30 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -291,5 +295,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 5, 2026, 10:30 am MT";
+const LAST_UPDATED = "Oct 6, 2026, 9:55 am MT";
 // ===== END DATA =====
