@@ -50,6 +50,14 @@ const FAST_CASUAL = ["five guys", "costa vida", "cafe rio", "café rio", "chipot
   "rumbi", "mo' bettahs", "mo bettahs", "freddy's", "culver's", "raising cane", "slim chickens", "cava", "sweetgreen", "teriyaki madness",
   "pita pit", "moe's southwest", "jason's deli", "schlotzsky", "tropical smoothie", "einstein bros", "great harvest", "papa murphy"];
 
+// Drive-through chains. Anything else Google calls fast food is judged by price: $$ and up reads as fast casual.
+const FAST_FOOD = ["mcdonald", "burger king", "wendy's", "taco bell", "arby's", "kfc", "sonic drive", "jack in the box", "carl's jr", "hardee's",
+  "dairy queen", "little caesars", "domino's", "pizza hut", "papa john", "popeyes", "wienerschnitzel", "del taco", "taco time", "tacotime", "a&w",
+  "whataburger", "in-n-out", "subway", "chick-fil-a", "long john silver", "church's", "checkers", "rally's", "white castle", "krystal", "bojangles",
+  "dunkin", "starbucks", "dutch bros", "taco john", "el pollo loco", "captain d's", "zaxby", "cook out", "steak 'n shake"];
+// What to ask Google for when the table wants counter service, so the pool is not mostly sit-down places.
+const COUNTER_TYPES = ["fast_food_restaurant", "sandwich_shop", "meal_takeaway"];
+
 // Places that sell food but are not somewhere you go out to eat (Shawn's first deal had two Maverik gas stations).
 const NOT_FOOD = ["gas_station", "convenience_store", "grocery_store", "supermarket"];
 const isFood = (p: GPlace) => !(p.types ?? []).some((t) => NOT_FOOD.includes(t));
@@ -79,8 +87,10 @@ function guessGenre(p: GPlace): string {
 function guessStyle(p: GPlace): string {
   const name = (p.displayName?.text ?? "").toLowerCase();
   const types = p.types ?? [];
+  if (FAST_FOOD.some((n) => name.includes(n))) return "fast_food";
   if (FAST_CASUAL.some((n) => name.includes(n))) return "fast_casual";
-  if (types.includes("fast_food_restaurant")) return "fast_food";
+  if (types.includes("fast_food_restaurant")) return PRICE[p.priceLevel ?? ""] >= 2 ? "fast_casual" : "fast_food";
+  if (types.includes("sandwich_shop") || p.primaryType === "meal_takeaway") return "fast_casual";
   if (types.includes("fine_dining_restaurant") || PRICE[p.priceLevel ?? ""] >= 4) return "fine";
   return "sit_down";
 }
@@ -166,11 +176,13 @@ Deno.serve(async (req: Request) => {
     const want = known(body.want), avoid = known(body.avoid).filter((g) => !want.includes(g));
     const styles = Array.isArray(body.styles) ? body.styles : [];
     const onlyFast = styles.length === 1 && styles[0] === "fast_food";
+    const counter = styles.length > 0 && !styles.includes("sit_down") && !onlyFast;   // fast casual, with or without fast food
     const noFast = styles.length > 0 && !styles.includes("fast_food") && !styles.includes("fast_casual");
 
     let included = ["restaurant"];
     if (want.length) included = want.flatMap((g) => GENRES[g].ask);
     else if (onlyFast) included = ["fast_food_restaurant"];
+    else if (counter) included = COUNTER_TYPES;
     const excluded = avoid.flatMap((g) => GENRES[g].ask).filter((t) => !included.includes(t));
     if (noFast && !included.includes("fast_food_restaurant")) excluded.push("fast_food_restaurant");
     excluded.push(...NOT_FOOD);
