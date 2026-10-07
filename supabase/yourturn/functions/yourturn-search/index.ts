@@ -2,9 +2,15 @@
 // The page sends a starting point, a radius, and the genres wanted or ruled out; this asks Google
 // Places (New) for restaurants that fit and returns a trimmed list. Nothing is stored here: the page
 // saves a place only when someone rates it, visits it, or corrects it.
-// Secrets: GOOGLE_MAPS_API_KEY (ShawnZapps Google Cloud project, Places API (New) enabled). Never in the repo.
+// Google has no "fast casual" field, so Claude sorts each place into fast food, fast casual, or sit-down
+// once, and the answer is kept in yourturn_styles (place id and style only) for everyone.
+// Secrets: GOOGLE_MAPS_API_KEY (ShawnZapps Google Cloud project, Places API (New) enabled) and
+// ANTHROPIC_API_KEY (the same one Dough uses). Never in the repo.
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+import Anthropic from "npm:@anthropic-ai/sdk@0.110.0";
+import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
+
+const STYLE_MODEL = "claude-opus-5-5";
 
 const USER_DAILY = 40;       // Google calls per person per 24 hours, unless yourturn_limits has a row for them
 const MONTHLY = 900;         // Google calls for everyone per calendar month (the free allowance is 1,000)
@@ -42,8 +48,8 @@ const GENRES: Record<string, { ask: string[]; also?: string[] }> = {
 const GENRE_ORDER = ["burgers", "pizza", "mexican", "japanese", "thai", "indian", "chinese", "italian", "bbq", "steak", "seafood",
   "mediterranean", "asian", "sandwiches", "breakfast", "american"];
 
-// Counter-service places that are a step up from fast food. Google has no type for this, so it is
-// a name list for the first guess; anyone can correct a place and the correction is saved.
+// The name lists and guessStyle() below are only the fallback for a place Claude has not sorted
+// (the AI call failed or the key is missing).
 const FAST_CASUAL = ["five guys", "costa vida", "cafe rio", "café rio", "chipotle", "qdoba", "panera", "jimmy john", "jersey mike",
   "firehouse subs", "mod pizza", "blaze pizza", "noodles & company", "noodles and company", "panda express", "shake shack",
   "smashburger", "habit burger", "cupbop", "zupas", "kneaders", "crumbl", "potbelly", "which wich", "mcalister", "wingstop",
@@ -84,19 +90,74 @@ function guessGenre(p: GPlace): string {
   for (const g of GENRE_ORDER) if ([...GENRES[g].ask, ...(GENRES[g].also ?? [])].some((t) => types.has(t))) return g;
   return "other";
 }
-// `hint` means Google returned this place for the words "fast casual restaurant".
-function guessStyle(p: GPlace, hint = false): string {
+function guessStyle(p: GPlace): string {
   const name = (p.displayName?.text ?? "").toLowerCase();
   const types = p.types ?? [];
   if (FAST_FOOD.some((n) => name.includes(n))) return "fast_food";
   if (FAST_CASUAL.some((n) => name.includes(n))) return "fast_casual";
-  if (hint && !p.reservable && !types.includes("fine_dining_restaurant") && (PRICE[p.priceLevel ?? ""] ?? 0) <= 2) return "fast_casual";
   if (types.includes("fast_food_restaurant")) return PRICE[p.priceLevel ?? ""] >= 2 ? "fast_casual" : "fast_food";
   if (types.includes("sandwich_shop") || p.primaryType === "meal_takeaway") return "fast_casual";
-  if (types.includes("fine_dining_restaurant") || PRICE[p.priceLevel ?? ""] >= 4) return "fine";
   return "sit_down";
 }
-const trim = (p: GPlace, hint = false) => ({
+
+const STYLE_SYSTEM = `You sort restaurants into three kinds for an app that helps people decide where to eat.
+
+fast_food: built for speed and low price. Drive-through and counter chains such as McDonald's, Taco Bell, Wendy's, Subway, Chick-fil-A, Domino's and other delivery or carry-out pizza, plus coffee, smoothie, dessert, and snack counters.
+fast_casual: you walk up and order at a counter and there is no table service, but it does not feel like fast food. The food is better and costs more, and there is usually no drive-through. Five Guys, Chipotle, Cafe Rio, Costa Vida, Panera, Jersey Mike's, MOD Pizza, Cupbop, and local counter-service places such as delis, bagel shops, bakery cafes, poke and bowl shops, and taquerias where you order at the register.
+sit_down: a server takes your order at the table. Also buffets, pubs and bar and grills, diners, and pizza places with table service.
+
+Each line gives a number, the name, Google's category, the price level when known, whether it takes reservations, and the address. Use what you know about the chain or the restaurant first. For a place you do not recognize, reason from the name, the category, and the price: taking reservations means sit_down; a category like "Mexican Restaurant" or "Chinese Restaurant" with a name ending in "Restaurant", "Grill", "Cantina", "Garden", or "Bistro" is usually sit_down; a sandwich shop, bagel shop, or bakery is usually fast_casual. Give exactly one answer for every line.`;
+
+const STYLE_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["places"],
+  properties: {
+    places: {
+      type: "array",
+      items: {
+        type: "object", additionalProperties: false, required: ["n", "style"],
+        properties: { n: { type: "integer" }, style: { type: "string", enum: ["fast_food", "fast_casual", "sit_down"] } },
+      },
+    },
+  },
+};
+
+// The style for each place: saved answers first, then one Claude call for the ones not seen before.
+// Any failure leaves those places to guessStyle(), so a search never fails because of this.
+async function sortStyles(admin: SupabaseClient, list: GPlace[]): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  if (!list.length) return out;
+  const { data } = await admin.from("yourturn_styles").select("place_id, style").in("place_id", list.map((p) => p.id));
+  (data ?? []).forEach((r: { place_id: string; style: string }) => out.set(r.place_id, r.style));
+  const todo = list.filter((p) => !out.has(p.id)).slice(0, 80);
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
+  if (!todo.length || !apiKey) return out;
+  try {
+    const lines = todo.map((p, i) => [i + 1, p.displayName?.text ?? "", p.primaryTypeDisplayName?.text ?? "Restaurant",
+      p.priceLevel ? "price " + "$".repeat(PRICE[p.priceLevel] || 1) : "price unknown",
+      p.reservable ? "takes reservations" : "no reservations listed", p.shortFormattedAddress ?? p.formattedAddress ?? ""].join(" | "));
+    const res = await new Anthropic({ apiKey }).messages.create({
+      model: STYLE_MODEL,
+      max_tokens: 16000,
+      system: STYLE_SYSTEM,
+      output_config: { effort: "low", format: { type: "json_schema", schema: STYLE_SCHEMA } },
+      messages: [{ role: "user", content: lines.join("\n") }],
+    });
+    if (res.stop_reason !== "end_turn") throw new Error("stopped with " + res.stop_reason);
+    const text = res.content.filter((b): b is Anthropic.TextBlock => b.type === "text").map((b) => b.text).join("");
+    const rows: { place_id: string; style: string }[] = [];
+    for (const r of (JSON.parse(text).places ?? []) as { n: number; style: string }[]) {
+      const p = todo[r.n - 1];
+      if (p && ["fast_food", "fast_casual", "sit_down"].includes(r.style) && !out.has(p.id)) { out.set(p.id, r.style); rows.push({ place_id: p.id, style: r.style }); }
+    }
+    if (rows.length) await admin.from("yourturn_styles").upsert(rows, { onConflict: "place_id", ignoreDuplicates: true });
+    console.log(`styles sorted ${rows.length} of ${todo.length} new places, ${res.usage.input_tokens} in, ${res.usage.output_tokens} out`);
+  } catch (err) {
+    console.error("style sort failed", err);
+  }
+  return out;
+}
+
+const trim = (p: GPlace, style?: string) => ({
   id: p.id,
   name: p.displayName?.text ?? "",
   address: p.shortFormattedAddress ?? p.formattedAddress ?? "",
@@ -104,7 +165,7 @@ const trim = (p: GPlace, hint = false) => ({
   lng: p.location?.longitude ?? null,
   type_label: p.primaryTypeDisplayName?.text ?? "",
   genre: guessGenre(p),
-  style: guessStyle(p, hint),
+  style: style ?? guessStyle(p),
   rating: p.rating ?? null,
   count: p.userRatingCount ?? 0,
   price: p.priceLevel ? PRICE[p.priceLevel] ?? null : null,
@@ -171,7 +232,8 @@ Deno.serve(async (req: Request) => {
         locationBias: { circle: { center, radius: 30000 } },
       }, key);
       await admin.from("yourturn_usage").insert({ user_id: userId, kind: "find", calls });
-      return json({ places: found.map((p) => trim(p)) });
+      const st = await sortStyles(admin, found);
+      return json({ places: found.map((p) => trim(p, st.get(p.id))) });
     }
 
     const radius = Math.min(MAX_RADIUS, Math.max(500, Number(body.radius_m) || 5000));
@@ -189,29 +251,26 @@ Deno.serve(async (req: Request) => {
     if (noFast && !included.includes("fast_food_restaurant")) excluded.push("fast_food_restaurant");
     excluded.push(...NOT_FOOD);
 
-    const base = {
-      includedTypes: included, excludedTypes: excluded, maxResultCount: 20,
+    const nearby = (types: string[], rankPreference: string) => google("searchNearby", {
+      includedTypes: types, excludedTypes: excluded.filter((t) => !types.includes(t)), maxResultCount: 20, rankPreference,
       locationRestriction: { circle: { center, radius } },
-    };
-    // Google returns 20 at most per call. Asking twice, by popularity and by distance, gives a wider pool.
-    // Google has no "fast casual" field, so for counter service a third call searches for those words and
-    // whatever comes back is treated as fast casual unless the name or the listing says otherwise.
-    calls = counter && !want.length ? 3 : 2;
-    const dLat = radius / 111320, dLng = radius / (111320 * Math.cos(lat * Math.PI / 180));
-    const box = { low: { latitude: lat - dLat, longitude: lng - dLng }, high: { latitude: lat + dLat, longitude: lng + dLng } };
-    const [popular, near, casual] = await Promise.all([
-      google("searchNearby", { ...base, rankPreference: "POPULARITY" }, key),
-      google("searchNearby", { ...base, rankPreference: "DISTANCE" }, key),
-      calls === 3 ? google("searchText", { textQuery: "fast casual restaurant", pageSize: 20, locationRestriction: { rectangle: box } }, key)
-        .catch((e) => { console.error("fast casual text search failed", e); return [] as GPlace[]; }) : Promise.resolve([] as GPlace[]),
-    ]);
-    const hinted = new Set(casual.map((p) => p.id));
+    }, key);
+    // Google returns 20 at most per call, so a search is two calls: by popularity and by distance.
+    // For counter service, fast food chains would fill both, so it is three: fast food, the other
+    // counter types on their own, and everything by distance.
+    const split = counter && !want.length;
+    calls = split ? 3 : 2;
+    const got = await Promise.all(split
+      ? [nearby(["fast_food_restaurant"], "POPULARITY"), nearby(["sandwich_shop", "meal_takeaway"], "POPULARITY"), nearby(COUNTER_TYPES, "DISTANCE")]
+      : [nearby(included, "POPULARITY"), nearby(included, "DISTANCE")]);
     await admin.from("yourturn_usage").insert({ user_id: userId, kind: "search", calls });
     const seen = new Set<string>();
-    const places = [...casual, ...popular, ...near].filter((p) => !seen.has(p.id) && seen.add(p.id)).filter(isFood).map((p) => trim(p, hinted.has(p.id)));
-    // One line per search so the guesses can be checked against what Google actually returned.
-    console.log("search " + JSON.stringify({ styles, want, included, counts: [popular.length, near.length, casual.length],
-      list: places.map((p) => `${p.name}|${p.style}|${p.price ?? ""}|${p.type_label}${hinted.has(p.id) ? "|fc" : ""}`) }));
+    const unique = got.flat().filter((p) => !seen.has(p.id) && seen.add(p.id)).filter(isFood);
+    const sorted = await sortStyles(admin, unique);
+    const places = unique.map((p) => trim(p, sorted.get(p.id)));
+    // One line per search so the sorting can be checked against what Google actually returned.
+    console.log("search " + JSON.stringify({ styles, want, counts: got.map((g) => g.length),
+      list: places.map((p) => `${p.name}|${p.style}${sorted.has(p.id) ? "" : "?"}|${p.price ?? ""}|${p.type_label}`) }));
     return json({ places });
   } catch (err) {
     console.error("google error", err);

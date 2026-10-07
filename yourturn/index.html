@@ -411,9 +411,10 @@ function gameState(pl, live){
 // ---- judging a place -----------------------------------------------------------------
 function fromSaved(p){ return { id: p.place_id, name: p.name, address: p.address, lat: p.lat, lng: p.lng, maps: p.maps_url, genre: p.genre || "other",
   style: p.style || "sit_down", rating: null, count: 0, price: null, open: null, closes: null, reservable: p.reservable, saved: true }; }
-// Saved facts win over Google's guess.
+// Saved facts win over the search's guess. For the kind of place, only a person's correction (edited_by) beats
+// the search's answer, which is Claude's sort; a style that was merely copied in when a meal was logged does not.
 function facts(c){
-  const s = places.get(c.id), style = styleOf(s?.style || c.style);
+  const s = places.get(c.id), style = styleOf((s?.edited_by ? s.style : c.style) || s?.style);
   return { genre: s?.genre || c.genre || "other", style, minutes: s?.minutes || STYLES[style].minutes, waits: s?.waits || null, guessed: !s };
 }
 // Locations of a chain count as one brand: same name once case, accents, and punctuation are dropped.
@@ -524,6 +525,12 @@ async function findPlaces(){
       if (!p || have.has(p.place_id) || !uids.has(r.user_id) || !(r.rating >= 4 || r.want_to_try) || p.lat == null) continue;
       if (milesBetween(R.origin, p) > radiusMi) continue;
       if (want.length && !want.includes(p.genre)) continue;
+      got.push(fromSaved(p)); have.add(p.place_id);
+    }
+    // With a kind of place picked, saved places a person has marked as that kind are in the running too when they are close enough.
+    if (R.styles.size) for (const p of places.values()){
+      if (have.has(p.place_id) || !p.edited_by || p.not_food || p.lat == null || !R.styles.has(styleOf(p.style))) continue;
+      if (milesBetween(R.origin, p) > radiusMi || (want.length && !want.includes(p.genre))) continue;
       got.push(fromSaved(p)); have.add(p.place_id);
     }
     R.pool = got; R.shown = new Set(); R.done = null; deal();
