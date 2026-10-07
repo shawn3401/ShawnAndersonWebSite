@@ -84,17 +84,19 @@ function guessGenre(p: GPlace): string {
   for (const g of GENRE_ORDER) if ([...GENRES[g].ask, ...(GENRES[g].also ?? [])].some((t) => types.has(t))) return g;
   return "other";
 }
-function guessStyle(p: GPlace): string {
+// `hint` means Google returned this place for the words "fast casual restaurant".
+function guessStyle(p: GPlace, hint = false): string {
   const name = (p.displayName?.text ?? "").toLowerCase();
   const types = p.types ?? [];
   if (FAST_FOOD.some((n) => name.includes(n))) return "fast_food";
   if (FAST_CASUAL.some((n) => name.includes(n))) return "fast_casual";
+  if (hint && !p.reservable && !types.includes("fine_dining_restaurant") && (PRICE[p.priceLevel ?? ""] ?? 0) <= 2) return "fast_casual";
   if (types.includes("fast_food_restaurant")) return PRICE[p.priceLevel ?? ""] >= 2 ? "fast_casual" : "fast_food";
   if (types.includes("sandwich_shop") || p.primaryType === "meal_takeaway") return "fast_casual";
   if (types.includes("fine_dining_restaurant") || PRICE[p.priceLevel ?? ""] >= 4) return "fine";
   return "sit_down";
 }
-const trim = (p: GPlace) => ({
+const trim = (p: GPlace, hint = false) => ({
   id: p.id,
   name: p.displayName?.text ?? "",
   address: p.shortFormattedAddress ?? p.formattedAddress ?? "",
@@ -102,7 +104,7 @@ const trim = (p: GPlace) => ({
   lng: p.location?.longitude ?? null,
   type_label: p.primaryTypeDisplayName?.text ?? "",
   genre: guessGenre(p),
-  style: guessStyle(p),
+  style: guessStyle(p, hint),
   rating: p.rating ?? null,
   count: p.userRatingCount ?? 0,
   price: p.priceLevel ? PRICE[p.priceLevel] ?? null : null,
@@ -169,7 +171,7 @@ Deno.serve(async (req: Request) => {
         locationBias: { circle: { center, radius: 30000 } },
       }, key);
       await admin.from("yourturn_usage").insert({ user_id: userId, kind: "find", calls });
-      return json({ places: found.map(trim) });
+      return json({ places: found.map((p) => trim(p)) });
     }
 
     const radius = Math.min(MAX_RADIUS, Math.max(500, Number(body.radius_m) || 5000));
@@ -192,14 +194,24 @@ Deno.serve(async (req: Request) => {
       locationRestriction: { circle: { center, radius } },
     };
     // Google returns 20 at most per call. Asking twice, by popularity and by distance, gives a wider pool.
-    calls = 2;
-    const [popular, near] = await Promise.all([
+    // Google has no "fast casual" field, so for counter service a third call searches for those words and
+    // whatever comes back is treated as fast casual unless the name or the listing says otherwise.
+    calls = counter && !want.length ? 3 : 2;
+    const dLat = radius / 111320, dLng = radius / (111320 * Math.cos(lat * Math.PI / 180));
+    const box = { low: { latitude: lat - dLat, longitude: lng - dLng }, high: { latitude: lat + dLat, longitude: lng + dLng } };
+    const [popular, near, casual] = await Promise.all([
       google("searchNearby", { ...base, rankPreference: "POPULARITY" }, key),
       google("searchNearby", { ...base, rankPreference: "DISTANCE" }, key),
+      calls === 3 ? google("searchText", { textQuery: "fast casual restaurant", pageSize: 20, locationRestriction: { rectangle: box } }, key)
+        .catch((e) => { console.error("fast casual text search failed", e); return [] as GPlace[]; }) : Promise.resolve([] as GPlace[]),
     ]);
+    const hinted = new Set(casual.map((p) => p.id));
     await admin.from("yourturn_usage").insert({ user_id: userId, kind: "search", calls });
     const seen = new Set<string>();
-    const places = [...popular, ...near].filter((p) => !seen.has(p.id) && seen.add(p.id)).filter(isFood).map(trim);
+    const places = [...casual, ...popular, ...near].filter((p) => !seen.has(p.id) && seen.add(p.id)).filter(isFood).map((p) => trim(p, hinted.has(p.id)));
+    // One line per search so the guesses can be checked against what Google actually returned.
+    console.log("search " + JSON.stringify({ styles, want, included, counts: [popular.length, near.length, casual.length],
+      list: places.map((p) => `${p.name}|${p.style}|${p.price ?? ""}|${p.type_label}${hinted.has(p.id) ? "|fc" : ""}`) }));
     return json({ places });
   } catch (err) {
     console.error("google error", err);
