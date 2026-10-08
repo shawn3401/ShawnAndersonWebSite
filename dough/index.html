@@ -62,7 +62,6 @@ h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;margin:0;line-heig
 .card h2{font-size:22px;margin-bottom:12px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
 .col > .card + .card{margin-top:14px}
-.right{position:sticky;top:66px}
 
 .last{background:var(--soft);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:16px}
 .last b{font-weight:700}
@@ -192,6 +191,52 @@ dialog.wide{width:min(640px,calc(100vw - 24px))}
 .sum div{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .sum b{display:block;font-family:"Fraunces",Georgia,serif;font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
 .sum span{font-size:12.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.seg.five button{min-width:0;padding:9px 2px;font-size:14.5px}
+.ingc{padding:12px 0 10px;border-top:1px solid var(--line)}
+.ingc:first-child{border-top:0;padding-top:4px}
+.itop{display:flex;align-items:center;gap:12px}
+.ingc .box{flex:none;width:28px;height:28px;border:2px solid var(--line);border-radius:7px;background:var(--paper);display:grid;place-items:center;color:transparent;font:inherit;font-weight:700;cursor:pointer;padding:0}
+.ingc .nm{flex:1;min-width:0;font-weight:600}
+.ingc .nm small{display:block;color:var(--ink-3);font-size:13.5px;font-weight:400}
+.ingc .g{font-family:"Fraunces",Georgia,serif;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+.ingc .gin{font:inherit;width:4.2ch;min-width:92px;text-align:right;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px;cursor:text;-moz-appearance:textfield;appearance:textfield}
+.ingc .gin::-webkit-outer-spin-button,.ingc .gin::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ingc .gin:hover{border-color:var(--ink-3)}
+.ingc .gin:focus{border-color:var(--accent);outline:2px solid var(--accent);outline-offset:1px}
+.ingc.typed .gin{color:var(--accent);border-color:var(--accent)}
+.ingc .g small{font-family:"Source Sans 3",sans-serif;font-size:15px;font-weight:600;color:var(--ink-3);margin-left:2px}
+.ingc .p{width:58px;text-align:right;font-weight:700;font-size:17px;font-variant-numeric:tabular-nums}
+.ingc .sl{margin-top:6px;padding-left:40px}
+.ingc .hint{padding-left:40px}
+.ingc.done .itop{opacity:.45}
+.ingc.done .box{background:var(--good);border-color:var(--good);color:#fff}
+.ingc.done .nm{text-decoration:line-through}
+.diff{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--bg);border:1px solid var(--line);font-size:15.5px}
+.diff b{display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.diff ul{margin:4px 0 0;padding-left:18px}
+.lastcard{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:0;margin-bottom:14px}
+.lastcard summary{cursor:pointer;padding:12px 14px;display:flex;gap:10px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;list-style:none}
+.lastcard summary::-webkit-details-marker{display:none}
+.lastcard summary h3{font-size:20px;display:inline}
+.lastcard summary .when{font-size:14.5px;color:var(--ink-2);margin-left:8px}
+.lastcard .stars{color:var(--crust);letter-spacing:2px;white-space:nowrap}
+.lastcard .pend{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:2px 10px}
+.lastcard .lbody{padding:0 14px 14px;border-top:1px solid var(--line)}
+.lastcard .lbody p{margin:10px 0 0}
+.lastcard .lbody p b{color:var(--ink-2);font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:block}
+.lastcard ul.lg{margin:4px 0 0;padding-left:18px;color:var(--ink-2);font-size:15.5px}
+.sugg{margin-top:12px;padding:12px;border:1px solid var(--accent);border-radius:8px;background:var(--soft)}
+.sugg h4{margin:0 0 6px;font-family:"Fraunces",Georgia,serif;font-size:18px}
+.sugg .chg{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line)}
+.sugg .chg b{display:block}
+.sugg .chg span{color:var(--ink-2);font-size:15.5px}
+.sugg .chg .btn{flex:none}
+.sugg ul{margin:6px 0 0;padding-left:18px}
+.sugg li{margin:5px 0}
+.keep{margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.keep p{margin:0 0 8px}
+.keep label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer;font-weight:400;font-size:16px;color:var(--ink);margin:0}
+.keep input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
 .ing{list-style:none;margin:0;padding:0}
 .ing li{display:flex;align-items:center;gap:12px;padding:11px 4px;border-top:1px solid var(--line);cursor:pointer;user-select:none;-webkit-user-select:none}
 .ing li:first-child{border-top:0}
@@ -270,7 +315,6 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
 
 @media (max-width:820px){
   .grid{grid-template-columns:minmax(0,1fr)}
-  .right{position:static}
 }
 @media (max-width:700px){
   .catbtn{display:flex}
@@ -312,7 +356,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <div class="picker" id="typeBar"></div>
     <div class="card empty" id="emptyCat" hidden></div>
     <div id="calcBody">
-    <div class="last" id="last" hidden></div>
+    <details class="lastcard" id="last" hidden></details>
     <div class="grid">
       <div class="col">
         <div class="card">
@@ -330,24 +374,19 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
         </div>
 
         <div class="card">
-          <h2>The ratios</h2>
-          <div id="ratios"></div>
-          <p class="note">Each one is a percent of the flour weight. <button class="btn link" id="resetPct">Back to this recipe's saved ratios</button></p>
-        </div>
-      </div>
-
-      <div class="col right">
-        <div class="card">
-          <h2>Weigh this out</h2>
+          <h2>Ingredients</h2>
           <div class="sum">
             <div id="oBallBox"><b class="num" id="oBall"></b><span id="oBallLab">g per ball</span></div>
             <div><b class="num" id="oTotal"></b><span>g of dough</span></div>
           </div>
-          <p class="note" style="margin:0 0 6px">These amounts match your sliders. Every number is a box you can type in: round it, or enter what actually went in. Changing the flour re-scales the rest.</p>
-          <ul class="ing" id="ing"></ul>
-          <p class="note">Tick the box on the left once an ingredient is in the bowl. <button type="button" class="btn link" id="unType" hidden>Back to the slider amounts</button></p>
+          <p class="note" style="margin:0 0 4px">Slide a ratio and its grams follow. Every gram number is a box you can type in: round it, or enter what actually went in. Changing the flour re-scales the rest.</p>
+          <div id="ratios"></div>
+          <p class="note">Tick the box once an ingredient is in the bowl. Each ratio is a percent of the flour weight. <button type="button" class="btn link" id="unType" hidden>Back to the slider amounts</button> <button type="button" class="btn link" id="resetPct">Back to this recipe's saved ratios</button></p>
+          <div class="diff" id="diffBox" hidden></div>
         </div>
+      </div>
 
+      <div class="col">
         <div class="card">
           <h2>Steps</h2>
           <ol class="steps" id="steps"></ol>
@@ -514,6 +553,7 @@ dialog p.sub{margin:0 0 10px;color:var(--ink-2);font-size:15px}
     <textarea id="wentPoorly" maxlength="2000"></textarea>
     <label class="f" for="nextTime">Next time, try</label>
     <textarea id="nextTime" maxlength="2000" placeholder="This shows up at the top of the calculator next time."></textarea>
+    <div class="keep" id="repKeep" hidden></div>
     <p class="note">Photos go on the bake's card in My bakes, with the Add photos button.</p>
     <div class="err" id="repErr" hidden></div>
     <div class="row"><button type="button" class="btn" id="repCancel">Cancel</button><button class="btn primary" id="repBtn">Save</button></div>
@@ -533,7 +573,8 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // Sizing: "pizza" (count x diameter x thickness), "pieces" (count x grams each), "flour" (start from the flour weight).
 // Pizza thickness is grams of dough per square inch. The three stops match Dough Guy's
 // thin / regular / thick (409, 480, 626 g for a 16 inch pizza).
-const THICK = [["Thin", 2.04], ["Regular", 2.39], ["Thick", 3.11]];
+const THICK = [["Thin", 2.04], ["Thin+", 2.215], ["Regular", 2.39], ["Regular+", 2.75], ["Thick", 3.11]];   // the + stops are halfway to the next one
+const nearThick = (t) => THICK.reduce((a, b) => Math.abs(b[1] - t) < Math.abs(a[1] - t) ? b : a);
 // Dough Guy's 3 day dough, active dry yeast. The starter recipe for the built-in Pizza type.
 const PIZZA_INGS = [
   { key: "water", name: "Water", pct: 62 }, { key: "yeast", name: "Yeast", pct: 0.4 }, { key: "salt", name: "Salt", pct: 2.5 },
@@ -578,12 +619,7 @@ const todayISO = () => { const d = new Date(); return d.getFullYear() + "-" + St
 function fmtDate(iso){ if (!iso) return ""; const [y,m,d] = iso.split("-").map(Number); return new Date(y, m-1, d).toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric", year:"numeric" }); }
 const pctText = (n) => (Math.round(n * 100) / 100) + "%";
 const grams = (n) => n < 10 ? (Math.round(n * 10) / 10).toFixed(1) : Math.round(n).toLocaleString("en-US");
-function thickText(t){
-  const hit = THICK.find(([, v]) => Math.abs(v - t) < 0.03); if (hit) return hit[0];
-  if (t < THICK[0][1]) return "Extra thin";
-  if (t > THICK[2][1]) return "Extra thick";
-  return t < THICK[1][1] ? "Thin to regular" : "Regular to thick";
-}
+function thickText(t){ return nearThick(t)[0]; }
 
 function stateFromType(t){
   const d = t.defaults || {};
@@ -672,13 +708,15 @@ function sliderRow(attr, id, label, [min, max, step, d], typed){
       ? `<span class="val"><input type="number" class="valin" id="n_${id}" data-num="${id}" min="1" max="20000" step="1" inputmode="numeric" aria-label="${esc(label)} in grams"> g</span>`
       : `<span class="val" id="v_${id}"></span>`}</div>
     <div class="sl"><button type="button" data-${attr}="${id}" data-d="${-d}" aria-label="Less ${esc(label)}">−</button><input type="range" id="r_${id}" data-${attr}-range="${id}" min="${min}" max="${max}" step="${step}" aria-label="${esc(label)}"><button type="button" data-${attr}="${id}" data-d="${d}" aria-label="More ${esc(label)}">+</button></div>
-    ${id === "thickness" ? `<div class="chips">${THICK.map(([n, v]) => `<button type="button" data-thick="${v}">${n}</button>`).join("")}</div>` : `<div class="hint" id="h_${id}"></div>`}
+    <div class="hint" id="h_${id}"></div>
   </div>`;
 }
 function buildControls(){
   const z = s.sizing;
+  if (z === "pizza") s.thickness = nearThick(s.thickness)[1];   // thickness lives on the five stops
   $("#sizeCtl").innerHTML =
-    z === "pizza" ? sliderRow("step", "count", "Pizzas", PLAN.count) + sliderRow("step", "size", "Size", PLAN.size) + sliderRow("step", "thickness", "Thickness", PLAN.thickness)
+    z === "pizza" ? sliderRow("step", "count", "Pizzas", PLAN.count) + sliderRow("step", "size", "Size", PLAN.size)
+      + `<div class="ctl"><div class="top"><span class="lab">Thickness</span></div><div class="seg five">${THICK.map(([n, v]) => `<button type="button" data-thick="${v}">${n}</button>`).join("")}</div></div>`
     : z === "pieces" ? sliderRow("step", "count", "How many", [1, 24, 1, 1]) + sliderRow("step", "piece_g", "Weight of each", PLAN.piece_g, true)
     : sliderRow("step", "flour_g", "Flour", PLAN.flour_g, true);
   $("#fermentSeg").innerHTML = Object.entries(FERMENT).map(([k, f]) => `<button type="button" data-ferment="${k}">${f.label}<small>${f.sub}</small></button>`).join("");
@@ -691,9 +729,17 @@ function buildControls(){
     if (r) ranges[g.key] = [r[0], Math.max(r[1], Math.ceil(g.pct * 1.5)), r[2], r[3]];
     else { const max = g.pct <= 5 ? 10 : g.pct <= 20 ? 30 : g.pct <= 40 ? 60 : Math.max(110, Math.ceil(g.pct * 1.5)); const st = max > 30 ? 0.5 : 0.1; ranges[g.key] = [0, max, st, st]; }
   }
-  $("#ratios").innerHTML = s.ings.length
-    ? s.ings.map(g => sliderRow("pct", g.key, g.name, ranges[g.key])).join("")
-    : `<p class="note">This recipe has no ingredients yet. Tap "Edit" to add them.</p>`;
+  // one block per ingredient: tick box, name, grams you can type over, percent, and its slider right underneath
+  const ingRow = (key, name, r) => `<div class="ingc" data-row="${esc(key)}">
+      <div class="itop"><button type="button" class="box" data-ing="${esc(key)}" role="checkbox" aria-checked="false" aria-label="${esc(name)} is in the bowl">✓</button>
+        <span class="nm">${esc(name)}<small id="sub_${esc(key)}"></small></span>
+        <span class="g"><input type="number" class="gin" id="g_${esc(key)}" data-actual="${esc(key)}" min="0" max="50000" step="1" inputmode="decimal" aria-label="${esc(name)}, grams"><small>g</small></span>
+        <span class="p" id="v_${esc(key)}"></span></div>
+      ${r ? `<div class="sl"><button type="button" data-pct="${esc(key)}" data-d="${-r[3]}" aria-label="Less ${esc(name)}">−</button><input type="range" id="r_${esc(key)}" data-pct-range="${esc(key)}" min="${r[0]}" max="${r[1]}" step="${r[2]}" aria-label="${esc(name)} percent"><button type="button" data-pct="${esc(key)}" data-d="${r[3]}" aria-label="More ${esc(name)}">+</button></div><div class="hint" id="h_${esc(key)}"></div>` : ""}
+    </div>`;
+  $("#ratios").innerHTML = ingRow("flour", "Flour", null) + (s.ings.length
+    ? s.ings.map(g => ingRow(g.key, g.name, ranges[g.key])).join("")
+    : `<p class="note">This recipe has no other ingredients yet. Tap "Edit" to add them.</p>`);
 }
 const inCat = (k) => types.filter(x => (x.category || guessCat(x.name, x.sizing)) === k);
 function renderTypes(){
@@ -802,12 +848,12 @@ function render(){
     const n = $("#n_" + id); if (n && document.activeElement !== n) n.value = s[id];
     const v = $("#v_" + id); if (v) v.textContent = id === "size" ? s.size + "″" : id === "thickness" ? thickText(s.thickness) : s[id];
   }
-  document.querySelectorAll("[data-thick]").forEach(b => b.classList.toggle("on", Math.abs(+b.dataset.thick - s.thickness) < 0.03));
+  document.querySelectorAll("[data-thick]").forEach(b => b.classList.toggle("on", Math.abs(+b.dataset.thick - s.thickness) < 0.005));
   document.querySelectorAll("[data-ferment]").forEach(b => { b.classList.toggle("on", b.dataset.ferment === s.ferment); b.classList.toggle("base", b.dataset.ferment === s.base); });
   $("#fermentNote").innerHTML = s.ferment === s.base ? `This recipe is written for <b>${esc(FERMENT[s.base].label)}</b>. Pick another to get suggestions for it.`
     : `The recipe is written for <b>${esc(FERMENT[s.base].label)}</b>. Suggestions for ${esc(FERMENT[s.ferment].label)} are under the steps.`;
   document.querySelectorAll("[data-yeast]").forEach(b => b.classList.toggle("on", b.dataset.yeast === s.yeast_type));
-  for (const g of s.ings){ const r = $("#r_" + CSS.escape(g.key)); if (r){ r.value = g.pct; $("#v_" + CSS.escape(g.key)).textContent = pctText(g.pct); } }
+  for (const g of s.ings){ const r = document.getElementById("r_" + g.key); if (r) r.value = g.pct; }
 
   const hy = $("#h_yeast");
   if (hy){
@@ -822,19 +868,25 @@ function render(){
   $("#oBallLab").textContent = s.sizing === "pizza" ? "g per ball" : "g each";
   const basic = usesBasic(s);
   const am = amounts(s, c), was = (g) => "typed in, the plan was " + grams(g) + " g";
-  const rows = [{ key: "flour", name: "Flour", sub: s.flour_fix ? was(c.plan) : $("#flourName").value.trim(), g: c.flour, pct: 100, typed: !!s.flour_fix }]
-    .concat(am.map(r => ({ ...r, sub: r.typed ? was(r.plan) : r.key === "yeast" ? YEAST[s.yeast_type].label.toLowerCase() : r.key === "water" && basic ? waterNote(s) : "" })));
+  const setRow = (key, sub, g, pct, typed) => {
+    const row = document.querySelector(`.ingc[data-row="${CSS.escape(key)}"]`); if (!row) return;
+    row.classList.toggle("done", checked.has(key)); row.classList.toggle("typed", typed);
+    row.querySelector(".box").setAttribute("aria-checked", checked.has(key));
+    document.getElementById("sub_" + key).textContent = sub;
+    const gi = document.getElementById("g_" + key);
+    if (document.activeElement !== gi){ gi.value = g < 10 ? (Math.round(g * 10) / 10).toFixed(1) : Math.round(g); gi.step = g < 10 ? 0.1 : 1; }
+    document.getElementById("v_" + key).textContent = pctText(pct);
+  };
+  setRow("flour", s.flour_fix ? was(c.plan) : $("#flourName").value.trim(), c.flour, 100, !!s.flour_fix);
+  for (const g of s.ings){
+    const a = s.actual?.[g.key], plan = c.flour * g.pct / 100;
+    setRow(g.key, a != null ? was(plan) : g.key === "yeast" ? YEAST[s.yeast_type].label.toLowerCase() : g.key === "water" && basic ? waterNote(s) : "", a ?? plan, a != null ? r2(a / c.flour * 100) : g.pct, a != null);
+  }
   const totalNow = c.flour + am.reduce((x, r) => x + r.g, 0);
   $("#oBall").textContent = grams(s.sizing === "flour" ? totalNow : totalNow / s.count);
   $("#oTotal").textContent = grams(totalNow);
-  $("#unType").hidden = !rows.some(r => r.typed);
-  $("#ing").innerHTML = rows.map(r => `
-    <li data-ing="${esc(r.key)}" class="${checked.has(r.key) ? "done" : ""}${r.typed ? " typed" : ""}" role="checkbox" aria-checked="${checked.has(r.key)}" tabindex="0">
-      <span class="box">✓</span>
-      <span class="nm">${esc(r.name)}${r.sub ? `<small>${esc(r.sub)}</small>` : ""}</span>
-      <span class="g"><input type="number" class="gin" data-actual="${esc(r.key)}" value="${r.g < 10 ? (Math.round(r.g * 10) / 10).toFixed(1) : Math.round(r.g)}" min="0" max="50000" step="${r.g < 10 ? 0.1 : 1}" inputmode="decimal" aria-label="${esc(r.name)}, grams that went in"><small>g</small></span>
-      <span class="p">${pctText(r.pct)}</span>
-    </li>`).join("");
+  $("#unType").hidden = !(s.flour_fix || Object.keys(s.actual || {}).length);
+  renderDiff();
 
   const list = stepList(s, c);
   $("#steps").hidden = editingSteps || !list.length;
@@ -883,6 +935,7 @@ function render(){
 
   $("#lock").textContent = session ? "Lock it in" : "Sign in to lock it in";
   if (!s.sharedTok) try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {}
+  if (document.querySelector("#last .sugg .chg")) renderLast();   // keep the Apply buttons in step with the sliders
 }
 
 function setPct(k, v){ const g = ing(s, k), [min, max] = ranges[k]; g.pct = clamp(r2(v), min, max); if (s.actual) delete s.actual[k]; }
@@ -935,8 +988,7 @@ function wire(){
     else if (t.id === "stepsEdit"){ s.steps = t.value; try { localStorage.setItem("dough.calc2", JSON.stringify(s)); } catch (_) {} }
   });
   document.addEventListener("click", e => {
-    if (e.target.closest(".gin")) return;   // typing a real amount is not a check-off
-    const b = e.target.closest("button, li[data-ing]"); if (!b) return;
+    const b = e.target.closest("button"); if (!b) return;
     const d = b.dataset;
     if (d.step){ const r = $("#r_" + d.step); s[d.step] = clamp(r2(s[d.step] + +d.d), +r.min, Math.max(+r.max, s[d.step])); replan(); render(); }
     else if (d.thick){ s.thickness = +d.thick; replan(); render(); }
@@ -964,8 +1016,8 @@ function wire(){
     else if (d.hist !== undefined){ histFilter = d.hist; renderBakes(); }
   });
   $("#unType").addEventListener("click", () => { replan(); render(); });
-  $("#ing").addEventListener("focusin", e => { if (e.target.dataset.actual) e.target.select(); });
-  $("#ing").addEventListener("change", e => {
+  $("#ratios").addEventListener("focusin", e => { if (e.target.dataset.actual) e.target.select(); });
+  $("#ratios").addEventListener("change", e => {
     const k = e.target.dataset.actual; if (!k) return;
     const v = e.target.value.trim() === "" ? null : Math.max(0, +e.target.value);
     if (k === "flour"){
@@ -976,7 +1028,7 @@ function wire(){
     else s.actual[k] = v;
     render();
   });
-  $("#ing").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.actual){ e.target.blur(); return; } if ((e.key === " " || e.key === "Enter") && e.target.dataset.ing){ e.preventDefault(); e.target.click(); } });
+  $("#ratios").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.actual) e.target.blur(); });
   $("#resetPct").addEventListener("click", () => { const t = types.find(x => x.id === s.type_id); if (t){ s.ings = clone(t.ingredients); buildControls(); render(); } });
   $("#editSteps").addEventListener("click", () => {
     if (!editingSteps){ const cur = stepList(s, compute(s)).join("\n"); s.steps = cur; $("#stepsEdit").value = cur; editingSteps = true; render(); $("#stepsEdit").focus(); }
@@ -1133,7 +1185,7 @@ function aiContext(){
     steps: stepList(s, c),
     recipe_notes: s.notes || "",
     recent_bakes_of_this_type: bakes.filter(b => sameType(b, s)).slice(0, 4).map(b => ({ made_on: b.made_on, size: bakeSize(b), rating_of_5: b.rating, flour: b.flour_name,
-      ingredients: bakeIngs(b).map(g => ({ name: g.name, pct: g.pct })), notes: b.plan_notes, updates_along_the_way: bakeLog(b).map(e => fmtStamp(e.at) + ": " + e.text), went_well: b.went_well, went_poorly: b.went_poorly, next_time: b.next_time })),
+      ingredients: bakeIngs(b).map(g => ({ name: g.name, pct: g.pct })), notes: b.plan_notes, changed_from_the_bake_before: Array.isArray(b.changes) ? b.changes : [], kept_in_recipe: b.kept ?? null, updates_along_the_way: bakeLog(b).map(e => fmtStamp(e.at) + ": " + e.text), went_well: b.went_well, went_poorly: b.went_poorly, next_time: b.next_time })),
     category: catLabel(cat),
     my_recipes: types.map(t => catLabel(t.category) + ": " + t.name),
   };
@@ -1303,6 +1355,101 @@ $("#flourPick").addEventListener("change", e => {
   if (addingFlour) inp.focus();
 });
 
+// ---- the Last time card: the whole report, right where the next batch starts ----------
+let lastOpen = true, suggBusy = "";
+function renderLast(){
+  const el = $("#last"), b = lastBake();
+  if (!b){ el.hidden = true; el.innerHTML = ""; return; }
+  const log = bakeLog(b), ph = bakePhotos(b), ch = Array.isArray(b.changes) ? b.changes.filter(Boolean) : [];
+  const canAI = aiOK && session && !following() && !!b.reported_at, sg = b.suggest;
+  el.innerHTML = `<summary><span><h3>Last time</h3><span class="when">${fmtDate(b.made_on)} · ${esc(bakeSize(b))} · ${esc(FERMENT[b.ferment].label)}</span></span>
+      ${b.rating ? `<span class="stars" aria-label="${b.rating} of 5 stars">${stars(b.rating)}</span>` : `<span class="pend">Awaiting report</span>`}</summary>
+    <div class="lbody">
+      ${ch.length ? `<p><b>What I changed that time</b>${esc(ch.join(". "))}.${b.kept === true ? " Kept in the recipe." : b.kept === false ? " Not kept in the recipe." : ""}</p>` : ""}
+      ${b.plan_notes ? `<p><b>Notes</b>${esc(b.plan_notes)}</p>` : ""}
+      ${b.went_well ? `<p><b>Went well</b>${esc(b.went_well)}</p>` : ""}
+      ${b.went_poorly ? `<p><b>Went poorly</b>${esc(b.went_poorly)}</p>` : ""}
+      ${b.next_time ? `<p><b>Next time, try</b>${esc(b.next_time)}</p>` : ""}
+      ${!b.reported_at ? `<p>No report on this one yet. Rate it and the next batch can build on it.</p>` : ""}
+      ${log.length ? `<p><b>Along the way</b></p><ul class="lg">${log.map(e => `<li>${esc(fmtStamp(e.at))}: ${esc(e.text)}</li>`).join("")}</ul>` : ""}
+      ${ph.length ? `<div class="photos">${ph.map((x, i) => `<button type="button" class="ph" data-photo="${b.id}" data-i="${i}" aria-label="Open photo ${i + 1}"><img src="${esc(photoURL(x))}" alt="Photo ${i + 1} of that bake" loading="lazy"></button>`).join("")}</div>` : ""}
+      <div class="acts">
+        <button type="button" class="btn${b.reported_at ? "" : " primary"}" data-report="${b.id}">${b.reported_at ? "Edit report" : "How did it go?"}</button>
+        <button type="button" class="btn" data-again="${b.id}">Use that bake's numbers</button>
+        ${canAI && !sg && suggBusy !== b.id ? `<button type="button" class="btn primary" data-suggest="${b.id}">Suggest changes for this batch</button>` : ""}
+      </div>
+      ${suggBusy === b.id ? `<div class="sugg"><p style="margin:0;font-style:italic;color:var(--ink-2)">Reading your report. About 15 seconds.</p></div>` : sg ? suggHTML(b, sg, canAI) : ""}
+      <div class="err" id="suggErr" hidden></div>
+    </div>`;
+  el.open = lastOpen; el.hidden = false;
+}
+function suggHTML(b, sg, canAI){
+  const chg = (sg.changes || []).map((c, i) => {
+    const g = s.ings.find(x => x.name.toLowerCase() === String(c.ingredient || "").toLowerCase());
+    if (!g || !(c.to_pct >= 0)) return "";
+    const done = Math.abs(g.pct - c.to_pct) < 0.004;
+    return `<div class="chg"><div><b>${esc(g.name)}: ${done ? "now " + pctText(c.to_pct) : pctText(g.pct) + " to " + pctText(c.to_pct)}</b><span>${esc(c.why || "")}</span></div>
+      <button type="button" class="btn${done ? "" : " primary"}" data-apply="${b.id}" data-i="${i}"${done ? " disabled" : ""}>${done ? "Applied" : "Apply"}</button></div>`;
+  }).join("");
+  const tips = (sg.tips || []).filter(x => x && x.title);
+  return `<div class="sugg"><h4>Suggested for this batch</h4><p style="margin:0 0 4px">${esc(sg.summary || "")}</p>
+    ${chg || `<p style="margin:6px 0 0;color:var(--ink-2)">No ratio changes suggested.</p>`}
+    ${tips.length ? `<ul>${tips.map(x => `<li><b>${esc(x.title)}.</b> ${esc(x.detail || "")}</li>`).join("")}</ul>` : ""}
+    ${canAI ? `<p class="note" style="margin:8px 0 0">Starting points, not guarantees. <button type="button" class="btn link" data-suggest="${b.id}">Ask again</button></p>` : ""}</div>`;
+}
+$("#last").addEventListener("toggle", () => { lastOpen = $("#last").open; });
+$("#last").addEventListener("click", async e => {
+  const sg = e.target.closest("[data-suggest]"), ap = e.target.closest("[data-apply]");
+  if (ap){
+    const b = bakes.find(x => x.id === ap.dataset.apply), c = b?.suggest?.changes?.[+ap.dataset.i]; if (!c) return;
+    const g = s.ings.find(x => x.name.toLowerCase() === String(c.ingredient).toLowerCase()); if (!g) return;
+    g.pct = r2(Math.max(0, Math.min(300, c.to_pct))); if (s.actual) delete s.actual[g.key];
+    buildControls(); render(); renderLast(); return;
+  }
+  if (!sg || suggBusy) return;
+  const b = bakes.find(x => x.id === sg.dataset.suggest); if (!b) return;
+  suggBusy = b.id; renderLast();
+  const { data, error } = await sb.functions.invoke("dough-tweak", { body: { context: aiContext() } });
+  suggBusy = "";
+  if (error || !data?.suggest){
+    let msg = data?.error || "";
+    if (!msg && error?.context?.json){ try { msg = (await error.context.json()).error || ""; } catch (_) {} }
+    renderLast(); $("#suggErr").textContent = msg || "The suggestions didn't come through. Try again in a moment."; $("#suggErr").hidden = false; return;
+  }
+  b.suggest = data.suggest; sb.from("dough_bakes").update({ suggest: data.suggest }).eq("id", b.id).then(() => {});   // paid for once, kept with the bake
+  renderLast();
+});
+
+// ---- what is different from last time ---------------------------------------------
+// Compared plan to plan (what was intended), so an overpour last time does not read as a change now.
+const lastBake = () => s.sharedTok ? null : (bakes.find(b => sameType(b, s)) || null);
+const planned = (g) => g.plan_pct ?? g.pct;
+function ratioDiff(prev, now){
+  const out = [], pm = new Map(prev.map(g => [String(g.name).toLowerCase(), g]));
+  for (const g of now){
+    const k = String(g.name).toLowerCase(), p = pm.get(k); pm.delete(k);
+    if (!p){ if (g.pct > 0) out.push(`${g.name} added at ${pctText(g.pct)}`); }
+    else if (Math.abs(planned(p) - g.pct) > 0.004) out.push(`${g.name} ${pctText(planned(p))} to ${pctText(g.pct)}`);
+  }
+  for (const p of pm.values()) if (planned(p) > 0) out.push(`${p.name} removed`);
+  return out;
+}
+function diffFrom(b){
+  const out = ratioDiff(bakeIngs(b), s.ings);
+  if (ing(s, "yeast") && b.yeast_type !== s.yeast_type) out.push(`Yeast ${YEAST[b.yeast_type].label.toLowerCase()} to ${YEAST[s.yeast_type].label.toLowerCase()}`);
+  if (b.ferment !== s.ferment) out.push(`Timing ${FERMENT[b.ferment].label} to ${FERMENT[s.ferment].label}`);
+  if (s.sizing === "pizza" && b.sizing === "pizza" && thickText(+b.thickness) !== thickText(s.thickness)) out.push(`Thickness ${thickText(+b.thickness).toLowerCase()} to ${thickText(s.thickness).toLowerCase()}`);
+  const f = $("#flourName").value.trim(); if (f && b.flour_name && f !== b.flour_name) out.push(`Flour ${b.flour_name} to ${f}`);
+  return out;
+}
+function renderDiff(){
+  const box = $("#diffBox"), b = lastBake(); if (!b){ box.hidden = true; return; }
+  const d = diffFrom(b);
+  box.innerHTML = d.length ? `<b>Different from last time (${fmtDate(b.made_on)})</b><ul>${d.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`
+    : `<b>Same as last time (${fmtDate(b.made_on)})</b>Nothing changed yet. Changing one thing per bake is the clearest way to see what it does.`;
+  box.hidden = false;
+}
+
 // ---- lock in -----------------------------------------------------------------
 async function lockIn(){
   $("#lockErr").hidden = $("#lockOk").hidden = true;
@@ -1318,17 +1465,16 @@ async function lockIn(){
     ball_g: Math.round(total / (s.sizing === "flour" ? 1 : s.count)), flour_g: Math.round(c.flour),
     ingredients: s.ings.map(g => { const a = am.find(r => r.key === g.key); return a && a.typed ? { ...g, pct: a.pct, plan_pct: g.pct } : g; }), yeast_type: s.yeast_type, ferment: s.ferment,
     steps: stepList(s, c).join("\n"),
+    changes: lastBake() ? diffFrom(lastBake()) : [],
     flour_name: $("#flourName").value.trim(), plan_notes: $("#planNotes").value.trim(),
   });
   if (error){ b.disabled = false; $("#lockErr").textContent = "That didn't save: " + error.message; $("#lockErr").hidden = false; return; }
-  // what you just made becomes this type's starting point next time
+  // The batch size and steps carry forward. The ratios do NOT: a change has to earn its place,
+  // so the recipe only takes this bake's ratios when the person says "keep" in the report.
   if (s.type_id && following()) await sb.from("dough_types").update({ defaults: planOf(s) }).eq("id", s.type_id);
-  else if (s.type_id){
-    const ty = types.find(x => x.id === s.type_id), keepYeast = s.ferment !== s.base && ty ? (ty.ingredients || []).find(g => g.key === "yeast") : null;
-    await sb.from("dough_types").update({ ingredients: s.ings.map(g => g.key === "yeast" && keepYeast ? { ...g, pct: keepYeast.pct } : g), steps: s.steps, defaults: planOf(s) }).eq("id", s.type_id);
-  }
+  else if (s.type_id) await sb.from("dough_types").update({ steps: s.steps, defaults: planOf(s) }).eq("id", s.type_id);
   b.disabled = false;
-  $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report."; $("#lockOk").hidden = false;
+  $("#lockOk").textContent = "Locked in. It's in My bakes, waiting for your report. If you changed any ratios, the report will ask whether to keep them in the recipe."; $("#lockOk").hidden = false;
   $("#planNotes").value = ""; checked.clear(); addingFlour = false; replan();
   await load();
 }
@@ -1372,13 +1518,7 @@ const sameType = (b, st) => b.type_id ? b.type_id === st.type_id : b.type_name =
 function renderBakes(){
   $("#tabHist").textContent = bakes.length ? `My bakes (${bakes.length})` : "My bakes";
   renderFlours();
-  // "last time" banner for the type on screen: its newest bake, plus its newest "next time" note
-  const mine = bakes.filter(b => sameType(b, s)), lastEl = $("#last"), newest = mine[0], noted = mine.find(b => b.next_time);
-  if (newest){
-    lastEl.innerHTML = `<b>Last time:</b> ${esc(bakeSize(newest))}, ${fmtDate(newest.made_on)}, ${newest.rating ? stars(newest.rating) : "no report yet"}. <button type="button" class="btn link" data-again="${newest.id}">Make it again</button>`
-      + (noted ? `<span class="nt"><b>Next time, try:</b> ${esc(noted.next_time)}</span>` : "");
-    lastEl.hidden = false;
-  } else lastEl.hidden = true;
+  renderLast();
 
   if (!session){ $("#histFilter").hidden = true; $("#bakes").innerHTML = `<div class="card empty"><p>Sign in to see your bakes and how each one turned out.</p><button class="btn primary" data-open-auth>Sign in</button></div>`; return; }
   if (!bakes.length){ $("#histFilter").hidden = true; $("#bakes").innerHTML = `<div class="card empty"><p>Nothing here yet. Set up a dough in the calculator and tap "Lock it in".</p></div>`; return; }
@@ -1398,6 +1538,7 @@ function renderBakes(){
         ${b.rating ? `<span class="stars" aria-label="${b.rating} of 5 stars">${stars(b.rating)}</span>` : `<span class="pend">Awaiting report</span>`}
       </div>
       <p class="facts">${esc(facts)}</p>
+      ${Array.isArray(b.changes) && b.changes.length ? `<p class="facts"><b>Changed from the bake before:</b> ${esc(b.changes.join(". "))}.${b.kept === true ? " Kept in the recipe." : b.kept === false ? " Not kept in the recipe." : ""}</p>` : ""}
       <table>${rows.map(([n, g, pc]) => `<tr><td>${esc(n)}</td><td>${grams(g)} g</td><td>${pctText(pc)}</td></tr>`).join("")}</table>
       ${st.length ? `<details><summary>Steps (${st.length})</summary><ol class="steps">${st.map(x => `<li>${esc(x)}</li>`).join("")}</ol></details>` : ""}
       <div class="photos">
@@ -1439,7 +1580,8 @@ document.addEventListener("click", async e => {
     $("#flourName").value = b.flour_name || $("#flourName").value; addingFlour = false;
     switchType(ty, st); showTab("calc");
   } else if (t.dataset.report){
-    reporting = b; rating = b.rating || 0;
+    reporting = b; rating = b.rating || 0; keepTouched = b.kept != null;
+    drawKeep(b.kept != null ? b.kept : rating ? rating >= 4 : null);
     $("#repSub").textContent = bakeTitle(b) + ", made " + fmtDate(b.made_on);
     $("#wentWell").value = b.went_well; $("#wentPoorly").value = b.went_poorly; $("#nextTime").value = b.next_time;
     $("#repErr").hidden = true; drawRate(); $("#repDlg").showModal();
@@ -1543,13 +1685,41 @@ $("#recipeLinks").addEventListener("submit", e => {
 $("#recipeLinks").addEventListener("click", e => { const x = e.target.closest("[data-linkdel]"); if (x && confirm("Remove this link?")) saveLinks((s.links || []).filter((_, i) => i !== +x.dataset.linkdel)); });
 
 function drawRate(){ $("#rate").innerHTML = [1,2,3,4,5].map(n => `<button type="button" data-rate="${n}" class="${n <= rating ? "on" : ""}" aria-label="${n} star${n === 1 ? "" : "s"}" aria-pressed="${n === rating}">★</button>`).join(""); }
-$("#rate").addEventListener("click", e => { const b = e.target.closest("[data-rate]"); if (b){ rating = +b.dataset.rate; drawRate(); } });
+$("#rate").addEventListener("click", e => { const b = e.target.closest("[data-rate]"); if (b){ rating = +b.dataset.rate; drawRate(); if (!keepTouched) drawKeep(rating >= 4); } });
+// Did this bake's ratios differ from the recipe? Then the report decides whether the recipe takes them.
+let keepTouched = false;
+function keepPlan(b){
+  const ty = types.find(x => x.id && x.id === b.type_id); if (!ty || ty.follows_token) return null;
+  const offTiming = b.ferment !== ty.timing, recYeast = (ty.ingredients || []).find(g => g.key === "yeast");
+  // a yeast amount borrowed for a different timing is never written into the recipe
+  const next = bakeIngs(b).map(({ plan_pct, ...g }) => ({ ...g, pct: g.key === "yeast" && offTiming && recYeast ? recYeast.pct : (plan_pct ?? g.pct) }));
+  const lines = ratioDiff(ty.ingredients || [], next);
+  return lines.length ? { ty, next, lines } : null;
+}
+function drawKeep(sel){
+  const k = reporting && keepPlan(reporting), box = $("#repKeep");
+  if (!k){ box.hidden = true; box.innerHTML = ""; return; }
+  box.innerHTML = `<p><b>This bake used different ratios than the recipe:</b> ${esc(k.lines.join(". "))}.</p>
+    <label><input type="radio" name="keep" value="yes"${sel === true ? " checked" : ""}> <span><b>Keep them.</b> The recipe becomes what I baked.</span></label>
+    <label><input type="radio" name="keep" value="no"${sel === false ? " checked" : ""}> <span><b>Don't keep them.</b> The recipe stays as it was.</span></label>`;
+  box.hidden = false;
+}
+$("#repKeep").addEventListener("change", () => { keepTouched = true; });
 $("#repCancel").addEventListener("click", () => $("#repDlg").close());
 $("#repForm").addEventListener("submit", async e => {
   e.preventDefault();
   if (!rating){ $("#repErr").textContent = "Give it a star rating first."; $("#repErr").hidden = false; return; }
+  const k = keepPlan(reporting), choice = k ? e.target.querySelector('input[name="keep"]:checked')?.value : null;
+  if (k && !choice){ $("#repErr").textContent = "Choose whether the recipe keeps this bake's ratios."; $("#repErr").hidden = false; return; }
   $("#repBtn").disabled = true;
+  if (k && choice === "yes"){
+    const r = await sb.from("dough_types").update({ ingredients: k.next }).eq("id", k.ty.id);
+    if (r.error){ $("#repBtn").disabled = false; $("#repErr").textContent = "Couldn't update the recipe: " + r.error.message; $("#repErr").hidden = false; return; }
+    k.ty.ingredients = clone(k.next);
+    if (s.type_id === k.ty.id && !s.sharedTok){ s.ings = clone(k.next); replan(); }   // the calculator follows the recipe
+  }
   const { error } = await sb.from("dough_bakes").update({
+    kept: k ? choice === "yes" : reporting.kept ?? null,
     rating, went_well: $("#wentWell").value.trim(), went_poorly: $("#wentPoorly").value.trim(), next_time: $("#nextTime").value.trim(),
     reported_at: reporting.reported_at || new Date().toISOString(),
   }).eq("id", reporting.id);
