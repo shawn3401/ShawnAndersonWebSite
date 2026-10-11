@@ -19,7 +19,7 @@ const TOTAL_PLAN = Math.round(SEGMENTS.reduce((a,s)=>a+s.miles,0)*10)/10;
 const PLAN_DAYS = SEGMENTS.reduce((a,s)=>a+s.days,0);
 const PLAN_END = SEGMENTS[SEGMENTS.length-1].end;
 // Target finish date for pace and ahead/behind. null = use the plan's last segment end date.
-const TARGET_FINISH = null;
+const TARGET_FINISH = "2026-10-17";
 
 // One entry per calendar day. miles = that day's distance. gain/loss in ft. lat/lng = that night's camp (decimal degrees, from Rick's Garmin pin); shown as a Google Maps link in the daily log and the Last camp block.
 // Multiple updates in one day: add updates:[{time:"10:30 am", miles:17, gain:370, text:"..."}] (oldest first) and they show grouped under the day's notes.
@@ -173,7 +173,7 @@ const LOCATION = {lat:33.395741, lng:-110.775491, town:"Globe", state:"AZ", labe
 const STATUS = "One segment to go. Rick reached Globe on day 35, closing out segment 8 eight days ahead of plan, after a week that included the hardest day of the trip, the longest (94.2 miles into Payson), and a new top speed of 41 mph on the drop to Roosevelt Lake, where Brenna met him with a steak dinner. All that is left is the last stretch south through the desert to the Mexican border at Sierra Vista. The plane tickets home are bought.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 6, 2026, end of day 31", caption:"Blue and green is Rick's track so far, Roosville to the forest north of Flagstaff, with day 31 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 10, 2026, end of day 35", caption:"Blue and green is Rick's track so far, Roosville to Globe in central Arizona, with day 35 in green. All that is left is the last stretch south to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -329,5 +329,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 11, 2026, 8:20 am MT";
+const LAST_UPDATED = "Oct 11, 2026, 8:35 am MT";
 // ===== END DATA =====
