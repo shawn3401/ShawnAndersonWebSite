@@ -156,18 +156,21 @@ const LOG = [
   {day:33, date:"2026-10-08", end:"Payson, AZ", miles:94.2, gain:4265, loss:5194, high:7575, low:4560, lat:34.270816, lng:-111.319607, notes:"Flagstaff to Payson. The longest day of the trip by six miles, 94.2 in all, beating the 88 into Mackay on day 12. South from Flagstaff across the high pine country at around 7,000 ft, topping out at 7,575 ft, then off the Mogollon Rim and down to Payson at about 4,600 ft. 4,265 ft of climbing and 5,194 ft of descent.", updates:[
     {time:"Evening", miles:94.2, gain:4265, text:"Camped near Payson after 94.2 miles, +4,265 / -5,194 ft. A new longest day for the trip."},
   ]},
-  {day:34, date:"2026-10-09", end:"Theodore Roosevelt Lake, AZ", miles:45.5, gain:1020, loss:3479, high:5047, low:2176, lat:33.724709, lng:-111.202591, notes:"Payson to Theodore Roosevelt Lake. Downhill nearly all day, from 5,047 ft at Payson to 2,176 ft at the lake, out of the pines and into the Sonoran Desert and the first saguaros of the trip. Rick hit a new top speed for the trip on the way down, just over 41 mph. Camped at the lake with company and a real dinner. 45.5 miles with 1,020 ft of climbing.", updates:[
+  {day:34, date:"2026-10-09", end:"Theodore Roosevelt Lake, AZ", miles:45.5, gain:1020, loss:3479, high:5047, low:2176, lat:33.724709, lng:-111.202591, notes:"Payson to Theodore Roosevelt Lake. Downhill nearly all day, from 5,047 ft at Payson to 2,176 ft at the lake, out of the pines and into the Sonoran Desert and the first saguaros of the trip. Rick hit a new top speed for the trip on the way down, just over 41 mph. It got up to 95 degrees. Brenna drove up to camp out with him at the lake and brought a Texas Roadhouse steak dinner, which he called heavenly. 45.5 miles with 1,020 ft of climbing.", updates:[
     {time:"3:29 pm", text:"At Roosevelt Lake."},
     {time:"Evening", miles:45.5, gain:1020, text:"Camped at Theodore Roosevelt Lake after 45.5 miles, +1,020 / -3,479 ft. Rick: \"Hit a new high speed for the trip at just over 41 mph. Glad the wheels stayed on!\""},
+  ]},
+  {day:35, date:"2026-10-10", end:"Globe, AZ", miles:38.5, gain:3269, loss:1926, high:3882, low:2130, lat:33.395741, lng:-110.775491, course:-78.2, notes:"Roosevelt Lake to Globe. A few light sprinkles overnight, then a short day with a real climb in it: along the lake at about 2,100 ft, up to a 3,882 ft high point, and on to Globe. That closes out segment 8 before its planned start date, eight days ahead of the Oct 18 plan. One segment to go. 38.5 miles with 3,269 ft of climbing. He took a shorter, mostly paved line through Flagstaff and Payson than the planned one, so his position is set to the segment end.", updates:[
+    {time:"Evening", miles:38.5, gain:3269, text:"In Globe after 38.5 miles, +3,269 / -1,926 ft. Segment 8 is done. Only the run to the Mexican border is left."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:33.724709, lng:-111.202591, town:"Theodore Roosevelt Lake", state:"AZ", label:"Camped at the lake after 45.5 downhill miles on day 34", asOf:"Oct 9, evening MT", approx:false};
+const LOCATION = {lat:33.395741, lng:-110.775491, town:"Globe", state:"AZ", label:"In Globe after 38.5 miles on day 35, with segment 8 done and one segment to go", asOf:"Oct 10, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Rick is in saguaro country. Day 33 was the longest of the trip, 94.2 miles from Flagstaff to Payson. Day 34 was the payoff: 45.5 miles, nearly all downhill, from the pines at 5,000 ft to Theodore Roosevelt Lake at 2,176 ft, with a new top speed for the trip of just over 41 mph. Globe, the end of segment 8, is close. Day 35 is coming next.";
+const STATUS = "One segment to go. Rick reached Globe on day 35, closing out segment 8 eight days ahead of plan, after a week that included the hardest day of the trip, the longest (94.2 miles into Payson), and a new top speed of 41 mph on the drop to Roosevelt Lake, where Brenna met him with a steak dinner. All that is left is the last stretch south through the desert to the Mexican border at Sierra Vista. The plane tickets home are bought.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 6, 2026, end of day 31", caption:"Blue and green is Rick's track so far, Roosville to the forest north of Flagstaff, with day 31 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
@@ -177,8 +180,8 @@ const COVER = "2026-09-06-roosville-start-cover";
 const PHOTOS = [
   {file:"2026-10-10-lake-dawn", date:"2026-10-10", time:"06:58", caption:"Day 35, dawn. First light over Roosevelt Lake."},
   {file:"2026-10-10-lake-camp-morning", date:"2026-10-10", time:"06:58", caption:"Day 35, morning. Two tents and the bike at the Roosevelt Lake camp."},
-  {file:"2026-10-09-camp-dinner", date:"2026-10-09", time:"18:45", caption:"Day 34. Dinner under the ramada at camp, a real spread."},
-  {file:"2026-10-09-saguaro-selfie", date:"2026-10-09", time:"18:04", caption:"Day 34. Rick with company at Roosevelt Lake, a saguaro standing over them. First saguaros of the trip."},
+  {file:"2026-10-09-camp-dinner", date:"2026-10-09", time:"18:45", caption:"Day 34. Texas Roadhouse steak dinner under the ramada at camp, delivered by Brenna. Heavenly, he said."},
+  {file:"2026-10-09-saguaro-selfie", date:"2026-10-09", time:"18:04", caption:"Day 34. Rick and Brenna at Roosevelt Lake, a saguaro standing over them. First saguaros of the trip."},
   {file:"2026-10-09-desert-lake", date:"2026-10-09", time:"15:29", caption:"Day 34. Theodore Roosevelt Lake, with the desert mountains behind."},
   {file:"2026-10-09-juniper-camp", date:"2026-10-09", time:"09:22", caption:"Day 34, morning. The bike packed and ready under the junipers."},
   {file:"2026-10-08-visitor-in-the-trees", date:"2026-10-08", time:"18:18", caption:"Day 33. A four-legged visitor slipping through the junipers near camp."},
@@ -326,5 +329,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 11, 2026, 8:05 am MT";
+const LAST_UPDATED = "Oct 11, 2026, 8:20 am MT";
 // ===== END DATA =====
