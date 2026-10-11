@@ -165,6 +165,24 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-10-10-lake-dawn", date:"2026-10-10", time:"06:58", caption:"Day 35, dawn. First light over the lake."},
+  {file:"2026-10-10-lake-camp-morning", date:"2026-10-10", time:"06:58", caption:"Day 35, morning. Two tents and the bike at the lakeside camp."},
+  {file:"2026-10-09-camp-dinner", date:"2026-10-09", time:"18:45", caption:"Day 34. Dinner under the ramada at camp, a real spread."},
+  {file:"2026-10-09-saguaro-selfie", date:"2026-10-09", time:"18:04", caption:"Day 34. Rick with company at the lake, a saguaro standing over them. First saguaros of the trip."},
+  {file:"2026-10-09-desert-lake", date:"2026-10-09", time:"15:29", caption:"Day 34. A big desert lake with mountains behind."},
+  {file:"2026-10-09-juniper-camp", date:"2026-10-09", time:"09:22", caption:"Day 34, morning. The bike packed and ready under the junipers."},
+  {file:"2026-10-08-visitor-in-the-trees", date:"2026-10-08", time:"18:18", caption:"Day 33. A four-legged visitor slipping through the junipers near camp."},
+  {file:"2026-10-07-flagstaff-sign", date:"2026-10-07", time:"09:57", caption:"Day 32. Rick at the Flagstaff, Arizona sign."},
+  {file:"2026-10-07-morning-pines", date:"2026-10-07", time:"08:29", caption:"Day 32, morning. Long shadows through the ponderosas."},
+  {file:"2026-10-06-pine-singletrack", date:"2026-10-06", time:"15:35", caption:"Day 31. Rocky singletrack through the pines."},
+  {file:"2026-10-06-water-tank", date:"2026-10-06", time:"12:13", caption:"Day 31. The bike at a stock tank out on the open range."},
+  {file:"2026-10-06-forest-camp-morning", date:"2026-10-06", time:"08:22", caption:"Day 31, morning. Camp in the ponderosas under a mackerel sky."},
+  {file:"2026-10-05-russell-tank", date:"2026-10-05", time:"18:07", caption:"Day 30. Russell Tank in the pines, camp for the night."},
+  {file:"2026-10-05-grand-canyon-view", date:"2026-10-05", time:"16:12", caption:"Day 30. Late light in the canyon from the South Rim."},
+  {file:"2026-10-05-grand-canyon-bike", date:"2026-10-05", time:"15:41", caption:"Day 30. The bike at the rim of the Grand Canyon."},
+  {file:"2026-10-05-grand-canyon-selfie", date:"2026-10-05", time:"15:36", caption:"Day 30. Rick at the Grand Canyon. Canada to the South Rim by bike."},
+  {file:"2026-10-05-little-colorado-gorge", date:"2026-10-05", time:"12:18", caption:"Day 30. The Little Colorado River gorge cutting through the desert on the climb out of Cameron."},
+  {file:"2026-10-05-cameron-camp", date:"2026-10-05", time:"08:23", caption:"Day 30, morning. Camp at Cameron, the old suspension bridge behind."},
   {file:"2026-10-04-salt-stained-hoodie", date:"2026-10-04", time:"17:48", caption:"Day 29. The day's work, written in salt on his sun hoodie."},
   {file:"2026-10-04-old-suspension-bridge", date:"2026-10-04", time:"16:39", caption:"Day 29. The old suspension bridge over the Little Colorado River at Cameron."},
   {file:"2026-10-04-navajo-bridge", date:"2026-10-04", time:"08:51", caption:"Day 29. Navajo Bridge, the steel arch over the Colorado."},
@@ -298,5 +316,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 7, 2026, 1:55 pm MT";
+const LAST_UPDATED = "Oct 11, 2026, 7:20 am MT";
 // ===== END DATA =====
