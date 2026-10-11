@@ -153,8 +153,8 @@ const LOG = [
   {day:32, date:"2026-10-07", end:"Flagstaff, AZ", miles:19.5, gain:582, loss:1095, high:7597, low:6704, lat:35.192346, lng:-111.626032, notes:"Hostetter Tank to Flagstaff. A short recovery day after the hardest one: out of the forest and down Highway 89 on pavement, as planned, into Flagstaff by mid-morning. 19.5 miles, mostly downhill, with 582 ft of climbing.", updates:[
     {time:"9:57 am", miles:19.5, gain:582, text:"Flagstaff. At the city sign after an easy 19.5 miles down Highway 89, +582 / -1,095 ft."},
   ]},
-  {day:33, date:"2026-10-08", end:"Payson, AZ", miles:94.2, gain:3387, loss:5194, high:7575, low:4560, lat:34.270816, lng:-111.319607, notes:"Flagstaff to Payson. The longest day of the trip by six miles, 94.2 in all, beating the 88 into Mackay on day 12. South from Flagstaff across the high pine country at around 7,000 ft, topping out at 7,575 ft, then off the Mogollon Rim and down to Payson at about 4,600 ft. 3,387 ft of climbing and 5,194 ft of descent.", updates:[
-    {time:"Evening", miles:94.2, gain:3387, text:"Camped near Payson after 94.2 miles, +3,387 / -5,194 ft. A new longest day for the trip."},
+  {day:33, date:"2026-10-08", end:"Payson, AZ", miles:94.2, gain:4265, loss:5194, high:7575, low:4560, lat:34.270816, lng:-111.319607, notes:"Flagstaff to Payson. The longest day of the trip by six miles, 94.2 in all, beating the 88 into Mackay on day 12. South from Flagstaff across the high pine country at around 7,000 ft, topping out at 7,575 ft, then off the Mogollon Rim and down to Payson at about 4,600 ft. 4,265 ft of climbing and 5,194 ft of descent.", updates:[
+    {time:"Evening", miles:94.2, gain:4265, text:"Camped near Payson after 94.2 miles, +4,265 / -5,194 ft. A new longest day for the trip."},
   ]},
 ];
 
@@ -322,5 +322,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 11, 2026, 7:50 am MT";
+const LAST_UPDATED = "Oct 11, 2026, 7:55 am MT";
 // ===== END DATA =====
