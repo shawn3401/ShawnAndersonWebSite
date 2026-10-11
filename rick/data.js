@@ -150,14 +150,17 @@ const LOG = [
   {day:31, date:"2026-10-06", end:"Near Hostetter Tank, AZ (Coconino National Forest)", miles:48.5, gain:2844, loss:2030, high:8031, low:6063, lat:35.398901, lng:-111.61016, notes:"Russell Tank to Hostetter Tank. In Rick's words, the hardest day of the trip: three flat tires, one fall, and \"the worst rockiest roads I've ever seen.\" A long descent to 6,063 ft, then a rough climb to 8,031 ft, the highest he has been in Arizona. He stopped three miles short of the campground he was aiming for, with a steep grade still ahead and nothing left in the tank. 48.5 miles with 2,844 ft of climbing.", updates:[
     {time:"9:48 pm", miles:48.5, gain:2844, text:"In the tent near Hostetter Tank after 48.5 miles, +2,844 / -2,030 ft. Rick: \"Hardest day of the trip. Three flat tires, fell over once, and the worst rockiest roads I've ever seen. Beat me up. Sometimes you just gotta know when to say when.\" He plans to take Highway 89 into Flagstaff next."},
   ]},
+  {day:32, date:"2026-10-07", end:"Flagstaff, AZ", miles:19.5, gain:582, loss:1095, high:7597, low:6704, lat:35.192346, lng:-111.626032, notes:"Hostetter Tank to Flagstaff. A short recovery day after the hardest one: out of the forest and down Highway 89 on pavement, as planned, into Flagstaff by mid-morning. 19.5 miles, mostly downhill, with 582 ft of climbing.", updates:[
+    {time:"9:57 am", miles:19.5, gain:582, text:"Flagstaff. At the city sign after an easy 19.5 miles down Highway 89, +582 / -1,095 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:35.398901, lng:-111.61016, town:"Hostetter Tank", state:"AZ", label:"Camped in the forest north of Flagstaff after 48.5 hard miles on day 31", asOf:"Oct 6, 9:48 pm MT", approx:false};
+const LOCATION = {lat:35.192346, lng:-111.626032, town:"Flagstaff", state:"AZ", label:"In Flagstaff after a short 19.5-mile day down Highway 89 on day 32", asOf:"Oct 7, MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Day 31 was the hardest day of the trip, in Rick's words: three flat tires, one fall, and the rockiest roads he has ever seen, 48.5 miles from Russell Tank to a camp near Hostetter Tank at about 8,000 ft. He stopped three miles short of the campground he was aiming for and called it a day. Next he plans to take Highway 89 into Flagstaff and give the rocky back roads a rest.";
+const STATUS = "Catching up. After the hardest day of the trip, day 32 was a short one: 19.5 miles down Highway 89 into Flagstaff, in town by mid-morning. Days 33 to 35, which took him south out of the pines and into saguaro country, are coming next.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 6, 2026, end of day 31", caption:"Blue and green is Rick's track so far, Roosville to the forest north of Flagstaff, with day 31 in green. What is left runs south through Arizona to the Mexican border at Sierra Vista."};
@@ -316,5 +319,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 11, 2026, 7:20 am MT";
+const LAST_UPDATED = "Oct 11, 2026, 7:30 am MT";
 // ===== END DATA =====
