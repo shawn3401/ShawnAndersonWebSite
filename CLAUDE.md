@@ -24,6 +24,7 @@ Everything else at the root (`index.html`, etc.) is the personal landing site.
 
 Shawn bought shawnzapps.com on Oct 3, 2026 and will move the site there from shawnandersonapps.com later. On Oct 4, 2026 he asked that everything tied to the old domain be remembered for that day. Add to this list whenever something new gets the domain baked in.
 
+- Oct 12, 2026: shawnzapps.com got its own repo, `shawn3401/shawnzapps` (public, GitHub Pages from `main`, cloned at `~/Code/ShawnZapps`), because Pages allows one domain per repo. It holds only the home page so far: navy and zap-yellow theme, Bricolage Grotesque headlines, two sections (Personal in red-orange, Business in blue), app cards with Live / iPhone / Coming soon chips. Shawn approved the look. No tools have moved; Dough and Your Turn cards link to shawnandersonapps.com, so change those links when each app moves. "Seller Assistant" is Shawn's name on that page for the listingassistant/ tool (placeholder card, no link).
 - GitHub Pages: `CNAME` file at the repo root, the Pages custom domain setting, and DNS at GoDaddy. Keep shawnandersonapps.com redirecting so old links work.
 - Supabase project ShawnZapps, Authentication, URL Configuration: Site URL, and add `https://shawnzapps.com/**` to Redirect URLs (keep the old one until the move is done).
 - Google Cloud project "ShawnZapps", Google Auth Platform: Branding (application home page, authorized domains) and the OAuth client "ShawnZapps web" (Authorized JavaScript origins). The redirect URI points at Supabase, not the site, so it does not change.
