@@ -1,12 +1,13 @@
 # ShawnAndersonWebSite
 
-Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Four live sub-sites are actively maintained:
+Shawn Anderson's personal site, shawnandersonapps.com, plain HTML on GitHub Pages (branch `main`, repo root = site root). No build step, no framework. Five live sub-sites are actively maintained:
 
 - `rick/` Rick Saunders' Western Wildlands Route tracker (Canada to Mexico by bike, Sept 6 to Nov 7, 2026). Updated most days.
 - `danceflowers/` Dance Flowers, Leah's corsage, boutonnière, and bouquet business for school dances and weddings in Idaho Falls. Landing page plus order form. See "danceflowers/ page" below.
 
 - `dough/` Dough, Shawn's pizza dough calculator with saved bakes and reports, behind logins. See "dough/ app" at the bottom.
 - `yourturn/` Your Turn, a restaurant picker for Shawn, Leah, and friends, behind logins. See "yourturn/ app" at the bottom.
+- `listingassistant/` Listing Assistant, Shawn's seller lead tool for his real estate team, behind logins and an allow-list. See "listingassistant/ app" at the bottom.
 
 Everything else at the root (`index.html`, etc.) is the personal landing site.
 
@@ -29,7 +30,7 @@ Shawn bought shawnzapps.com on Oct 3, 2026 and will move the site there from sha
 - Dough share links: `/dough/?r=<token>` links people already sent use the old domain. They keep working only while the old domain redirects with the query string intact.
 - Supabase project Dance Flowers: Auth redirect URL for `/danceflowers/admin/`, the `settings` rows `admin_url` and `from_address`, and the Resend sending domain (currently shawnandersonapps.com, with DKIM, MX, and SPF records).
 - Nothing to change for Dough photos: they are served from the Supabase project's own address.
-- Hardcoded domain in pages: footers and home links in `dough/`, `danceflowers/`, and the root page; meta tags and share images in `danceflowers/`; GoatCounter site settings for the rick/ pages.
+- Hardcoded domain in pages: footers and home links in `dough/`, `danceflowers/`, `listingassistant/`, and the root page; meta tags and share images in `danceflowers/`; GoatCounter site settings for the rick/ pages.
 - `privacy/index.html` (the privacy policy linked from Google's Branding page; written Oct 4, 2026 so the OAuth app could be published): its footer link, and the Branding page's privacy policy link.
 - This file: every "shawnandersonapps.com" mention.
 
@@ -310,3 +311,39 @@ shawnandersonapps.com/yourturn/. Shawn and Leah's way to settle where to eat, al
 
 ### Not built yet
 - Joining a round from your own phone, a rating prompt for other people at the table, real drive times, reservations links, price as a question, "who's eating" presets for regular groups.
+
+## listingassistant/ app (started Oct 12, 2026)
+
+### What it is
+shawnandersonapps.com/listingassistant/. A work tool for Shawn's real estate business (Anderson Hicks Group), tested on the ShawnZapps platform first; if it works he rebuilds it as a standalone app on the team's own platform and shares it with the other agents. He gathers intel on a seller however is easiest (recorded phone call, voice memo of the walkthrough, photos, video, paper notes), drops it in, and gets back the team's On Site Property Information form filled in, plus team notes, admin notes, his private notes, action items, and questions for next time. It began on Oct 5, 2026 as a walkthrough-to-form idea and was widened on Oct 12 to a seller leads system: a list of leads in stages, each with everything gathered on it.
+
+### Client data rules
+- This is real client and property information. NOTHING about a client goes in the repo. Test material lives in `listingassistant/private/`, which is gitignored (the Seymour walkthrough dry run from Oct 5 is there, plus a copy of the blank form for local tests). Never commit that folder.
+- Allow-list only: `listing_access` (one row per allowed user, `daily_limit` default 60). Shawn's account is the only one. To add an agent: `insert into public.listing_access (user_id) select id from auth.users where email = '...'`. Without a row the page shows "Not turned on yet".
+- Files are in the PRIVATE Storage bucket `listing-files` (unlike Dough's public-read photos), read through signed links: `<user id>/<lead id>/<uuid>.<ext>`, 200 MB per file.
+- Sensitive things about people (health, memory, family, money, neighbor disputes, motivation) belong in the private notes only. The AI prompt enforces the split; keep it that way.
+
+### Files
+- `listingassistant/index.html` the whole app, CSS and JS inline. supabase-js v2 and pdf-lib 1.17.1 from jsDelivr. Same sign-in code as Dough. `noindex`. Red and charcoal palette (the team's colors), Source Sans 3.
+- `listingassistant/form.js` `FORM`: every blank on the team's PDF ("Seller Walkthrough Notes and MLS Property Info Form", SFR 2.6, updated 4/27/2026) and where it sits: 313 checkboxes in 30 sections, sub-option boxes, "x __" count blanks, short text blanks, the room count table, header fields, and the ruled lines for improvements and additional notes. Coordinates are PDF points from the top left of a 612 x 792 page. It was generated from the PDF's own text positions with PyMuPDF (the PDF is flat, no fillable fields); regenerate it if the team changes the form.
+- `supabase/listingassistant/001_schema.sql` tables, RLS, bucket, and storage policies. Safe to re-run.
+- `supabase/listingassistant/functions/listing-ai/index.ts` and `listing-transcribe/index.ts` the two Edge Functions (deploy with the Supabase tools, `verify_jwt` on).
+
+### Data (ShawnZapps project, tables prefixed `listing_`)
+- `listing_leads` one row per seller lead, owner only: `name`, `address`, `phone`, `email`, `stage`, `next_step`, `brief` (the AI's last output as returned), `brief_at`, `form` (the property form as it stands).
+- Stages (`STAGES` in the page and a check constraint): new, call (First call done), walk_set (Walkthrough set), walked, pricing, signed, listed, hold, closed. These are Claude's first guess at Shawn's pipeline; he has not confirmed them.
+- `listing_items` what was gathered: `kind` (call, walkthrough, note, photos), `occurred_on`, `transcript` (pasted, typed, or transcribed), `files` (`[{path, name, type, size}]`), `status` (ready, transcribing, failed), `error`.
+- `listing_usage` one row per AI or transcription call. Service role only.
+
+### How it works
+- Leads list with stage filter pills; "New seller lead" takes a name, address, phone (all optional) and the first material in one dialog. A brand-new lead transcribes its recording and builds its first brief by itself, so one upload kicks everything off. Name, address, phone, and email left blank are filled from the brief.
+- Photos are shrunk in the browser to 1568px JPEG. A photo the browser cannot read (HEIC in some browsers) is stored but marked as not an image, so the AI skips it.
+- `listing-transcribe`: Deepgram (nova-3, speaker labels) reads the recording from a 15 minute signed link. Secret `DEEPGRAM_API_KEY`. Until it is set, the item shows "Transcription isn't set up yet" and pasting the transcript works.
+- `listing-ai`: Claude (`claude-opus-5-5`, effort medium) gets every item's words plus up to 24 photos (as signed links) and the catalog of the form's boxes, which the PAGE sends (built from `FORM`), so the form can change without redeploying. It calls the strict `save_brief` tool: lead facts, summary, motivation, timeline, suggested stage, next step, form fields, checks (each with a basis: stated, seen, or inferred, and a why), room counts, not captured, team notes, admin notes, private notes, actions, questions. The function saves the brief on the lead itself, so a dropped connection loses nothing. Secret `ANTHROPIC_API_KEY` is the one Dough uses.
+- Never guess is the first rule of the prompt (Shawn's team acts on this form): a box is marked only when said or seen; a reasonable reading is "inferred" and must be confirmed; anything else goes in "Not captured yet". An appliance in a photo is not "included". "None" only when someone said none.
+- The form tab: yellow dashed boxes are inferred, with a "Confirm these" list (Yes or No). Tapping a box toggles it. Anything the agent changes by hand is recorded in `form.locked` and survives "Update the brief", which otherwise rebuilds the form from the new AI output (`applyBrief`).
+- "Download the form PDF" writes the marks onto the team's actual blank PDF with pdf-lib: X for marked, ? for inferred and not yet confirmed (Shawn left that choice to Claude), a circle for Paved Y or N, small x in sub-option boxes, blue ink. The blank PDF is NOT in the repo: it is stored privately at `_shared/form-blank.pdf` in the bucket, and the first PDF download asks for it once.
+
+### Not built yet
+- Reading video footage (only its sound is transcribed), pulling text out of uploaded PDFs or documents, sharing a lead with teammates or an admin view, sending notes by email, a CMA or pricing step, tasks with due dates, and a link from the root landing page (on purpose: it is a work tool).
+
