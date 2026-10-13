@@ -163,20 +163,26 @@ const LOG = [
   {day:35, date:"2026-10-10", end:"Globe, AZ", miles:38.5, gain:3269, loss:1926, high:3882, low:2130, lat:33.395741, lng:-110.775491, course:1.8, notes:"Roosevelt Lake to Globe. A few light sprinkles overnight, then a short day with a real climb in it: along the lake at about 2,100 ft, up to a 3,882 ft high point, and on to Globe. That closes out segment 8 before its planned start date, six days ahead of its Oct 16 plan date. One segment to go. 38.5 miles with 3,269 ft of climbing. His Garmin ran 1.8 miles long through segment 8, booked as a detour so his position lands on the segment end.", updates:[
     {time:"Evening", miles:38.5, gain:3269, text:"In Globe after 38.5 miles, +3,269 / -1,926 ft. Segment 8 is done. Only the run to the Mexican border is left."},
   ]},
-  {day:36, date:"2026-10-11", end:"Gila River, AZ", miles:29.1, gain:1745, loss:3133, high:4965, low:2062, lat:33.060484, lng:-110.721994, notes:"Globe to the Gila River. The first miles of the last segment: a climb south out of Globe to a 4,965 ft high point, then a long drop of more than 3,000 ft to camp on the Gila River at 2,062 ft, his lowest point since the Kootenai River in Montana on day 3. 29.1 miles with 1,745 ft of climbing.", updates:[
+  {day:36, date:"2026-10-11", end:"Globe, AZ", miles:0, gain:0, loss:0, lat:33.395741, lng:-110.775491, notes:"Zero day in Globe. A Sunday off the bike before the last segment, the first rest day since the one at home in Idaho Falls three weeks earlier.", updates:[
+    {time:"All day", text:"Rest day in Globe."},
+  ]},
+  {day:37, date:"2026-10-12", end:"Gila River, AZ", miles:29.1, gain:1745, loss:3133, high:4965, low:2062, lat:33.060484, lng:-110.721994, notes:"Globe to the Gila River. Back on the bike after the rest day, and the first miles of the last segment: a climb south out of Globe to a 4,965 ft high point, then a long drop of more than 3,000 ft to camp on the Gila River at 2,062 ft. 29.1 miles with 1,745 ft of climbing.", updates:[
     {time:"Evening", miles:29.1, gain:1745, text:"Camped on the Gila River after 29.1 miles, +1,745 / -3,133 ft."},
+  ]},
+  {day:38, date:"2026-10-13", end:"Cottonwood Wash, AZ (near Oracle)", miles:33.7, gain:1772, loss:960, high:3355, low:1918, lat:32.655132, lng:-110.676848, notes:"Gila River to Cottonwood Wash. South down the river valley through Winkelman, Dudleyville, and Mammoth, dipping to 1,918 ft, his lowest point since the Kootenai River in Montana on day 3, then a steady climb at the end of the day to camp at 3,355 ft near Oracle. 33.7 miles with 1,772 ft of climbing.", updates:[
+    {time:"4:34 pm", miles:33.7, gain:1772, text:"Done for the day at Cottonwood Wash after 33.7 miles, +1,772 / -960 ft."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:33.060484, lng:-110.721994, town:"Gila River", state:"AZ", label:"Camped on the Gila River south of Globe after 29.1 miles on day 36", asOf:"Oct 11, evening MT", approx:false};
+const LOCATION = {lat:32.655132, lng:-110.676848, town:"Cottonwood Wash", state:"AZ", label:"Camped near Oracle after 33.7 miles on day 38", asOf:"Oct 13, 4:34 pm MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "The last segment is under way. On day 36 Rick climbed south out of Globe and dropped more than 3,000 ft to camp on the Gila River at 2,062 ft, his lowest point since Montana, 29.1 miles in all. About 255 miles of desert are left to the Mexican border at Sierra Vista, where he is due Saturday, Oct 17.";
+const STATUS = "The last segment is under way. After a Sunday off in Globe, Rick rode 29 miles to the Gila River on Monday and 33.7 more on Tuesday, day 38, down the valley through Winkelman and Mammoth and up to camp at Cottonwood Wash near Oracle. Tucson is just over the mountains, and the Mexican border at Sierra Vista is about 220 miles out. He is due there Saturday, Oct 17.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 11, 2026, end of day 36", caption:"Blue and green is Rick's track so far, Roosville to the Gila River south of Globe, with day 36 in green. All that is left is the last stretch south to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 12, 2026, end of day 37", caption:"Blue and green is Rick's track so far, Roosville to the Gila River south of Globe, with day 37 in green. All that is left is the last stretch south to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -339,5 +345,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 13, 2026, 6:45 am MT";
+const LAST_UPDATED = "Oct 13, 2026, 4:55 pm MT";
 // ===== END DATA =====
