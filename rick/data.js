@@ -163,21 +163,31 @@ const LOG = [
   {day:35, date:"2026-10-10", end:"Globe, AZ", miles:38.5, gain:3269, loss:1926, high:3882, low:2130, lat:33.395741, lng:-110.775491, course:1.8, notes:"Roosevelt Lake to Globe. A few light sprinkles overnight, then a short day with a real climb in it: along the lake at about 2,100 ft, up to a 3,882 ft high point, and on to Globe. That closes out segment 8 before its planned start date, six days ahead of its Oct 16 plan date. One segment to go. 38.5 miles with 3,269 ft of climbing. His Garmin ran 1.8 miles long through segment 8, booked as a detour so his position lands on the segment end.", updates:[
     {time:"Evening", miles:38.5, gain:3269, text:"In Globe after 38.5 miles, +3,269 / -1,926 ft. Segment 8 is done. Only the run to the Mexican border is left."},
   ]},
+  {day:36, date:"2026-10-11", end:"Gila River, AZ", miles:29.1, gain:1745, loss:3133, high:4965, low:2062, lat:33.060484, lng:-110.721994, notes:"Globe to the Gila River. The first miles of the last segment: a climb south out of Globe to a 4,965 ft high point, then a long drop of more than 3,000 ft to camp on the Gila River at 2,062 ft, his lowest point since the Kootenai River in Montana on day 3. 29.1 miles with 1,745 ft of climbing.", updates:[
+    {time:"Evening", miles:29.1, gain:1745, text:"Camped on the Gila River after 29.1 miles, +1,745 / -3,133 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:33.395741, lng:-110.775491, town:"Globe", state:"AZ", label:"In Globe after 38.5 miles on day 35, with segment 8 done and one segment to go", asOf:"Oct 10, evening MT", approx:false};
+const LOCATION = {lat:33.060484, lng:-110.721994, town:"Gila River", state:"AZ", label:"Camped on the Gila River south of Globe after 29.1 miles on day 36", asOf:"Oct 11, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "One segment to go. Rick reached Globe on day 35, closing out segment 8 six days ahead of plan, after a week that included the hardest day of the trip, the longest (94.2 miles into Payson), and a new top speed of 41 mph on the drop to Roosevelt Lake, where Brenna met him with a steak dinner. All that is left is the last stretch south through the desert to the Mexican border at Sierra Vista. The plane tickets home are bought.";
+const STATUS = "The last segment is under way. On day 36 Rick climbed south out of Globe and dropped more than 3,000 ft to camp on the Gila River at 2,062 ft, his lowest point since Montana, 29.1 miles in all. About 255 miles of desert are left to the Mexican border at Sierra Vista, where he is due Saturday, Oct 17.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 10, 2026, end of day 35", caption:"Blue and green is Rick's track so far, Roosville to Globe in central Arizona, with day 35 in green. All that is left is the last stretch south to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 11, 2026, end of day 36", caption:"Blue and green is Rick's track so far, Roosville to the Gila River south of Globe, with day 36 in green. All that is left is the last stretch south to the Mexican border at Sierra Vista."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-10-10-road-to-globe", date:"2026-10-10", time:"10:35", caption:"Day 35. The highway winding toward the mountains on the way to Globe."},
+  {file:"2026-10-10-saguaro-hillside", date:"2026-10-10", time:"09:26", caption:"Day 35. A hillside full of saguaros along the road."},
+  {file:"2026-10-10-roosevelt-lake-bridge", date:"2026-10-10", time:"09:26", caption:"Day 35. The Roosevelt Lake Bridge, the big steel arch at the dam end of the lake."},
+  {file:"2026-10-10-roosevelt-lake-arm", date:"2026-10-10", time:"09:15", caption:"Day 35. Looking down the lake toward the Roosevelt Lake Bridge."},
+  {file:"2026-10-10-packing-up", date:"2026-10-10", time:"08:03", caption:"Day 35. Packing up under the ramada at the lake camp."},
+  {file:"2026-10-10-rick-and-bike-at-the-lake", date:"2026-10-10", time:"08:03", caption:"Day 35. Rick and the loaded bike above Roosevelt Lake, ready to roll for Globe."},
+  {file:"2026-10-10-stick-insect", date:"2026-10-10", time:"08:02", caption:"Day 35, morning. A stick insect hitching a ride on Rick's arm at the Roosevelt Lake camp."},
   {file:"2026-10-10-lake-dawn", date:"2026-10-10", time:"06:58", caption:"Day 35, dawn. First light over Roosevelt Lake."},
   {file:"2026-10-10-lake-camp-morning", date:"2026-10-10", time:"06:58", caption:"Day 35, morning. Two tents and the bike at the Roosevelt Lake camp."},
   {file:"2026-10-09-camp-dinner", date:"2026-10-09", time:"18:45", caption:"Day 34. Texas Roadhouse steak dinner under the ramada at camp, delivered by Brenna. Heavenly, he said."},
@@ -329,5 +339,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 11, 2026, 8:50 am MT";
+const LAST_UPDATED = "Oct 13, 2026, 6:45 am MT";
 // ===== END DATA =====
