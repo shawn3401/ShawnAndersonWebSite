@@ -182,7 +182,7 @@ const LOCATION = {lat:32.655132, lng:-110.676848, town:"Cottonwood Wash", state:
 const STATUS = "The last segment is under way. After a Sunday off in Globe, Rick rode 29 miles to the Gila River on Monday and 33.7 more on Tuesday, day 38, down the valley through Winkelman and Mammoth and up to camp at Cottonwood Wash near Oracle. Tucson is just over the mountains, and the Mexican border at Sierra Vista is about 220 miles out. He is due there Saturday, Oct 17.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 12, 2026, end of day 37", caption:"Blue and green is Rick's track so far, Roosville to the Gila River south of Globe, with day 37 in green. All that is left is the last stretch south to the Mexican border at Sierra Vista."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 13, 2026, end of day 38", caption:"Blue and green is Rick's track so far, Roosville to Cottonwood Wash north of Tucson, with day 38 in green. The Mexican border at Sierra Vista is all that is left."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
@@ -345,5 +345,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 13, 2026, 4:55 pm MT";
+const LAST_UPDATED = "Oct 13, 2026, 5:05 pm MT";
 // ===== END DATA =====
