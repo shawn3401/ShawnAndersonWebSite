@@ -172,21 +172,31 @@ const LOG = [
   {day:38, date:"2026-10-13", end:"Cottonwood Wash, AZ (near Oracle)", miles:33.7, gain:1772, loss:960, high:3355, low:1918, lat:32.655132, lng:-110.676848, notes:"Gila River to Cottonwood Wash. South down the river valley through Winkelman, Dudleyville, and Mammoth, dipping to 1,918 ft, his lowest point since the Kootenai River in Montana on day 3, then a steady climb at the end of the day to camp at 3,355 ft near Oracle. 33.7 miles with 1,772 ft of climbing.", updates:[
     {time:"4:34 pm", miles:33.7, gain:1772, text:"Done for the day at Cottonwood Wash after 33.7 miles, +1,772 / -960 ft."},
   ]},
+  {day:39, date:"2026-10-14", end:"Three Links Rd, AZ (San Pedro valley)", miles:44.3, gain:2031, loss:1453, high:3415, low:2620, lat:32.206815, lng:-110.304648, notes:"Cottonwood Wash to Three Links Road. After an evening of storms over camp, south down the San Pedro River valley on the east side of the Santa Catalinas and the Rincons, dipping to 2,620 ft and climbing back up to camp near Three Links Road at about 3,400 ft. 44.3 miles with 2,031 ft of climbing.", updates:[
+    {time:"Evening", miles:44.3, gain:2031, text:"Camped near Three Links Road after 44.3 miles, +2,031 / -1,453 ft."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:32.655132, lng:-110.676848, town:"Cottonwood Wash", state:"AZ", label:"Camped near Oracle after 33.7 miles on day 38", asOf:"Oct 13, 4:34 pm MT", approx:false};
+const LOCATION = {lat:32.206815, lng:-110.304648, town:"Three Links Rd", state:"AZ", label:"Camped in the San Pedro valley east of Tucson after 44.3 miles on day 39", asOf:"Oct 14, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "The last segment is under way. After a Sunday off in Globe, Rick rode 29 miles to the Gila River on Monday and 33.7 more on Tuesday, day 38, down the valley through Winkelman and Mammoth and up to camp at Cottonwood Wash near Oracle. Tucson is just over the mountains, and the Mexican border at Sierra Vista is about 220 miles out. He is due there Saturday, Oct 17.";
+const STATUS = "Closing in. After a night of storms over camp at Cottonwood Wash, Rick rode 44.3 miles on day 39 down the San Pedro valley east of Tucson to camp near Three Links Road. The Mexican border south of Sierra Vista is about 60 miles away as the crow flies, and he is due there Friday or Saturday.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
-const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 13, 2026, end of day 38", caption:"Blue and green is Rick's track so far, Roosville to Cottonwood Wash north of Tucson, with day 38 in green. The Mexican border at Sierra Vista is all that is left."};
+const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 14, 2026, end of day 39", caption:"Blue and green is Rick's track so far, Roosville to the San Pedro valley east of Tucson, with day 39 in green. The Mexican border at Sierra Vista is just south."};
 const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-10-13-storm-radar", date:"2026-10-13", time:"19:53", caption:"Day 38. Rick's radar check that evening: a line of storms right over his spot north of Tucson."},
+  {file:"2026-10-13-storm-over-camp", date:"2026-10-13", time:"19:01", caption:"Day 38, evening. Storm clouds building over the tent at Cottonwood Wash."},
+  {file:"2026-10-13-cottonwood-wash-camp", date:"2026-10-13", time:"19:00", caption:"Day 38. Camp at Cottonwood Wash among the saguaros and cholla."},
+  {file:"2026-10-12-gila-river-evening", date:"2026-10-12", time:"18:17", caption:"Day 37, evening. Last light on the mountain above the Gila River camp."},
+  {file:"2026-10-12-gila-river", date:"2026-10-12", time:"14:49", caption:"Day 37. The Gila River, running brown after the rain."},
+  {file:"2026-10-12-gila-river-tent", date:"2026-10-12", time:"13:59", caption:"Day 37. The tent and the covered bike in the mesquite by the Gila River."},
+  {file:"2026-10-12-green-hills-south-of-globe", date:"2026-10-12", time:"11:09", caption:"Day 37. Grassy green hills and big clouds on the climb south out of Globe."},
   {file:"2026-10-10-road-to-globe", date:"2026-10-10", time:"10:35", caption:"Day 35. The highway winding toward the mountains on the way to Globe."},
   {file:"2026-10-10-saguaro-hillside", date:"2026-10-10", time:"09:26", caption:"Day 35. A hillside full of saguaros along the road."},
   {file:"2026-10-10-roosevelt-lake-bridge", date:"2026-10-10", time:"09:26", caption:"Day 35. The Roosevelt Lake Bridge, the big steel arch at the dam end of the lake."},
@@ -345,5 +355,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 13, 2026, 5:05 pm MT";
+const LAST_UPDATED = "Oct 14, 2026, 10:35 pm MT";
 // ===== END DATA =====
