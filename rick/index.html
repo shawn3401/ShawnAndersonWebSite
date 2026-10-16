@@ -354,6 +354,29 @@ const segAhead = last ? planDayAt(credited) - daysRidden : 0;
 const segTo = curSeg.to.split(/[,(]/)[0].trim();
 const dcls = daysAhead>=0 ? "delta-good" : "delta-bad";
 const segDcls = segProj && segProj<=d2(segEnd) ? "delta-good" : "delta-bad";
+// Finished (Oct 16, 2026): once his position reaches the end of the last segment, the tiles switch from countdown to a summary.
+const FINISHED = remaining <= EPS && !OPEN;
+if (FINISHED) {
+  const zeroDays = DONE.filter(e => !e.miles).length;
+  const finDate = d2(last.date);
+  const vsT = dayDiff(finDate, target);
+  const climbed = DONE.reduce((a,e)=>a+(e.gain||0),0);
+  const longest = DONE.reduce((a,e)=>e.miles>a.miles?e:a, DONE[0]);
+  const segDays = DONE.filter(e => e.cred > (segCum[SEGMENTS.length-2]||0) + EPS).length;
+  document.getElementById("status").innerHTML = `
+  <div class="rowlab">Trip</div>
+  <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(Math.round(actualCum))}<small>Roosville to the Mexican border</small></div><div class="note">Canada to Mexico by bike</div></div>
+  <div class="tile"><div class="lab">Finished</div><div class="val num delta-good">${mdy(finDate)}</div><div class="note">${vsT>0?`${vsT} day${vsT===1?"":"s"} before`:vsT<0?`${-vsT} day${vsT===-1?"":"s"} after`:"Right on"} the ${mdy(target)} target</div></div>
+  <div class="tile"><div class="lab">Days on the road</div><div class="val num">${daysRidden}</div><div class="note">${daysRidden-zeroDays} riding days, ${zeroDays} rest day${zeroDays===1?"":"s"}</div></div>
+  <div class="tile"><div class="lab">Versus plan</div><div class="val num ${dcls}">${aheadTxt(daysAhead)}</div><div class="note">His current plan had ${PLAN_DAYS} days to the border. He did it in ${daysRidden}</div></div>
+  <div class="tile"><div class="lab">Climbing</div><div class="val num">${fmt(Math.round(climbed))}<small>ft</small></div><div class="note">Longest day ${fmt(longest.miles)} mi, day ${longest.day}</div></div>
+  <div class="rowlab seg">Done</div>
+  <div class="tile hero"><div class="lab">Average per day</div><div class="val num">${Math.round(actualCum/daysRidden)}<small>mi</small></div><div class="note">Rest days included. ${Math.round(actualCum/(daysRidden-zeroDays))} a riding day</div></div>
+  <div class="tile"><div class="lab">States</div><div class="val num">5</div><div class="note">Montana, Idaho, Utah, Wyoming, Arizona</div></div>
+  <div class="tile"><div class="lab">Segments</div><div class="val num">${SEGMENTS.length} of ${SEGMENTS.length}</div><div class="note">The last one, ${SEGMENTS[SEGMENTS.length-1].from} to the border, in ${segDays} riding days</div></div>
+  <div class="tile"><div class="lab">Photos</div><div class="val num">${PHOTOS.length}</div><div class="note"><a href="photos/">See them all</a></div></div>
+  <div class="tile"><div class="lab">Records</div><div class="val num">&#9733;</div><div class="note"><a href="records/">Longest day, biggest climb, coldest night</a></div></div>`;
+} else
 document.getElementById("status").innerHTML = `
   <div class="rowlab">Trip</div>
   <div class="tile hero"><div class="lab">Miles ridden</div><div class="val num">${fmt(Math.round(actualCum))}<small>since Roosville, Sept 6</small></div><div class="note">${daysRidden} days on the road${OPEN&&OPEN.miles?`, plus ${fmt(OPEN.miles)} so far today`:""}</div></div>
