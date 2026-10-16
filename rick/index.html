@@ -315,7 +315,7 @@ const tripDaysLeft = dayDiff(lastDate, planFinish);
 const tripNeed = tripDaysLeft > 0 ? remaining / tripDaysLeft : null;
 
 // Plan-total copy
-document.getElementById("subline").textContent = `${fmt(Math.round(TOTAL_PLAN))} miles of dirt, Canada to Mexico. Rolled out Sept 6, 2026, aiming for ${mdy((typeof TARGET_FINISH!=="undefined" && TARGET_FINISH) ? d2(TARGET_FINISH) : planFinish)}.`;
+document.getElementById("subline").textContent = (remaining <= EPS && !OPEN) ? `Canada to Mexico by bike. Rolled out of Roosville Sept 6, 2026, and reached the Mexican border Oct 16, 2026.` : `${fmt(Math.round(TOTAL_PLAN))} miles of dirt, Canada to Mexico. Rolled out Sept 6, 2026, aiming for ${mdy((typeof TARGET_FINISH!=="undefined" && TARGET_FINISH) ? d2(TARGET_FINISH) : planFinish)}.`;
 
 // Cover photo
 if (typeof COVER === "string" && COVER) { const ci = document.getElementById("coverimg"); if (ci && !ci.src.startsWith("data:")) ci.src = "photos/" + COVER + ".jpg"; }
@@ -414,8 +414,9 @@ const w = document.getElementById("where");
 w.innerHTML = last ? `
   <div><div class="eyebrow" style="color:var(--ink-3)">Last camp · ${mdy(d2(last.date))}</div><div class="big">${last.end}</div>${camp(last)}
     <dl class="kv">
-      <dt>Segment</dt><dd>${curSeg.n} of 9, ${curSeg.from} to ${curSeg.to} (${fmt(Math.round(milesIntoSeg))} of ${fmt(curSeg.miles)} mi in)</dd>
-      <dt>Next town</dt><dd>${curSeg.to}, planned arrival ${mdy(d2(curSeg.end))}</dd>
+      ${FINISHED ? `<dt>Segment</dt><dd>All ${SEGMENTS.length} done</dd>
+      <dt>Finish</dt><dd>The Mexican border, ${mdy(d2(last.date))}, day ${last.day}</dd>` : `<dt>Segment</dt><dd>${curSeg.n} of 9, ${curSeg.from} to ${curSeg.to} (${fmt(Math.round(milesIntoSeg))} of ${fmt(curSeg.miles)} mi in)</dd>
+      <dt>Next town</dt><dd>${curSeg.to}, planned arrival ${mdy(d2(curSeg.end))}</dd>`}
     </dl></div>
   <div><div class="eyebrow" style="color:var(--ink-3)">Last day ridden</div><div class="big num">${fmt(last.miles)} mi</div>
     <dl class="kv"><dt>Climbing</dt><dd class="num">+${fmt(last.gain)} ft / −${fmt(last.loss)} ft</dd><dt>Plan for the day</dt><dd class="num">${Math.round(planDaily[last.day-1])} mi</dd><dt>Notes</dt><dd>${last.notes||""}</dd></dl></div>`

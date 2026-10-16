@@ -180,18 +180,19 @@ const LOG = [
     {time:"1:14 pm", text:"Tore out the sidewall of the rear tire. Rick: \"Sewed it up and filled with sealant. Hope it holds!\""},
     {time:"Evening", miles:49.5, gain:2316, text:"In Tombstone after 49.5 miles, +2,316 / -925 ft. One more day to the border."},
   ]},
-  {day:41, date:"2026-10-16", end:"Mexican border, south of Sierra Vista", miles:31, gain:683, loss:612, done:false, notes:"", updates:[
+  {day:41, date:"2026-10-16", end:"The Mexican border, south of Sierra Vista", miles:32, gain:683, loss:612, high:4460, low:3984, lat:31.334196, lng:-110.177537, course:-96, notes:"Tombstone to the Mexican border. The last day. After a sleepless night of 50 to 60 mph gusts in Tombstone, Rick rode out at first light into the wind, across the grassland south through the San Pedro valley and up to 4,460 ft, and tapped the border wall south of Hereford in the afternoon, where Jennifer and Brenna were waiting. 32 miles with 683 ft of climbing. Canada to Mexico by bike, Roosville to the border, in 41 days. His line through southern Arizona was shorter than the original segment 9 route, so his position is set to the finish.", updates:[
     {time:"Morning", text:"A sleepless last night in Tombstone. Rick: \"Wind picked up last night around 9. 30-40 mph with 50-60 mph gusts. Zero sleep. It was like being in your tent getting towed behind a 747. Fun meter is pegged!\" He set out at first light to get the highway miles done before traffic. \"Always wanted to ride through a haboob!\""},
     {time:"3:39 pm", miles:31, text:"Less than a mile from the Mexican border."},
+    {time:"Afternoon", miles:32, gain:683, text:"Tapped the border wall. Canada to Mexico by bike, done."},
   ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:31.679859, lng:-110.112966, town:"Tombstone", state:"AZ", label:"His last night on the trail, after 49.5 miles on day 40", asOf:"Oct 15, evening MT", approx:false};
+const LOCATION = {lat:31.334196, lng:-110.177537, town:"The Mexican border", state:"AZ", label:"Where he tapped the wall, south of Hereford and Sierra Vista. Canada to Mexico, done.", asOf:"Oct 16, afternoon MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Less than a mile to go. Rick spent a sleepless last night in Tombstone with 30 to 40 mph winds and gusts to 60 (\"like being in your tent getting towed behind a 747\"), rode out at first light into the wind, and is closing in on the Mexican border south of Sierra Vista, where Jennifer and Brenna are waiting. Canada to Mexico by bike, 41 days.";
+const STATUS = "He made it. On Friday, Oct 16, 2026, Rick tapped the border wall south of Hereford, Arizona, and finished the Western Wildlands Route: Roosville, Montana, to the Mexican border by bike in 41 days, through Montana, Idaho, Wyoming, Utah, and Arizona. He beat the night before with no sleep in a windstorm, rode the last 32 miles into the wind, and Jennifer and Brenna were waiting for him at the wall. Thanks to everyone who followed along.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 14, 2026, end of day 39", caption:"Blue and green is Rick's track so far, Roosville to the San Pedro valley east of Tucson, with day 39 in green. The Mexican border at Sierra Vista is just south."};
@@ -374,5 +375,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 16, 2026, 4:20 pm MT";
+const LAST_UPDATED = "Oct 16, 2026, 4:35 pm MT";
 // ===== END DATA =====
