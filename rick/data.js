@@ -169,16 +169,19 @@ const LOG = [
   {day:37, date:"2026-10-12", end:"Gila River, AZ", miles:29.1, gain:1745, loss:3133, high:4965, low:2062, lat:33.060484, lng:-110.721994, notes:"Globe to the Gila River. Back on the bike after the rest day, and the first miles of the last segment: a climb south out of Globe to a 4,965 ft high point, then a long drop of more than 3,000 ft to camp on the Gila River at 2,062 ft. 29.1 miles with 1,745 ft of climbing.", updates:[
     {time:"Evening", miles:29.1, gain:1745, text:"Camped on the Gila River after 29.1 miles, +1,745 / -3,133 ft."},
   ]},
-  {day:38, date:"2026-10-13", end:"Cottonwood Wash, AZ (near Oracle)", miles:33.7, gain:1772, loss:960, high:3355, low:1918, lat:32.655132, lng:-110.676848, notes:"Gila River to Cottonwood Wash. South down the river valley through Winkelman, Dudleyville, and Mammoth, dipping to 1,918 ft, his lowest point since the Kootenai River in Montana on day 3, then a steady climb at the end of the day to camp at 3,355 ft near Oracle. 33.7 miles with 1,772 ft of climbing.", updates:[
+  {day:38, date:"2026-10-13", end:"Cottonwood Wash, AZ (near Oracle)", miles:33.7, gain:1772, loss:960, high:3355, low:1918, lat:32.655132, lng:-110.676848, notes:"Gila River to Cottonwood Wash. South down the river valley through Winkelman, Dudleyville, and Mammoth, dipping to 1,918 ft, his lowest point since the Kootenai River in Montana on day 3, then a steady climb at the end of the day to camp at 3,355 ft near Oracle. That evening a storm cell sat right on top of him. In Rick's words: \"Had a microburst blow through and wreak havoc. Got everything righted but the wind is still ripping and I'm pretty sure I've got more rain tonight. Pretty sure we set a new wind record tonight!\" 33.7 miles with 1,772 ft of climbing.", updates:[
     {time:"4:34 pm", miles:33.7, gain:1772, text:"Done for the day at Cottonwood Wash after 33.7 miles, +1,772 / -960 ft."},
+    {time:"7:48 pm", text:"Rick: \"Just in time to get wet again! Had a microburst blow through and wreak havoc. Got everything righted but the wind is still ripping.\""},
   ]},
   {day:39, date:"2026-10-14", end:"Three Links Rd, AZ (San Pedro valley)", miles:44.3, gain:2031, loss:1453, high:3415, low:2620, lat:32.206815, lng:-110.304648, notes:"Cottonwood Wash to Three Links Road. After an evening of storms over camp, south down the San Pedro River valley on the east side of the Santa Catalinas and the Rincons, dipping to 2,620 ft and climbing back up to camp near Three Links Road at about 3,400 ft. 44.3 miles with 2,031 ft of climbing.", updates:[
     {time:"Evening", miles:44.3, gain:2031, text:"Camped near Three Links Road after 44.3 miles, +2,031 / -1,453 ft."},
   ]},
-  {day:40, date:"2026-10-15", end:"Tombstone, AZ", miles:49.5, gain:2316, loss:925, high:4549, low:3273, lat:31.679859, lng:-110.112966, notes:"Three Links Road to Tombstone. South up the San Pedro valley, climbing steadily from 3,273 ft to a 4,549 ft high point, and into Tombstone, the Town Too Tough to Die, for his last night on the trail. 49.5 miles with 2,316 ft of climbing. The Mexican border is one day's ride away.", updates:[
+  {day:40, date:"2026-10-15", end:"Tombstone, AZ", miles:49.5, gain:2316, loss:925, high:4549, low:3273, lat:31.679859, lng:-110.112966, notes:"Three Links Road to Tombstone. South up the San Pedro valley, climbing steadily from 3,273 ft to a 4,549 ft high point, and into Tombstone, the Town Too Tough to Die, for his last night on the trail. Early in the afternoon he tore out the sidewall of his rear tire, sewed it up on the side of the road, and filled it with sealant: \"If you have any prayers to spare I could use some! Hope it holds! Would hate to have to push it the rest of the way!!\" It held. 49.5 miles with 2,316 ft of climbing. The Mexican border is one day's ride away.", updates:[
+    {time:"1:14 pm", text:"Tore out the sidewall of the rear tire. Rick: \"Sewed it up and filled with sealant. Hope it holds!\""},
     {time:"Evening", miles:49.5, gain:2316, text:"In Tombstone after 49.5 miles, +2,316 / -925 ft. One more day to the border."},
   ]},
   {day:41, date:"2026-10-16", end:"Mexican border, south of Sierra Vista", miles:31, gain:683, loss:612, done:false, notes:"", updates:[
+    {time:"Morning", text:"A sleepless last night in Tombstone. Rick: \"Wind picked up last night around 9. 30-40 mph with 50-60 mph gusts. Zero sleep. It was like being in your tent getting towed behind a 747. Fun meter is pegged!\" He set out at first light to get the highway miles done before traffic. \"Always wanted to ride through a haboob!\""},
     {time:"3:39 pm", miles:31, text:"Less than a mile from the Mexican border."},
   ]},
 ];
@@ -188,7 +191,7 @@ const LOG = [
 const LOCATION = {lat:31.679859, lng:-110.112966, town:"Tombstone", state:"AZ", label:"His last night on the trail, after 49.5 miles on day 40", asOf:"Oct 15, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Less than a mile to go. Rick left Tombstone this morning on his last day and is closing in on the Mexican border south of Sierra Vista, where Jennifer and Brenna are waiting. Canada to Mexico by bike, 41 days.";
+const STATUS = "Less than a mile to go. Rick spent a sleepless last night in Tombstone with 30 to 40 mph winds and gusts to 60 (\"like being in your tent getting towed behind a 747\"), rode out at first light into the wind, and is closing in on the Mexican border south of Sierra Vista, where Jennifer and Brenna are waiting. Canada to Mexico by bike, 41 days.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 14, 2026, end of day 39", caption:"Blue and green is Rick's track so far, Roosville to the San Pedro valley east of Tucson, with day 39 in green. The Mexican border at Sierra Vista is just south."};
@@ -201,13 +204,13 @@ const PHOTOS = [
   {file:"2026-10-15-last-sunset", date:"2026-10-15", time:"18:37", caption:"Day 40, evening. The sun going down over the grassland outside Tombstone."},
   {file:"2026-10-15-tombstone-stagecoach", date:"2026-10-15", time:"16:52", caption:"Day 40. A stagecoach rolls down Allen Street in Tombstone, the Town Too Tough to Die."},
   {file:"2026-10-15-tombstone-boardwalk", date:"2026-10-15", time:"16:48", caption:"Day 40. Tombstone. The bike on the boardwalk along Allen Street."},
-  {file:"2026-10-15-torn-tire", date:"2026-10-15", time:"13:28", caption:"Day 40. A chunk torn out of the rear tire tread. It held."},
+  {file:"2026-10-15-torn-tire", date:"2026-10-15", time:"13:28", caption:"Day 40. The torn rear tire, sewn up on the roadside and filled with sealant. Rick: \"Hope it holds!\" It did."},
   {file:"2026-10-15-three-links-camp", date:"2026-10-15", time:"09:06", caption:"Day 40, morning. Camp near Three Links Road, packed and ready for Tombstone."},
   {file:"2026-10-14-san-pedro-overlook", date:"2026-10-14", time:"12:11", caption:"Day 39. Looking out over the San Pedro valley, mountains far off."},
   {file:"2026-10-14-desert-road", date:"2026-10-14", time:"10:51", caption:"Day 39. An empty desert road heading south."},
   {file:"2026-10-14-sunrise-through-the-tent", date:"2026-10-14", time:"07:53", caption:"Day 39, sunrise. Morning light through the tent mesh, a saguaro standing outside."},
   {file:"2026-10-13-storm-radar", date:"2026-10-13", time:"19:53", caption:"Day 38. Rick's radar check that evening: a line of storms right over his spot north of Tucson."},
-  {file:"2026-10-13-storm-over-camp", date:"2026-10-13", time:"19:01", caption:"Day 38, evening. Storm clouds building over the tent at Cottonwood Wash."},
+  {file:"2026-10-13-storm-over-camp", date:"2026-10-13", time:"19:01", caption:"Day 38, evening. Storm clouds building over the tent at Cottonwood Wash, just before a microburst flattened camp."},
   {file:"2026-10-13-cottonwood-wash-camp", date:"2026-10-13", time:"19:00", caption:"Day 38. Camp at Cottonwood Wash among the saguaros and cholla."},
   {file:"2026-10-12-gila-river-evening", date:"2026-10-12", time:"18:17", caption:"Day 37, evening. Last light on the mountain above the Gila River camp."},
   {file:"2026-10-12-gila-river", date:"2026-10-12", time:"14:49", caption:"Day 37. The Gila River, running brown after the rain."},
@@ -371,5 +374,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 16, 2026, 3:45 pm MT";
+const LAST_UPDATED = "Oct 16, 2026, 4:20 pm MT";
 // ===== END DATA =====
