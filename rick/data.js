@@ -193,6 +193,16 @@ const COVER = "2026-09-06-roosville-start-cover";
 
 // Photos: file names live in rick/photos/. Add the full-size jpg plus a -thumb.jpg. Newest first.
 const PHOTOS = [
+  {file:"2026-10-15-last-camp", date:"2026-10-15", time:"19:14", caption:"Day 40, dusk. The tent under a sliver of moon. His last night on the trail."},
+  {file:"2026-10-15-last-sunset-glow", date:"2026-10-15", time:"18:46", caption:"Day 40. Last glow on the horizon."},
+  {file:"2026-10-15-last-sunset", date:"2026-10-15", time:"18:37", caption:"Day 40, evening. The sun going down over the grassland outside Tombstone."},
+  {file:"2026-10-15-tombstone-stagecoach", date:"2026-10-15", time:"16:52", caption:"Day 40. A stagecoach rolls down Allen Street in Tombstone, the Town Too Tough to Die."},
+  {file:"2026-10-15-tombstone-boardwalk", date:"2026-10-15", time:"16:48", caption:"Day 40. Tombstone. The bike on the boardwalk along Allen Street."},
+  {file:"2026-10-15-torn-tire", date:"2026-10-15", time:"13:28", caption:"Day 40. A chunk torn out of the rear tire tread. It held."},
+  {file:"2026-10-15-three-links-camp", date:"2026-10-15", time:"09:06", caption:"Day 40, morning. Camp near Three Links Road, packed and ready for Tombstone."},
+  {file:"2026-10-14-san-pedro-overlook", date:"2026-10-14", time:"12:11", caption:"Day 39. Looking out over the San Pedro valley, mountains far off."},
+  {file:"2026-10-14-desert-road", date:"2026-10-14", time:"10:51", caption:"Day 39. An empty desert road heading south."},
+  {file:"2026-10-14-sunrise-through-the-tent", date:"2026-10-14", time:"07:53", caption:"Day 39, sunrise. Morning light through the tent mesh, a saguaro standing outside."},
   {file:"2026-10-13-storm-radar", date:"2026-10-13", time:"19:53", caption:"Day 38. Rick's radar check that evening: a line of storms right over his spot north of Tucson."},
   {file:"2026-10-13-storm-over-camp", date:"2026-10-13", time:"19:01", caption:"Day 38, evening. Storm clouds building over the tent at Cottonwood Wash."},
   {file:"2026-10-13-cottonwood-wash-camp", date:"2026-10-13", time:"19:00", caption:"Day 38. Camp at Cottonwood Wash among the saguaros and cholla."},
@@ -358,5 +368,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 16, 2026, 3:40 pm MT";
+const LAST_UPDATED = "Oct 16, 2026, 3:50 pm MT";
 // ===== END DATA =====
