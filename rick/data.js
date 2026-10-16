@@ -175,14 +175,17 @@ const LOG = [
   {day:39, date:"2026-10-14", end:"Three Links Rd, AZ (San Pedro valley)", miles:44.3, gain:2031, loss:1453, high:3415, low:2620, lat:32.206815, lng:-110.304648, notes:"Cottonwood Wash to Three Links Road. After an evening of storms over camp, south down the San Pedro River valley on the east side of the Santa Catalinas and the Rincons, dipping to 2,620 ft and climbing back up to camp near Three Links Road at about 3,400 ft. 44.3 miles with 2,031 ft of climbing.", updates:[
     {time:"Evening", miles:44.3, gain:2031, text:"Camped near Three Links Road after 44.3 miles, +2,031 / -1,453 ft."},
   ]},
+  {day:40, date:"2026-10-15", end:"Tombstone, AZ", miles:49.5, gain:2316, loss:925, high:4549, low:3273, lat:31.679859, lng:-110.112966, notes:"Three Links Road to Tombstone. South up the San Pedro valley, climbing steadily from 3,273 ft to a 4,549 ft high point, and into Tombstone, the Town Too Tough to Die, for his last night on the trail. 49.5 miles with 2,316 ft of climbing. The Mexican border is one day's ride away.", updates:[
+    {time:"Evening", miles:49.5, gain:2316, text:"In Tombstone after 49.5 miles, +2,316 / -925 ft. One more day to the border."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
 // town = nearest town, state = 2-letter state, label = extra detail (forest, lake, pass), asOf = when the position was reported (Mountain time), approx:true shows an "approximate" tag instead of "from his Garmin".
-const LOCATION = {lat:32.206815, lng:-110.304648, town:"Three Links Rd", state:"AZ", label:"Camped in the San Pedro valley east of Tucson after 44.3 miles on day 39", asOf:"Oct 14, evening MT", approx:false};
+const LOCATION = {lat:31.679859, lng:-110.112966, town:"Tombstone", state:"AZ", label:"His last night on the trail, after 49.5 miles on day 40", asOf:"Oct 15, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "Closing in. After a night of storms over camp at Cottonwood Wash, Rick rode 44.3 miles on day 39 down the San Pedro valley east of Tucson to camp near Three Links Road. The Mexican border south of Sierra Vista is about 60 miles away as the crow flies, and he is due there Friday or Saturday.";
+const STATUS = "The last day. Rick rode 49.5 miles up the San Pedro valley to Tombstone on day 40, his last night on the trail, and today he rides the final stretch to the Mexican border south of Sierra Vista, where Jennifer and Brenna are meeting him. Canada to Mexico by bike.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 14, 2026, end of day 39", caption:"Blue and green is Rick's track so far, Roosville to the San Pedro valley east of Tucson, with day 39 in green. The Mexican border at Sierra Vista is just south."};
@@ -355,5 +358,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 14, 2026, 10:35 pm MT";
+const LAST_UPDATED = "Oct 16, 2026, 3:40 pm MT";
 // ===== END DATA =====
