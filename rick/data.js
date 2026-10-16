@@ -178,6 +178,9 @@ const LOG = [
   {day:40, date:"2026-10-15", end:"Tombstone, AZ", miles:49.5, gain:2316, loss:925, high:4549, low:3273, lat:31.679859, lng:-110.112966, notes:"Three Links Road to Tombstone. South up the San Pedro valley, climbing steadily from 3,273 ft to a 4,549 ft high point, and into Tombstone, the Town Too Tough to Die, for his last night on the trail. 49.5 miles with 2,316 ft of climbing. The Mexican border is one day's ride away.", updates:[
     {time:"Evening", miles:49.5, gain:2316, text:"In Tombstone after 49.5 miles, +2,316 / -925 ft. One more day to the border."},
   ]},
+  {day:41, date:"2026-10-16", end:"Mexican border, south of Sierra Vista", miles:31, gain:683, loss:612, done:false, notes:"", updates:[
+    {time:"3:39 pm", miles:31, text:"Less than a mile from the Mexican border."},
+  ]},
 ];
 
 // Rick's last known position. This drives the "Where is Rick?" block, the map, and the weather. Update whenever new coordinates come in, even mid-day.
@@ -185,7 +188,7 @@ const LOG = [
 const LOCATION = {lat:31.679859, lng:-110.112966, town:"Tombstone", state:"AZ", label:"His last night on the trail, after 49.5 miles on day 40", asOf:"Oct 15, evening MT", approx:false};
 
 // Intraday news that is not a completed day. Shows under the position. Set to "" when there is nothing to say. Only add a LOG row once the day is done.
-const STATUS = "The last day. Rick rode 49.5 miles up the San Pedro valley to Tombstone on day 40, his last night on the trail, and today he rides the final stretch to the Mexican border south of Sierra Vista, where Jennifer and Brenna are meeting him. Canada to Mexico by bike.";
+const STATUS = "Less than a mile to go. Rick left Tombstone this morning on his last day and is closing in on the Mexican border south of Sierra Vista, where Jennifer and Brenna are waiting. Canada to Mexico by bike, 41 days.";
 // Cover photo for the top of the tracker page (file name without .jpg, from rick/photos/). Use a wide crop; the bottom third fades into the page.
 // Zoomed-out map of the whole West with Rick's track so far (screenshot from the Windy/onX view). Re-shoot every few days, overwrite the same file, update asOf.
 const PROGRESS_MAP = {file:"wwr-progress-map", asOf:"Oct 14, 2026, end of day 39", caption:"Blue and green is Rick's track so far, Roosville to the San Pedro valley east of Tucson, with day 39 in green. The Mexican border at Sierra Vista is just south."};
@@ -368,5 +371,5 @@ const PHOTOS = [
   {file:"2026-09-06-koocanusa-bridge", date:"2026-09-06", time:"13:36", caption:"Day 1. The Lake Koocanusa bridge from the road above, the longest bridge in Montana, over the Kootenai River backed up behind Libby Dam."},
   {file:"2026-09-06-roosville-start", date:"2026-09-06", time:"10:02", caption:"Day 1. Rick and the loaded bike at the Roosville border crossing, ready to roll south."},
 ];
-const LAST_UPDATED = "Oct 16, 2026, 3:50 pm MT";
+const LAST_UPDATED = "Oct 16, 2026, 3:45 pm MT";
 // ===== END DATA =====
