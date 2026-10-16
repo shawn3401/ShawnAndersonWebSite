@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Every day of Rick Saunders' Western Wildlands Route ride, Canada to Mexico by bike, in one sortable table.">
+<title>Every Day</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📅</text></svg>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{color-scheme:light dark;
+  --bg:#EEF0EA; --paper:#F7F8F4; --ink:#1B2620; --ink-2:#4B5A52; --ink-3:#7E8B84;
+  --line:#CBD3CB; --contour:#DDE3DB;
+  --red:#B4232C; --red-soft:#F3DCDD;
+  --plan:#6F8A72; --plan-soft:#DCE6DD; --rain:#2F6F9F; --rain-soft:#DCE8F1;
+  --good:#2E7D4F; --good-soft:#D9EEDF; --warn:#A6681B; --warn-soft:#F6E7CF; --bad:#9B2A2A; --bad-soft:#F2DADA;
+  --gold:#C9A227; --gold-soft:#F5EBC8;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
+    --line:#33403A; --contour:#26312C;
+    --red:#E1555E; --red-soft:#3C1F22;
+    --plan:#8FAA92; --plan-soft:#25332A; --rain:#7FB3DA; --rain-soft:#1E2E3A;
+    --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
+    --gold:#E2BE4A; --gold-soft:#3A3115;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131917; --paper:#1B2320; --ink:#E8ECE6; --ink-2:#B3BDB6; --ink-3:#7F8B84;
+  --line:#33403A; --contour:#26312C;
+  --red:#E1555E; --red-soft:#3C1F22;
+  --plan:#8FAA92; --plan-soft:#25332A; --rain:#7FB3DA; --rain-soft:#1E2E3A;
+  --good:#6FCB8F; --good-soft:#1C3527; --warn:#E0A552; --warn-soft:#3A2C16; --bad:#E27373; --bad-soft:#3B1E1E;
+  --gold:#E2BE4A; --gold-soft:#3A3115;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent 0 23px,var(--contour) 23px 24px);}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+a{color:var(--red)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.nav a{display:inline-block;background:var(--ink);color:var(--bg);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border-radius:3px}
+.nav a:hover,.nav a:focus{background:var(--red);color:#fff}
+.nav a.on{background:var(--red);color:#fff;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.nav a.on::before{content:"▸ ";opacity:.85}
+h1,h2,.disp{font-family:"Barlow Condensed","Arial Narrow",Impact,sans-serif;font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:44px;line-height:1;text-transform:uppercase}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-weight:600}
+.sub{color:var(--ink-2);margin-top:6px;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+section{margin-top:38px}
+h2{font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2);margin-bottom:4px}
+h2 .ic{margin-right:6px}
+.segsub{font-size:13px;color:var(--ink-3);margin-bottom:12px}
+.num{font-variant-numeric:tabular-nums}
+
+/* The tally: dark strip of totals */
+
+/* Days table */
+.tools{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:22px}
+.tools input[type=search]{font:inherit;font-size:15px;padding:8px 12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:3px;min-width:220px;flex:1 1 220px;max-width:360px}
+.fgroup{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fgroup .fl{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin-right:2px}
+.chip{font:inherit;font-size:13px;font-weight:600;padding:5px 10px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);border-radius:999px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.reset{font:inherit;font-size:13px;background:none;border:0;color:var(--red);cursor:pointer;text-decoration:underline;padding:4px}
+.sum{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:16px}
+.sum>div{background:var(--ink);color:var(--bg);padding:10px 14px}
+.sum .lab{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.sum .val{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:28px;line-height:1.1}
+.sum .val small{font-size:14px;margin-left:3px;color:color-mix(in srgb,var(--bg) 75%,transparent)}
+@media (max-width:720px){.sum{grid-template-columns:repeat(3,1fr)}}
+.tblwrap{margin-top:14px;overflow-x:auto;border:1px solid var(--line);background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);background:var(--contour);position:sticky;top:0;white-space:nowrap;user-select:none}
+th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+th button:focus-visible{outline:2px solid var(--red)}
+th .ar{opacity:.35;font-size:10px}
+th.sorted .ar{opacity:1;color:var(--red)}
+td.r,th.r{text-align:right}
+tr.row{cursor:pointer}
+tr.row:hover td{background:color-mix(in srgb,var(--contour) 55%,transparent)}
+tr.rest td{color:var(--ink-3)}
+tr.det td{background:var(--bg);font-size:14px;color:var(--ink-2)}
+tr.det ul{margin:8px 0 0;padding-left:18px}
+tr.det li{margin:3px 0}
+tr.det .t{font-weight:600;color:var(--ink);margin-right:6px}
+.badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:3px;background:var(--plan-soft);color:var(--plan);white-space:nowrap}
+.badge.motel{background:var(--rain-soft);color:var(--rain)}
+.badge.home{background:var(--gold-soft);color:var(--warn)}
+.badge.finish{background:var(--red);color:#fff}
+.badge.rest{background:var(--contour);color:var(--ink-3)}
+.bar{display:block;height:4px;background:var(--red);margin-top:4px;border-radius:2px;opacity:.7}
+.place{font-weight:600;color:var(--ink)}
+.pin{font-size:12px;white-space:nowrap}
+.muted{color:var(--ink-3)}
+.foot{margin-top:40px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:720px){
+  h1{font-size:34px}
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tr.row{border-bottom:1px solid var(--line);padding:10px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:4px 10px}
+  tr.row td{border:0;padding:0;text-align:left!important}
+  tr.row td::before{content:attr(data-l);display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+  tr.row td.wide{grid-column:1/-1}
+  tr.row td.c-day::before,tr.row td.c-place::before{display:none}
+  tr.det td{display:block;padding:10px 12px}
+}
+</style>
+<script data-goatcounter="https://shawnandersonapps.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav"><a href="../">Tracker</a><a href="../weather/">Weather</a><a href="../photos/">Photos</a><a href="../records/">Records</a><a class="on" aria-current="page" href="../days/">Days</a></div>
+  <div class="eyebrow">Western Wildlands Route · Canada to Mexico</div>
+  <h1>Every day on the road</h1>
+  <div class="sub">One row per day, Roosville to the Mexican border. Tap a column to sort, tap a filter to narrow it down, and tap a day to read its notes and check-ins.</div>
+
+  <div class="tools">
+    <input type="search" id="q" placeholder="Search places and notes" aria-label="Search places and notes">
+    <div class="fgroup" id="f-state"><span class="fl">State</span></div>
+    <div class="fgroup" id="f-stay"><span class="fl">Slept in</span></div>
+    <div class="fgroup" id="f-seg"><span class="fl">Segment</span></div>
+    <div class="fgroup" id="f-more"><span class="fl">Show</span></div>
+    <button class="reset" id="reset" type="button">Clear filters</button>
+  </div>
+  <div class="sum" id="sum"></div>
+  <div class="tblwrap"><table id="tbl"><thead><tr id="hdr"></tr></thead><tbody id="body"></tbody></table></div>
+  <div class="foot">Distance from onX; climbing from Rick's bike computer where he reported it. Weather is Open-Meteo's reanalysis at each night's camp: the day's high, the low the next morning, and the day's rain. <a href="/">shawnandersonapps.com</a> · <a href="../">Back to the tracker</a></div>
+</div>
+<script src="../data.js"></script>
+<script>
+const d2 = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const iso = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const mdy = d => d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const wk = d => d.toLocaleDateString("en-US",{weekday:"short"});
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const fmt1 = n => n.toLocaleString("en-US",{maximumFractionDigits:1});
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const STAY = {tent:"Tent", motel:"Motel", home:"Home", finish:"Finish"};
+const STATES = {MT:"Montana", ID:"Idaho", WY:"Wyoming", UT:"Utah", AZ:"Arizona"};
+
+// Segment for each day from his position, same rule as the photo gallery.
+const segCum = []; SEGMENTS.reduce((a,s,i)=>(segCum[i]=a+s.miles),0);
+let pos = 0, cum = 0;
+const photosBy = {}; PHOTOS.forEach(p => { photosBy[p.date] = (photosBy[p.date]||0) + 1; });
+const ROWS = LOG.filter(e => e.done !== false).map(e => {
+  const atStart = pos; pos += (e.miles||0) - (e.course||0); cum += (e.miles||0);
+  const seg = (SEGMENTS.find(s => atStart < segCum[s.n-1] - 0.05) || SEGMENTS[SEGMENTS.length-1]).n;
+  const m = /,\s*([A-Z]{2})\b/.exec(e.end||""); const st = m ? m[1] : "AZ";
+  const name = (e.end||"").replace(/,\s*[A-Z]{2}\b/,"");
+  const words = (e.notes||"").includes('"') || (e.updates||[]).some(u => /Rick:|"/.test(u.text||""));
+  return {e, day:e.day, date:e.date, seg, st, name, miles:e.miles||0, gain:e.gain||0, loss:e.loss||0, high:e.high||null, low:e.low||null, cum, stay: e.miles ? (e.stay||"") : "rest", restStay: e.stay||"", photos: photosBy[e.date]||0, words, hi:null, lo:null, rain:null};
+});
+const maxMiles = Math.max(...ROWS.map(r=>r.miles));
+
+const COLS = [
+  {k:"day", t:"Day", r:true, cls:"c-day", v:r=>`<b>${r.day}</b>`},
+  {k:"date", t:"Date", v:r=>`${wk(d2(r.date))} ${mdy(d2(r.date))}`},
+  {k:"name", t:"Ended at", cls:"c-place wide", v:r=>`<span class="place">${esc(r.name)}</span>, ${r.st}${r.e.lat!=null?` <a class="pin" href="https://www.google.com/maps?q=${r.e.lat},${r.e.lng}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 map</a>`:""}`},
+  {k:"stay", t:"Slept", v:r=>r.stay==="rest" ? `<span class="badge rest">Rest day</span>${r.restStay?` <span class="badge ${r.restStay}">${STAY[r.restStay]}</span>`:""}` : r.stay ? `<span class="badge ${r.stay}">${STAY[r.stay]}</span>` : `<span class="muted">Not sure</span>`},
+  {k:"seg", t:"Seg", r:true, v:r=>r.seg},
+  {k:"miles", t:"Miles", r:true, v:r=>`${fmt1(r.miles)}<span class="bar" style="width:${(100*r.miles/maxMiles).toFixed(0)}%"></span>`},
+  {k:"gain", t:"Climb", r:true, v:r=>r.gain?fmt(r.gain)+" ft":"–"},
+  {k:"loss", t:"Descent", r:true, v:r=>r.loss?fmt(r.loss)+" ft":"–"},
+  {k:"high", t:"High pt", r:true, v:r=>r.high?fmt(r.high)+" ft":"–"},
+  {k:"cum", t:"Total", r:true, v:r=>fmt(r.cum)+" mi"},
+  {k:"hi", t:"Hi / lo", r:true, v:r=>r.hi!=null?`${Math.round(r.hi)}° / ${r.lo!=null?Math.round(r.lo)+"°":"–"}`:`<span class="muted">…</span>`},
+  {k:"rain", t:"Rain", r:true, v:r=>r.rain!=null?(r.rain>=0.01?r.rain.toFixed(2)+" in":"–"):`<span class="muted">…</span>`},
+  {k:"photos", t:"Photos", r:true, v:r=>r.photos?`<a href="../photos/" onclick="event.stopPropagation()">${r.photos}</a>`:"–"},
+];
+// Hyphen-free placeholder for empty cells
+COLS.forEach(c => { const f=c.v; c.v = r => String(f(r)).replace(/>–</g,">·<").replace(/^–$/,"·"); });
+
+const S = {sort:"day", dir:1, q:"", states:new Set(), stays:new Set(), segs:new Set(), rest:true, words:false, open:new Set()};
+try { const saved = JSON.parse(localStorage.getItem("rick-days")||"null"); if (saved) { S.sort=saved.sort||"day"; S.dir=saved.dir||1; } } catch(e){}
+
+function chips(id, items, set, label=x=>x) {
+  const g = document.getElementById(id);
+  items.forEach(it => { const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=label(it); b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{ set.has(it)?set.delete(it):set.add(it); b.classList.toggle("on"); b.setAttribute("aria-pressed",set.has(it)); render(); }; g.appendChild(b); });
+}
+chips("f-state", ["MT","ID","WY","UT","AZ"].filter(s=>ROWS.some(r=>r.st===s)), S.states, s=>STATES[s]);
+chips("f-stay", ["tent","motel","home"], S.stays, s=>STAY[s]);
+chips("f-seg", SEGMENTS.map(s=>s.n), S.segs, n=>String(n));
+(function(){ const g=document.getElementById("f-more");
+  const mk=(txt,key,on)=>{ const b=document.createElement("button"); b.type="button"; b.className="chip"+(on?" on":""); b.textContent=txt; b.setAttribute("aria-pressed",on);
+    b.onclick=()=>{ S[key]=!S[key]; b.classList.toggle("on",S[key]); b.setAttribute("aria-pressed",S[key]); render(); }; g.appendChild(b); };
+  mk("Rest days","rest",true); mk("Only days in Rick's words","words",false); })();
+document.getElementById("q").oninput = e => { S.q = e.target.value.trim().toLowerCase(); render(); };
+document.getElementById("reset").onclick = () => { S.q=""; document.getElementById("q").value=""; [S.states,S.stays,S.segs].forEach(s=>s.clear()); S.rest=true; S.words=false;
+  document.querySelectorAll(".fgroup .chip").forEach(b=>{ const on=b.textContent==="Rest days"; b.classList.toggle("on",on); b.setAttribute("aria-pressed",on); }); render(); };
+
+document.getElementById("hdr").innerHTML = COLS.map(c=>`<th class="${c.r?"r":""}" data-k="${c.k}"><button type="button">${c.t}<span class="ar">▲</span></button></th>`).join("");
+document.querySelectorAll("#hdr th").forEach(th => th.querySelector("button").onclick = () => {
+  const k = th.dataset.k; if (S.sort===k) S.dir*=-1; else { S.sort=k; S.dir = ["day","date","name","seg","stay"].includes(k) ? 1 : -1; }
+  try { localStorage.setItem("rick-days", JSON.stringify({sort:S.sort, dir:S.dir})); } catch(e){}
+  render();
+});
+
+function render() {
+  let rows = ROWS.filter(r => {
+    if (!S.rest && !r.miles) return false;
+    if (S.states.size && !S.states.has(r.st)) return false;
+    if (S.stays.size && !S.stays.has(r.stay==="rest"?r.restStay:r.stay)) return false;
+    if (S.segs.size && !S.segs.has(r.seg)) return false;
+    if (S.words && !r.words) return false;
+    if (S.q) { const hay = (r.name+" "+r.e.notes+" "+(r.e.updates||[]).map(u=>u.text).join(" ")+" "+mdy(d2(r.date))+" "+STATES[r.st]).toLowerCase(); if (!hay.includes(S.q)) return false; }
+    return true;
+  });
+  const key = S.sort, get = r => key==="date" ? r.date : key==="stay" ? (r.stay||"zz") : r[key];
+  rows.sort((a,b) => { const x=get(a), y=get(b); if (x==null && y==null) return a.day-b.day; if (x==null) return 1; if (y==null) return -1; return (x<y?-1:x>y?1:a.day-b.day)*S.dir; });
+  document.querySelectorAll("#hdr th").forEach(th => { const on = th.dataset.k===key; th.classList.toggle("sorted",on); th.querySelector(".ar").textContent = on && S.dir<0 ? "▼" : "▲"; th.setAttribute("aria-sort", on ? (S.dir>0?"ascending":"descending") : "none"); });
+  const ride = rows.filter(r=>r.miles);
+  const mi = ride.reduce((a,r)=>a+r.miles,0), ft = ride.reduce((a,r)=>a+r.gain,0);
+  document.getElementById("sum").innerHTML = [
+    ["Days", rows.length, rows.length!==ride.length?`${ride.length} riding`:""],
+    ["Miles", fmt(mi), "mi"], ["Climbing", fmt(ft), "ft"],
+    ["Average", ride.length?fmt1(mi/ride.length):"·", "mi a riding day"],
+    ["Biggest day", ride.length?fmt1(Math.max(...ride.map(r=>r.miles))):"·", "mi"]
+  ].map(([l,v,u])=>`<div><div class="lab">${l}</div><div class="val num">${v}<small>${u}</small></div></div>`).join("");
+  document.getElementById("body").innerHTML = rows.length ? rows.map(r => {
+    const cells = COLS.map(c=>`<td class="${c.r?"r ":""}num ${c.cls||""}" data-l="${c.t}">${c.v(r)}</td>`).join("");
+    const det = S.open.has(r.day) ? `<tr class="det"><td colspan="${COLS.length}">${esc(r.e.notes)}${(r.e.updates||[]).length?`<ul>${r.e.updates.map(u=>`<li><span class="t">${esc(u.time||"")}</span>${esc(u.text||"")}</li>`).join("")}</ul>`:""}</td></tr>` : "";
+    return `<tr class="row${r.miles?"":" rest"}" data-day="${r.day}" tabindex="0" aria-expanded="${S.open.has(r.day)}">${cells}</tr>${det}`;
+  }).join("") : `<tr><td colspan="${COLS.length}" class="muted">No days match those filters.</td></tr>`;
+  document.querySelectorAll("tr.row").forEach(tr => { const t=()=>{ const d=+tr.dataset.day; S.open.has(d)?S.open.delete(d):S.open.add(d); render(); };
+    tr.onclick=t; tr.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); t(); } }; });
+}
+render();
+
+// Weather at each night's camp, from the reanalysis archive (same source as the Records page).
+(function(){
+  const pins = ROWS.filter(r => r.e.lat!=null);
+  if (!pins.length) return;
+  const first = ROWS[0].date, after = iso(addDays(d2(ROWS[ROWS.length-1].date),1)), today = iso(new Date()), last = after <= today ? after : today;  // the weather service refuses dates in the future
+  const q = `latitude=${pins.map(r=>r.e.lat).join(",")}&longitude=${pins.map(r=>r.e.lng).join(",")}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&start_date=${first}&end_date=${last}&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=America%2FBoise`;
+  const apply = j => { const arr = Array.isArray(j)?j:[j]; pins.forEach((r,i)=>{ const d=arr[i]&&arr[i].daily; if(!d) return; const k=d.time.indexOf(r.date), k2=d.time.indexOf(iso(addDays(d2(r.date),1)));
+    const w=r.e.wx||{}; if(r.hi==null) r.hi = w.hi!=null?w.hi:(k>=0?d.temperature_2m_max[k]:null); if(r.lo==null) r.lo = w.lo!=null?w.lo:(k2>=0?d.temperature_2m_min[k2]:null); if(r.rain==null) r.rain = w.rain!=null?w.rain:(k>=0?d.precipitation_sum[k]:null); }); };
+  fetch("https://archive-api.open-meteo.com/v1/archive?"+q).then(r=>r.json()).then(apply).catch(()=>{})
+    .then(()=> pins.some(r=>r.hi==null||r.lo==null) ? fetch("https://api.open-meteo.com/v1/forecast?"+q).then(r=>r.json()).then(apply).catch(()=>{}) : null)
+    .then(()=>{ ROWS.forEach(r=>{ if(r.hi==null) r.hi=undefined; }); render(); });
+})();
+</script>
+</body>
+</html>

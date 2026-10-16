@@ -219,7 +219,7 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
 
 <div class="wrap">
 
-<div class="nav"><a class="on" aria-current="page" href="./">Tracker</a><a href="weather/">Weather</a><a href="photos/">Photos</a><a href="records/">Records</a></div>
+<div class="nav"><a class="on" aria-current="page" href="./">Tracker</a><a href="weather/">Weather</a><a href="photos/">Photos</a><a href="records/">Records</a><a href="days/">Days</a></div>
 <div class="upbar"><span class="lab">Last updated</span><span class="when" id="up-when"></span><span class="day" id="up-day"></span></div>
 
 <div class="wir" id="hero"></div>
@@ -234,6 +234,7 @@ tr.open td{background:color-mix(in srgb,var(--good-soft) 55%,var(--paper))}
   <div class="legend"><span class="a">Rick's position on his current route</span><span class="p">Where the plan says he should be today</span></div>
 </div>
 <div class="bigmap" id="bigmap" hidden><div class="hd"><div class="eyebrow" style="color:var(--ink-3)">The whole route, zoomed out</div><div class="asof" id="bigmap-asof"></div></div><img id="bigmap-img" alt="Rick's track so far on a map of the western United States"><div class="cap" id="bigmap-cap"></div></div>
+<div class="bigmap" id="planmap" hidden><div class="hd"><div class="eyebrow" style="color:var(--ink-3)">What he rode versus the plan</div></div><img id="planmap-img" alt="Rick's actual route in blue over the original plan in purple"><div class="cap" id="planmap-cap"></div></div>
 
 <section>
   <h2>Last camp</h2>
@@ -398,6 +399,11 @@ if (typeof PROGRESS_MAP !== "undefined" && PROGRESS_MAP && PROGRESS_MAP.file) {
   document.getElementById("bigmap-asof").textContent = PROGRESS_MAP.asOf ? "As of " + PROGRESS_MAP.asOf : "";
   document.getElementById("bigmap-cap").textContent = PROGRESS_MAP.caption || "";
   bm.hidden = false;
+}
+if (typeof PLAN_MAP !== "undefined" && PLAN_MAP && PLAN_MAP.file) {
+  document.getElementById("planmap-img").src = "photos/" + PLAN_MAP.file + ".jpg";
+  document.getElementById("planmap-cap").textContent = PLAN_MAP.caption || "";
+  document.getElementById("planmap").hidden = false;
 }
 
 // Route bar
